@@ -1,0 +1,16 @@
+app:
+  name: all_use_test
+  version: 1.0.0
+health:
+  cpu_threshold: 90
+  disk_threshold: 90
+  memory_threshold: 90
+logging:
+  console:
+    enabled: true
+  file:
+    enabled: true
+  format: json
+  level: INFO
+monitoring:
+  enabled: true
