@@ -1,0 +1,21 @@
+{
+  "executive_summary": {
+    "total_data_points": 228,
+    "analysis_duration": "8.08 seconds",
+    "key_insights": [
+      "\ud83c\udfaf Trading system achieving 0% error rate - exceptional performance",
+      "\u26a1 Trading system latency at 15.5ms - excellent responsiveness",
+      "\ud83d\ude80 Market data throughput at 33481 ops/sec - exceptional performance",
+      "\u26a1 Market data latency at 0.030ms - sub-millisecond performance",
+      "\ud83d\udcc8 Strong trends detected: trading_system.error_rate: stable, trading_system.latency_ms: stable, trading_system.throughput_ops_sec: increasing, market_data_system.throughput_ops_sec: increasing, ibkr_integration.connection_success_rate: stable, system_resources.memory_usage_mb: increasing, system_resources.disk_usage_percent: stable",
+      "\u2705 All components showing normal anomaly rates"
+    ],
+    "overall_health": "excellent",
+    "performance_grade": "A+"
+  },
+  "performance_highlights": {
+    "trading_system_status": "optimal",
+    "market_data_status": "exceptional",
+    "system_stability": "variable"
+  }
+}

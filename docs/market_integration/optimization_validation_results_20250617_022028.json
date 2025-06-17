@@ -1,0 +1,124 @@
+{
+  "validation_timestamp": "2025-06-17T02:20:28.264063",
+  "total_tests": 6,
+  "passed_tests": 1,
+  "failed_tests": 5,
+  "success_rate": 16.666666666666664,
+  "average_performance_score": 31.333333333333332,
+  "total_execution_time": 4.496641159057617,
+  "validation_status": "FAILED",
+  "production_ready": false,
+  "test_results": [
+    {
+      "test_name": "Trading System Optimization Validation",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 0.19364380836486816,
+      "details": {},
+      "error_message": "'TradingSystemOptimizer' object has no attribute 'get_connection_pool_stats'"
+    },
+    {
+      "test_name": "Market Data Enhancement Validation",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 0.006460905075073242,
+      "details": {},
+      "error_message": "'MarketDataBrokerEnhancer' object has no attribute 'get_cache_performance_stats'"
+    },
+    {
+      "test_name": "Monitoring Framework Validation",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 0.013842582702636719,
+      "details": {},
+      "error_message": "cannot import name 'AdvancedMonitoringFramework' from 'src.market_integration.monitoring.advanced_monitoring_framework' (/home/ubuntu/AGENT_ALLUSE_V1/src/market_integration/monitoring/advanced_monitoring_framework.py)"
+    },
+    {
+      "test_name": "Analytics Engine Validation",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 4.21012282371521,
+      "details": {},
+      "error_message": "'RealTimeMarketAnalytics' object has no attribute 'test_statistical_analysis'"
+    },
+    {
+      "test_name": "Integration Performance Validation",
+      "success": true,
+      "performance_score": 100.0,
+      "execution_time": 0.07151103019714355,
+      "details": {
+        "total_workflow_time": 0.06078338623046875,
+        "average_step_time": 0.010124882062276205,
+        "concurrent_time": 0.010624170303344727,
+        "workflow_steps": [
+          "Market data retrieval",
+          "Trading system processing",
+          "Risk management validation",
+          "Order execution simulation",
+          "Performance monitoring",
+          "Analytics generation"
+        ],
+        "step_times": [
+          0.010079622268676758,
+          0.010088920593261719,
+          0.010148286819458008,
+          0.010185003280639648,
+          0.010171175003051758,
+          0.010076284408569336
+        ],
+        "concurrent_operations": 10
+      },
+      "error_message": ""
+    },
+    {
+      "test_name": "Production Readiness Validation",
+      "success": false,
+      "performance_score": 88.0,
+      "execution_time": 0.0005629062652587891,
+      "details": {
+        "components_available": 4,
+        "total_components": 5,
+        "component_availability": 80.0,
+        "targets_met": 5,
+        "total_targets": 5,
+        "target_achievement": 100.0,
+        "component_checks": {
+          "trading_optimizer": true,
+          "market_data_enhancer": true,
+          "monitoring_framework": false,
+          "analytics_engine": true,
+          "integration_layer": true
+        },
+        "expected_achievements": {
+          "trading_error_rate": {
+            "before": 5.0,
+            "after": 0.0,
+            "target": 2.0
+          },
+          "trading_latency": {
+            "before": 26.0,
+            "after": 15.5,
+            "target": 20.0
+          },
+          "market_data_throughput": {
+            "before": 99.9,
+            "after": 33481.0,
+            "target": 150.0
+          },
+          "market_data_latency": {
+            "before": 1.0,
+            "after": 0.03,
+            "target": 0.8
+          },
+          "performance_grade": {
+            "before": 50.0,
+            "after": 95.0,
+            "target": 70.0
+          }
+        }
+      },
+      "error_message": ""
+    }
+  ],
+  "optimization_metrics": []
+}

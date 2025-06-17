@@ -1,0 +1,418 @@
+{
+  "analytics_summary": {
+    "duration_seconds": 8.079721927642822,
+    "data_points_analyzed": 228,
+    "trends_detected": 12,
+    "anomalies_detected": 12,
+    "forecasts_generated": 12,
+    "dashboard_generated": "docs/market_integration/market_analytics_dashboard_20250617_015444.png"
+  },
+  "performance_statistics": {
+    "trading_system": {
+      "error_rate": {
+        "count": 19,
+        "mean": 0.0,
+        "median": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "q25": 0.0,
+        "q75": 0.0,
+        "latest": 0.0
+      },
+      "latency_ms": {
+        "count": 19,
+        "mean": 15.5,
+        "median": 15.5,
+        "std": 0.0,
+        "min": 15.5,
+        "max": 15.5,
+        "q25": 15.5,
+        "q75": 15.5,
+        "latest": 15.5
+      },
+      "throughput_ops_sec": {
+        "count": 19,
+        "mean": 2571.252633395948,
+        "median": 2571.2521827220917,
+        "std": 6.226567317453777,
+        "min": 2561.2942247390747,
+        "max": 2581.2102823257446,
+        "q25": 2566.273428797722,
+        "q75": 2576.2320932149887,
+        "latest": 2581.2102823257446
+      }
+    },
+    "market_data_system": {
+      "throughput_ops_sec": {
+        "count": 19,
+        "mean": 33471.25264412478,
+        "median": 33471.25219106674,
+        "std": 6.226566997380374,
+        "min": 33461.29423761368,
+        "max": 33481.210290670395,
+        "q25": 33466.27343916893,
+        "q75": 33476.23210918903,
+        "latest": 33481.210290670395
+      },
+      "latency_ms": {
+        "count": 19,
+        "mean": 0.03475100789147352,
+        "median": 0.03427566699807927,
+        "std": 0.002954113002951923,
+        "min": 0.030291587637117333,
+        "max": 0.03929229907815763,
+        "q25": 0.03253890209024243,
+        "q75": 0.03699322395150976,
+        "latest": 0.030291587637117333
+      },
+      "cache_hit_rate": {
+        "count": 19,
+        "mean": 97.30527890355964,
+        "median": 97.3588080406189,
+        "std": 1.4602564483987217,
+        "min": 95.10427689552307,
+        "max": 99.61411499977112,
+        "q25": 96.23124313354492,
+        "q75": 98.4865106344223,
+        "latest": 96.21029305458069
+      }
+    },
+    "ibkr_integration": {
+      "connection_success_rate": {
+        "count": 19,
+        "mean": 100.0,
+        "median": 100.0,
+        "std": 0.0,
+        "min": 100.0,
+        "max": 100.0,
+        "q25": 100.0,
+        "q75": 100.0,
+        "latest": 100.0
+      },
+      "operation_latency_ms": {
+        "count": 19,
+        "mean": 0.5947571460543696,
+        "median": 0.5942468148503072,
+        "std": 0.061081830757480075,
+        "min": 0.5007710438999897,
+        "max": 0.6985412579807994,
+        "q25": 0.5457473260197403,
+        "q75": 0.6392865163120987,
+        "latest": 0.5102967721256967
+      },
+      "reuse_ratio": {
+        "count": 19,
+        "mean": 94.41054822269238,
+        "median": 94.57242894172668,
+        "std": 2.9673722457112177,
+        "min": 90.10428190231323,
+        "max": 99.03929924964905,
+        "q25": 91.82653176784515,
+        "q75": 96.80584597587585,
+        "latest": 91.21029806137085
+      }
+    },
+    "system_resources": {
+      "memory_usage_mb": {
+        "count": 19,
+        "mean": 1280.889802631579,
+        "median": 1280.44140625,
+        "std": 0.696084517650821,
+        "min": 1279.5,
+        "max": 1281.6640625,
+        "q25": 1280.431640625,
+        "q75": 1281.640625,
+        "latest": 1281.63671875
+      },
+      "cpu_percent": {
+        "count": 19,
+        "mean": 0.7842105263157895,
+        "median": 0.0,
+        "std": 2.8898794972752637,
+        "min": 0.0,
+        "max": 12.5,
+        "q25": 0.0,
+        "q75": 0.0,
+        "latest": 0.0
+      },
+      "disk_usage_percent": {
+        "count": 19,
+        "mean": 16.3,
+        "median": 16.3,
+        "std": 0.0,
+        "min": 16.3,
+        "max": 16.3,
+        "q25": 16.3,
+        "q75": 16.3,
+        "latest": 16.3
+      }
+    }
+  },
+  "trend_analysis": {
+    "trading_system": {
+      "error_rate": {
+        "slope": 0.0,
+        "r_squared": 1.0,
+        "trend_direction": "stable",
+        "trend_strength": "strong"
+      },
+      "latency_ms": {
+        "slope": 0.0,
+        "r_squared": 1.0,
+        "trend_direction": "stable",
+        "trend_strength": "strong"
+      },
+      "throughput_ops_sec": {
+        "slope": 1.000426123805659,
+        "r_squared": 0.9977283517611296,
+        "trend_direction": "increasing",
+        "trend_strength": "strong"
+      }
+    },
+    "market_data_system": {
+      "throughput_ops_sec": {
+        "slope": 1.000426062803114,
+        "r_squared": 0.997728332430805,
+        "trend_direction": "increasing",
+        "trend_strength": "strong"
+      },
+      "latency_ms": {
+        "slope": 3.037129611536898e-05,
+        "r_squared": 0.00408518804287239,
+        "trend_direction": "stable",
+        "trend_strength": "weak"
+      },
+      "cache_hit_rate": {
+        "slope": -0.03414802270607323,
+        "r_squared": 0.02113549924348479,
+        "trend_direction": "decreasing",
+        "trend_strength": "weak"
+      }
+    },
+    "ibkr_integration": {
+      "connection_success_rate": {
+        "slope": 0.0,
+        "r_squared": 1.0,
+        "trend_direction": "stable",
+        "trend_strength": "strong"
+      },
+      "operation_latency_ms": {
+        "slope": 0.002862099779411512,
+        "r_squared": 0.0848564973661402,
+        "trend_direction": "increasing",
+        "trend_strength": "weak"
+      },
+      "reuse_ratio": {
+        "slope": 0.01691866068927327,
+        "r_squared": 0.0012563988319269637,
+        "trend_direction": "increasing",
+        "trend_strength": "weak"
+      }
+    },
+    "system_resources": {
+      "memory_usage_mb": {
+        "slope": 0.09623477454985628,
+        "r_squared": 0.7387198323897399,
+        "trend_direction": "increasing",
+        "trend_strength": "strong"
+      },
+      "cpu_percent": {
+        "slope": 0.002905129369042218,
+        "r_squared": 3.9058065148811494e-05,
+        "trend_direction": "increasing",
+        "trend_strength": "weak"
+      },
+      "disk_usage_percent": {
+        "slope": 0.0,
+        "r_squared": 1.0,
+        "trend_direction": "stable",
+        "trend_strength": "strong"
+      }
+    }
+  },
+  "anomaly_detection": {
+    "trading_system": {
+      "error_rate": {
+        "total_points": 19,
+        "anomaly_count": 0,
+        "anomaly_percentage": 0.0,
+        "anomaly_threshold": "normal"
+      },
+      "latency_ms": {
+        "total_points": 19,
+        "anomaly_count": 0,
+        "anomaly_percentage": 0.0,
+        "anomaly_threshold": "normal"
+      },
+      "throughput_ops_sec": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      }
+    },
+    "market_data_system": {
+      "throughput_ops_sec": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      },
+      "latency_ms": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      },
+      "cache_hit_rate": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      }
+    },
+    "ibkr_integration": {
+      "connection_success_rate": {
+        "total_points": 19,
+        "anomaly_count": 0,
+        "anomaly_percentage": 0.0,
+        "anomaly_threshold": "normal"
+      },
+      "operation_latency_ms": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      },
+      "reuse_ratio": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      }
+    },
+    "system_resources": {
+      "memory_usage_mb": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      },
+      "cpu_percent": {
+        "total_points": 19,
+        "anomaly_count": 2,
+        "anomaly_percentage": 10.526315789473683,
+        "anomaly_threshold": "normal"
+      },
+      "disk_usage_percent": {
+        "total_points": 19,
+        "anomaly_count": 0,
+        "anomaly_percentage": 0.0,
+        "anomaly_threshold": "normal"
+      }
+    }
+  },
+  "performance_forecasts": {
+    "trading_system": {
+      "error_rate": {
+        "current_value": 0.0,
+        "forecast_value": 0.0,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 100.0,
+        "trend_direction": "decreasing"
+      },
+      "latency_ms": {
+        "current_value": 15.5,
+        "forecast_value": 15.5,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 100.0,
+        "trend_direction": "decreasing"
+      },
+      "throughput_ops_sec": {
+        "current_value": 2581.2102823257446,
+        "forecast_value": 4585.837249040604,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 99.86996110188548,
+        "trend_direction": "increasing"
+      }
+    },
+    "market_data_system": {
+      "throughput_ops_sec": {
+        "current_value": 33481.210290670395,
+        "forecast_value": 35485.839092731476,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 99.98999258933246,
+        "trend_direction": "increasing"
+      },
+      "latency_ms": {
+        "current_value": 0.030291587637117333,
+        "forecast_value": 0.09591059898230014,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 91.1260130375093,
+        "trend_direction": "increasing"
+      },
+      "cache_hit_rate": {
+        "current_value": 96.21029305458069,
+        "forecast_value": 28.540328562259674,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 98.4778197992224,
+        "trend_direction": "decreasing"
+      }
+    },
+    "ibkr_integration": {
+      "connection_success_rate": {
+        "current_value": 100.0,
+        "forecast_value": 100.0,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 100.0,
+        "trend_direction": "decreasing"
+      },
+      "operation_latency_ms": {
+        "current_value": 0.5102967721256967,
+        "forecast_value": 6.358268157579005,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 89.62316042292765,
+        "trend_direction": "increasing"
+      },
+      "reuse_ratio": {
+        "current_value": 91.21029806137085,
+        "forecast_value": 128.48027726262808,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 96.75807483059162,
+        "trend_direction": "increasing"
+      }
+    },
+    "system_resources": {
+      "memory_usage_mb": {
+        "current_value": 1281.63671875,
+        "forecast_value": 1474.681488275528,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 99.95787236173575,
+        "trend_direction": "increasing"
+      },
+      "cpu_percent": {
+        "current_value": 0.0,
+        "forecast_value": 6.634386173449457,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 0.0,
+        "trend_direction": "increasing"
+      },
+      "disk_usage_percent": {
+        "current_value": 16.3,
+        "forecast_value": 16.3,
+        "forecast_time_minutes": 30,
+        "confidence_percentage": 99.99999999999997,
+        "trend_direction": "decreasing"
+      }
+    }
+  },
+  "analytics_stats": {
+    "analytics_sessions": 1,
+    "visualizations_generated": 1,
+    "data_points_analyzed": 228,
+    "trends_detected": 12,
+    "anomalies_detected": 12,
+    "forecasts_generated": 12
+  }
+}

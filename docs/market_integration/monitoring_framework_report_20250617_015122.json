@@ -1,0 +1,435 @@
+{
+  "session_summary": {
+    "duration_seconds": 21.022302389144897,
+    "metrics_collected": 228,
+    "alerts_generated": 0,
+    "active_alerts": 0
+  },
+  "monitoring_data": [
+    {
+      "timestamp": "2025-06-17T01:51:16.785187",
+      "component": "system_resources",
+      "metric": "cpu_percent",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:16.785187",
+      "component": "system_resources",
+      "metric": "disk_usage_percent",
+      "value": 16.3,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892623",
+      "component": "trading_system",
+      "metric": "error_rate",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892623",
+      "component": "trading_system",
+      "metric": "latency_ms",
+      "value": 15.5,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892623",
+      "component": "trading_system",
+      "metric": "throughput_ops_sec",
+      "value": 2577.892644405365,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892652",
+      "component": "market_data_system",
+      "metric": "throughput_ops_sec",
+      "value": 33477.89265346527,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892652",
+      "component": "market_data_system",
+      "metric": "latency_ms",
+      "value": 0.03265485935037424,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892652",
+      "component": "market_data_system",
+      "metric": "cache_hit_rate",
+      "value": 97.89265608787537,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892658",
+      "component": "ibkr_integration",
+      "metric": "connection_success_rate",
+      "value": 100.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892658",
+      "component": "ibkr_integration",
+      "metric": "operation_latency_ms",
+      "value": 0.5926598054203747,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892658",
+      "component": "ibkr_integration",
+      "metric": "reuse_ratio",
+      "value": 97.8926613330841,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892663",
+      "component": "system_resources",
+      "metric": "memory_usage_mb",
+      "value": 1281.64453125,
+      "unit": "megabytes",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892663",
+      "component": "system_resources",
+      "metric": "cpu_percent",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:17.892663",
+      "component": "system_resources",
+      "metric": "disk_usage_percent",
+      "value": 16.3,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998490",
+      "component": "trading_system",
+      "metric": "error_rate",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998490",
+      "component": "trading_system",
+      "metric": "latency_ms",
+      "value": 15.5,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998490",
+      "component": "trading_system",
+      "metric": "throughput_ops_sec",
+      "value": 2578.9985156059265,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998526",
+      "component": "market_data_system",
+      "metric": "throughput_ops_sec",
+      "value": 33478.99852824211,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998526",
+      "component": "market_data_system",
+      "metric": "latency_ms",
+      "value": 0.03853106670205879,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998526",
+      "component": "market_data_system",
+      "metric": "cache_hit_rate",
+      "value": 98.99853420257568,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998538",
+      "component": "ibkr_integration",
+      "metric": "connection_success_rate",
+      "value": 100.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998538",
+      "component": "ibkr_integration",
+      "metric": "operation_latency_ms",
+      "value": 0.6985412579807994,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998538",
+      "component": "ibkr_integration",
+      "metric": "reuse_ratio",
+      "value": 98.99854397773743,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998547",
+      "component": "system_resources",
+      "metric": "memory_usage_mb",
+      "value": 1281.63671875,
+      "unit": "megabytes",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998547",
+      "component": "system_resources",
+      "metric": "cpu_percent",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:18.998547",
+      "component": "system_resources",
+      "metric": "disk_usage_percent",
+      "value": 16.3,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104248",
+      "component": "trading_system",
+      "metric": "error_rate",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104248",
+      "component": "trading_system",
+      "metric": "latency_ms",
+      "value": 15.5,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104248",
+      "component": "trading_system",
+      "metric": "throughput_ops_sec",
+      "value": 2580.1042664051056,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104273",
+      "component": "market_data_system",
+      "metric": "throughput_ops_sec",
+      "value": 33480.10427451134,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104273",
+      "component": "market_data_system",
+      "metric": "latency_ms",
+      "value": 0.03427566699807927,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104273",
+      "component": "market_data_system",
+      "metric": "cache_hit_rate",
+      "value": 95.10427689552307,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104279",
+      "component": "ibkr_integration",
+      "metric": "connection_success_rate",
+      "value": 100.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104279",
+      "component": "ibkr_integration",
+      "metric": "operation_latency_ms",
+      "value": 0.6042808514866587,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104279",
+      "component": "ibkr_integration",
+      "metric": "reuse_ratio",
+      "value": 90.10428190231323,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104284",
+      "component": "system_resources",
+      "metric": "memory_usage_mb",
+      "value": 1281.63671875,
+      "unit": "megabytes",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104284",
+      "component": "system_resources",
+      "metric": "cpu_percent",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:20.104284",
+      "component": "system_resources",
+      "metric": "disk_usage_percent",
+      "value": 16.3,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210265",
+      "component": "trading_system",
+      "metric": "error_rate",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210265",
+      "component": "trading_system",
+      "metric": "latency_ms",
+      "value": 15.5,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210265",
+      "component": "trading_system",
+      "metric": "throughput_ops_sec",
+      "value": 2581.2102823257446,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210289",
+      "component": "market_data_system",
+      "metric": "throughput_ops_sec",
+      "value": 33481.210290670395,
+      "unit": "operations_per_second",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210289",
+      "component": "market_data_system",
+      "metric": "latency_ms",
+      "value": 0.030291587637117333,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210289",
+      "component": "market_data_system",
+      "metric": "cache_hit_rate",
+      "value": 96.21029305458069,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210295",
+      "component": "ibkr_integration",
+      "metric": "connection_success_rate",
+      "value": 100.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210295",
+      "component": "ibkr_integration",
+      "metric": "operation_latency_ms",
+      "value": 0.5102967721256967,
+      "unit": "milliseconds",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210295",
+      "component": "ibkr_integration",
+      "metric": "reuse_ratio",
+      "value": 91.21029806137085,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210300",
+      "component": "system_resources",
+      "metric": "memory_usage_mb",
+      "value": 1281.63671875,
+      "unit": "megabytes",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210300",
+      "component": "system_resources",
+      "metric": "cpu_percent",
+      "value": 0.0,
+      "unit": "percent",
+      "status": "normal"
+    },
+    {
+      "timestamp": "2025-06-17T01:51:21.210300",
+      "component": "system_resources",
+      "metric": "disk_usage_percent",
+      "value": 16.3,
+      "unit": "percent",
+      "status": "normal"
+    }
+  ],
+  "alert_events": [],
+  "component_stats": {
+    "monitoring": {
+      "metrics_collected": 228,
+      "monitoring_duration": 20.021721124649048,
+      "average_collection_rate": 11.38763239086902
+    },
+    "alerting": {
+      "alerting_stats": {
+        "alerts_generated": 0,
+        "alerts_resolved": 0,
+        "false_positives": 0,
+        "critical_alerts": 0
+      },
+      "active_alerts_count": 0,
+      "total_rules": 6,
+      "enabled_rules": 6
+    }
+  },
+  "framework_stats": {
+    "monitoring_sessions": 1,
+    "total_metrics_collected": 228,
+    "total_alerts_generated": 0,
+    "uptime_seconds": 21.162400484085083
+  }
+}
