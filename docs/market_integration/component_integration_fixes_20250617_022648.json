@@ -1,0 +1,179 @@
+{
+  "fix_timestamp": "2025-06-17T02:26:48.103984",
+  "total_fixes": 4,
+  "successful_fixes": 2,
+  "failed_fixes": 2,
+  "success_rate": 50.0,
+  "total_execution_time": 1.3452239036560059,
+  "fix_status": "PARTIAL_SUCCESS",
+  "component_availability": 75.0,
+  "fix_results": [
+    {
+      "component_name": "Monitoring Framework",
+      "fix_type": "Import Fix",
+      "success": false,
+      "execution_time": 0.0002760887145996094,
+      "details": {
+        "issue": "No suitable monitoring class found",
+        "solution": "File exists but no monitoring classes found",
+        "class_found": false,
+        "file_exists": true
+      },
+      "error_message": ""
+    },
+    {
+      "component_name": "All Components",
+      "fix_type": "API Standardization",
+      "success": true,
+      "execution_time": 1.3415577411651611,
+      "details": {
+        "standard_methods": [
+          "get_component_info",
+          "get_performance_stats",
+          "test_functionality",
+          "get_optimization_metrics",
+          "validate_component"
+        ],
+        "api_fixes": {
+          "trading_optimizer": {
+            "available": true,
+            "missing_methods": [
+              "get_component_info",
+              "get_performance_stats",
+              "test_functionality",
+              "get_optimization_metrics",
+              "validate_component"
+            ],
+            "needs_api_update": true
+          },
+          "market_data_enhancer": {
+            "available": true,
+            "missing_methods": [
+              "get_component_info",
+              "get_performance_stats",
+              "test_functionality",
+              "get_optimization_metrics",
+              "validate_component"
+            ],
+            "needs_api_update": true
+          },
+          "analytics_engine": {
+            "available": true,
+            "missing_methods": [
+              "get_component_info",
+              "get_performance_stats",
+              "test_functionality",
+              "get_optimization_metrics",
+              "validate_component"
+            ],
+            "needs_api_update": true
+          }
+        },
+        "available_components": 3,
+        "total_components": 3,
+        "standardization_rate": 100.0
+      },
+      "error_message": ""
+    },
+    {
+      "component_name": "Integration Validation",
+      "fix_type": "Component Integration",
+      "success": true,
+      "execution_time": 0.002658843994140625,
+      "details": {
+        "integration_results": {
+          "trading_optimizer": {
+            "import_success": true,
+            "instantiation_success": true,
+            "basic_methods": []
+          },
+          "market_data_enhancer": {
+            "import_success": true,
+            "instantiation_success": true,
+            "basic_methods": []
+          },
+          "monitoring_framework": {
+            "import_success": false,
+            "error": "cannot import name 'AdvancedMonitoringFramework' from 'src.market_integration.monitoring.advanced_monitoring_framework' (/home/ubuntu/AGENT_ALLUSE_V1/src/market_integration/monitoring/advanced_monitoring_framework.py)"
+          },
+          "analytics_engine": {
+            "import_success": true,
+            "instantiation_success": true,
+            "basic_methods": []
+          }
+        },
+        "successful_integrations": 3,
+        "total_components": 4,
+        "integration_rate": 75.0
+      },
+      "error_message": ""
+    },
+    {
+      "component_name": "All Components",
+      "fix_type": "Functionality Testing",
+      "success": false,
+      "execution_time": 0.00040078163146972656,
+      "details": {
+        "functionality_tests": {
+          "trading_optimizer": {
+            "import_success": true,
+            "instantiation_success": true,
+            "methods_available": 12,
+            "functionality_score": 0.0,
+            "available_methods": [
+              "calculate_overall_improvement",
+              "connection_pool",
+              "error_handler",
+              "optimization_results",
+              "optimization_start_time",
+              "optimize_connection_management",
+              "optimize_error_handling",
+              "optimize_memory_management",
+              "optimize_order_processing",
+              "order_processor"
+            ]
+          },
+          "market_data_enhancer": {
+            "import_success": true,
+            "instantiation_success": true,
+            "methods_available": 12,
+            "functionality_score": 0.0,
+            "available_methods": [
+              "broker_connector",
+              "calculate_overall_enhancement",
+              "enhance_broker_integration",
+              "enhance_market_data_latency",
+              "enhance_market_data_throughput",
+              "enhancement_results",
+              "enhancement_start_time",
+              "generate_test_market_data",
+              "market_data_cache",
+              "parallel_processor"
+            ]
+          },
+          "monitoring_framework": {
+            "import_success": false,
+            "error": "module 'src.market_integration.monitoring.advanced_monitoring_framework' has no attribute 'AdvancedMonitoringFramework'",
+            "functionality_score": 0.0
+          },
+          "analytics_engine": {
+            "import_success": true,
+            "instantiation_success": true,
+            "methods_available": 5,
+            "functionality_score": 0.0,
+            "available_methods": [
+              "analytics_stats",
+              "analyzer",
+              "generate_analytics_summary",
+              "run_comprehensive_analytics",
+              "visualizer"
+            ]
+          }
+        },
+        "average_functionality_score": 0.0,
+        "total_components_tested": 4
+      },
+      "error_message": ""
+    }
+  ]
+}

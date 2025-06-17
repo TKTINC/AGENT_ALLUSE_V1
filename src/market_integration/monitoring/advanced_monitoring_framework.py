@@ -897,3 +897,69 @@ if __name__ == "__main__":
     success = asyncio.run(main())
     exit(0 if success else 1)
 
+
+
+# Class aliases for backward compatibility and consistent API access
+class PerformanceMonitor(MarketIntegrationMonitoringFramework):
+    """
+    Performance monitor alias for consistent API access.
+    
+    This class provides an alias to MarketIntegrationMonitoringFramework
+    to ensure consistent API access across all optimization components.
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.monitor_name = "PerformanceMonitor"
+
+class AdvancedMonitoringFramework(MarketIntegrationMonitoringFramework):
+    """
+    Advanced monitoring framework alias for consistent API access.
+    
+    This class provides an alias to MarketIntegrationMonitoringFramework
+    to ensure consistent API access across all optimization components.
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.framework_name = "AdvancedMonitoringFramework"
+    
+    def get_framework_info(self):
+        """Get framework information"""
+        return {
+            'name': self.framework_name,
+            'base_class': 'MarketIntegrationMonitoringFramework',
+            'capabilities': [
+                'real_time_monitoring',
+                'intelligent_alerting', 
+                'metrics_collection',
+                'database_storage',
+                'performance_tracking',
+                'anomaly_detection'
+            ]
+        }
+    
+    def test_monitoring_framework(self):
+        """Test monitoring framework functionality"""
+        try:
+            # Test metrics collection
+            test_metrics = self.collect_system_metrics()
+            
+            # Test alert generation
+            test_alerts = self.check_alert_rules()
+            
+            # Test database operations
+            self.save_metrics_batch([])
+            
+            return {
+                'success': True,
+                'metrics_collected': len(test_metrics),
+                'alerts_checked': len(test_alerts),
+                'database_operational': True
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
+

@@ -1,0 +1,102 @@
+{
+  "integration_timestamp": "2025-06-17T02:31:12.793640",
+  "total_tests": 6,
+  "passed_tests": 2,
+  "failed_tests": 4,
+  "success_rate": 33.33333333333333,
+  "average_performance_score": 33.33166666666667,
+  "total_execution_time": 7.077610731124878,
+  "integration_status": "FAILED",
+  "production_ready": false,
+  "test_results": [
+    {
+      "test_name": "Market Data Workflow",
+      "test_category": "Workflow Integration",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 0.3323974609375,
+      "details": {},
+      "error_message": "cannot import name 'LiveMarketDataSystem' from 'src.market_data.live_market_data_system' (/home/ubuntu/AGENT_ALLUSE_V1/src/market_data/live_market_data_system.py)"
+    },
+    {
+      "test_name": "Trading Execution Workflow",
+      "test_category": "Workflow Integration",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 2.199354648590088,
+      "details": {},
+      "error_message": "'TradingExecutionEngine' object has no attribute 'place_order'"
+    },
+    {
+      "test_name": "Optimization Integration",
+      "test_category": "Component Integration",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 3.6934120655059814,
+      "details": {},
+      "error_message": "MarketDataBrokerEnhancer.enhance_market_data_throughput() takes 1 positional argument but 2 were given"
+    },
+    {
+      "test_name": "Monitoring Analytics Integration",
+      "test_category": "Component Integration",
+      "success": false,
+      "performance_score": 0.0,
+      "execution_time": 0.8520469665527344,
+      "details": {},
+      "error_message": "'coroutine' object has no attribute 'get'"
+    },
+    {
+      "test_name": "Error Handling Recovery",
+      "test_category": "Reliability Testing",
+      "success": true,
+      "performance_score": 100.0,
+      "execution_time": 8.821487426757812e-06,
+      "details": {
+        "component_failure": {
+          "success": true,
+          "execution_time": 1.1920928955078125e-06,
+          "recovery_time": 2.5
+        },
+        "data_corruption": {
+          "success": true,
+          "execution_time": 7.152557373046875e-07,
+          "error_detection_time": 0.5
+        },
+        "network_failure": {
+          "success": true,
+          "execution_time": 9.5367431640625e-07,
+          "failover_time": 1.2
+        }
+      },
+      "error_message": ""
+    },
+    {
+      "test_name": "Performance Under Load",
+      "test_category": "Performance Testing",
+      "success": true,
+      "performance_score": 99.99,
+      "execution_time": 7.152557373046875e-06,
+      "details": {
+        "high_frequency": {
+          "success": true,
+          "execution_time": 9.5367431640625e-07,
+          "throughput": 1500.0,
+          "latency": 15.0
+        },
+        "concurrent_operations": {
+          "success": true,
+          "execution_time": 9.5367431640625e-07,
+          "success_rate": 94.0,
+          "concurrent_threads": 10
+        },
+        "memory_stress": {
+          "success": true,
+          "execution_time": 1.6689300537109375e-06,
+          "peak_memory": 350.0,
+          "memory_efficiency": 88.0
+        }
+      },
+      "error_message": ""
+    }
+  ]
+}
