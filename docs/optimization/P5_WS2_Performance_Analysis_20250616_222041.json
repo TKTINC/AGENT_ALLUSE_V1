@@ -1,0 +1,381 @@
+{
+  "analysis_timestamp": "2025-06-16T22:20:41.210424",
+  "analysis_phase": "P5 of WS2 - Phase 1: Performance Analysis",
+  "baseline_metrics": {
+    "performance_baselines": {
+      "week_classification_time": 0.1,
+      "market_analysis_time": 1.0,
+      "complete_workflow_time": 0.56,
+      "throughput": 1786,
+      "concurrent_throughput": 1653
+    },
+    "memory_baselines": {
+      "total_memory_usage": 166,
+      "component_memory_avg": 33.2,
+      "workflow_memory_growth": 5,
+      "memory_efficiency_target": 100
+    },
+    "resource_baselines": {
+      "cpu_utilization": 15,
+      "memory_utilization": 25,
+      "gc_frequency": 10,
+      "object_creation_rate": 1000
+    },
+    "quality_baselines": {
+      "test_success_rate": 97.1,
+      "functionality_preservation": 100,
+      "error_handling_coverage": 100,
+      "security_validation": 100
+    }
+  },
+  "analysis_results": {
+    "memory_analysis": {
+      "component_memory": {
+        "WeekClassifier": {
+          "baseline_memory": 72.859375,
+          "peak_memory": 72.859375,
+          "memory_delta": 0.0,
+          "traced_peak": 0.048279762268066406,
+          "traced_current": 0.007862091064453125
+        },
+        "MarketConditionAnalyzer": {
+          "baseline_memory": 72.859375,
+          "peak_memory": 72.859375,
+          "memory_delta": 0.0,
+          "traced_peak": 0.04371833801269531,
+          "traced_current": 0.0032625198364257812
+        },
+        "TradingProtocolRulesEngine": {
+          "baseline_memory": 72.859375,
+          "peak_memory": 72.859375,
+          "memory_delta": 0.0,
+          "traced_peak": 0.04132556915283203,
+          "traced_current": 0.000885009765625
+        },
+        "ATRAdjustmentSystem": {
+          "baseline_memory": 72.859375,
+          "peak_memory": 72.859375,
+          "memory_delta": 0.0,
+          "traced_peak": 0.04060840606689453,
+          "traced_current": 0.00017547607421875
+        },
+        "HITLTrustSystem": {
+          "baseline_memory": 72.859375,
+          "peak_memory": 72.859375,
+          "memory_delta": 0.0,
+          "traced_peak": 0.04064655303955078,
+          "traced_current": 0.00023651123046875
+        }
+      },
+      "workflow_memory": {
+        "baseline_memory": 72.859375,
+        "final_memory": 72.859375,
+        "total_growth": 0.0,
+        "average_iteration_delta": 0.0,
+        "max_iteration_delta": 0.0,
+        "memory_growth_trend": "stable",
+        "snapshots": [
+          {
+            "iteration": 15,
+            "start_memory": 72.859375,
+            "end_memory": 72.859375,
+            "memory_delta": 0.0
+          },
+          {
+            "iteration": 16,
+            "start_memory": 72.859375,
+            "end_memory": 72.859375,
+            "memory_delta": 0.0
+          },
+          {
+            "iteration": 17,
+            "start_memory": 72.859375,
+            "end_memory": 72.859375,
+            "memory_delta": 0.0
+          },
+          {
+            "iteration": 18,
+            "start_memory": 72.859375,
+            "end_memory": 72.859375,
+            "memory_delta": 0.0
+          },
+          {
+            "iteration": 19,
+            "start_memory": 72.859375,
+            "end_memory": 72.859375,
+            "memory_delta": 0.0
+          }
+        ],
+        "traced_peak": 0.06714248657226562
+      },
+      "optimization_targets": [
+        {
+          "component": "WeekClassifier",
+          "current_usage": 72.859375,
+          "optimization_potential": "High",
+          "recommended_actions": [
+            "Object pooling",
+            "Lazy loading",
+            "Memory cleanup"
+          ]
+        },
+        {
+          "component": "MarketConditionAnalyzer",
+          "current_usage": 72.859375,
+          "optimization_potential": "High",
+          "recommended_actions": [
+            "Object pooling",
+            "Lazy loading",
+            "Memory cleanup"
+          ]
+        },
+        {
+          "component": "TradingProtocolRulesEngine",
+          "current_usage": 72.859375,
+          "optimization_potential": "High",
+          "recommended_actions": [
+            "Object pooling",
+            "Lazy loading",
+            "Memory cleanup"
+          ]
+        },
+        {
+          "component": "ATRAdjustmentSystem",
+          "current_usage": 72.859375,
+          "optimization_potential": "High",
+          "recommended_actions": [
+            "Object pooling",
+            "Lazy loading",
+            "Memory cleanup"
+          ]
+        },
+        {
+          "component": "HITLTrustSystem",
+          "current_usage": 72.859375,
+          "optimization_potential": "High",
+          "recommended_actions": [
+            "Object pooling",
+            "Lazy loading",
+            "Memory cleanup"
+          ]
+        }
+      ],
+      "memory_hotspots": [
+        {
+          "object_type": "function",
+          "count": 15127,
+          "optimization_potential": "High",
+          "recommended_action": "Review usage"
+        },
+        {
+          "object_type": "tuple",
+          "count": 6745,
+          "optimization_potential": "High",
+          "recommended_action": "Object pooling"
+        },
+        {
+          "object_type": "dict",
+          "count": 5900,
+          "optimization_potential": "High",
+          "recommended_action": "Object pooling"
+        },
+        {
+          "object_type": "wrapper_descriptor",
+          "count": 2843,
+          "optimization_potential": "Medium",
+          "recommended_action": "Review usage"
+        },
+        {
+          "object_type": "cell",
+          "count": 2715,
+          "optimization_potential": "Medium",
+          "recommended_action": "Review usage"
+        },
+        {
+          "object_type": "ReferenceType",
+          "count": 2545,
+          "optimization_potential": "Medium",
+          "recommended_action": "Review usage"
+        },
+        {
+          "object_type": "getset_descriptor",
+          "count": 2325,
+          "optimization_potential": "Medium",
+          "recommended_action": "Review usage"
+        },
+        {
+          "object_type": "list",
+          "count": 2119,
+          "optimization_potential": "Medium",
+          "recommended_action": "Object pooling"
+        },
+        {
+          "object_type": "method_descriptor",
+          "count": 2108,
+          "optimization_potential": "Medium",
+          "recommended_action": "Review usage"
+        },
+        {
+          "object_type": "builtin_function_or_method",
+          "count": 1695,
+          "optimization_potential": "Medium",
+          "recommended_action": "Review usage"
+        }
+      ]
+    },
+    "bottleneck_analysis": {
+      "component_bottlenecks": {
+        "WeekClassifier": {
+          "avg_time": 0.042406809370731935,
+          "min_time": 0.037719997635576874,
+          "max_time": 0.12714399781543761,
+          "std_time": 0.008914899756604134,
+          "p95_time": 0.04753465218527708
+        },
+        "MarketConditionAnalyzer": {
+          "avg_time": 0.29139006983314175,
+          "min_time": 0.2711929992074147,
+          "max_time": 0.4696359974332154,
+          "std_time": 0.0261141607624763,
+          "p95_time": 0.3307235027023125
+        },
+        "TradingProtocolRulesEngine": {
+          "avg_time": 0.048860730094020255,
+          "min_time": 0.04571799945551902,
+          "max_time": 0.11255600111326203,
+          "std_time": 0.00750042137077019,
+          "p95_time": 0.056876851158449426
+        }
+      },
+      "workflow_bottlenecks": [
+        {
+          "step": "week_classification_time",
+          "avg_time": 0.0634685592376627,
+          "max_time": 0.13289899652590975,
+          "percentage_of_total": 16.98916731074759
+        },
+        {
+          "step": "market_analysis_time",
+          "avg_time": 0.3032709003309719,
+          "max_time": 0.3594939989852719,
+          "percentage_of_total": 81.17909289402168
+        },
+        {
+          "step": "decision_creation_time",
+          "avg_time": 0.00684305967297405,
+          "max_time": 0.02220400347141549,
+          "percentage_of_total": 1.8317397952307313
+        }
+      ],
+      "optimization_opportunities": [
+        {
+          "component": "MarketConditionAnalyzer",
+          "current_time": 0.29139006983314175,
+          "optimization_potential": "Medium",
+          "recommended_actions": [
+            "Caching",
+            "Algorithm optimization"
+          ]
+        }
+      ]
+    },
+    "optimization_strategy": {
+      "optimization_priorities": [
+        {
+          "priority": 1,
+          "category": "Memory Optimization",
+          "target": "Reduce memory usage from 166MB to <100MB (40% reduction)",
+          "impact": "High",
+          "effort": "Medium",
+          "techniques": [
+            "Object pooling for frequently created objects",
+            "Lazy loading for non-critical components",
+            "Memory cleanup and garbage collection optimization",
+            "Data structure optimization"
+          ]
+        },
+        {
+          "priority": 2,
+          "category": "Caching Systems",
+          "target": "Implement intelligent caching for repeated calculations",
+          "impact": "Medium",
+          "effort": "Low",
+          "techniques": [
+            "Week classification result caching",
+            "Market analysis result caching",
+            "LRU cache for frequently accessed data",
+            "Cache invalidation strategies"
+          ]
+        },
+        {
+          "priority": 3,
+          "category": "Resource Management",
+          "target": "Optimize resource allocation and utilization",
+          "impact": "Medium",
+          "effort": "Medium",
+          "techniques": [
+            "Connection pooling",
+            "Thread pool optimization",
+            "Resource lifecycle management",
+            "Efficient data structures"
+          ]
+        }
+      ],
+      "implementation_phases": [
+        {
+          "phase": "Phase 2: Memory Optimization",
+          "duration": "1-2 days",
+          "focus": "Core memory usage reduction",
+          "deliverables": [
+            "Object pooling system",
+            "Memory manager",
+            "Cleanup optimization"
+          ]
+        },
+        {
+          "phase": "Phase 3: Caching Systems",
+          "duration": "1 day",
+          "focus": "Intelligent caching implementation",
+          "deliverables": [
+            "Cache manager",
+            "LRU cache",
+            "Cache validation"
+          ]
+        },
+        {
+          "phase": "Phase 4: Monitoring Framework",
+          "duration": "1 day",
+          "focus": "Performance monitoring and metrics",
+          "deliverables": [
+            "Performance monitor",
+            "Metrics collector",
+            "Alerting system"
+          ]
+        }
+      ],
+      "success_metrics": {
+        "memory_reduction": "40% reduction (166MB \u2192 <100MB)",
+        "performance_maintenance": "No degradation in response times",
+        "functionality_preservation": "100% test success rate maintained",
+        "monitoring_coverage": "100% component monitoring implemented"
+      },
+      "risk_mitigation": [
+        {
+          "risk": "Optimization impacts functionality",
+          "mitigation": "Comprehensive regression testing after each optimization",
+          "validation": "All P4 of WS2 tests must continue to pass"
+        },
+        {
+          "risk": "Memory optimizations cause instability",
+          "mitigation": "Gradual implementation with validation at each step",
+          "validation": "Memory stress testing and leak detection"
+        },
+        {
+          "risk": "Performance degradation from monitoring overhead",
+          "mitigation": "Lightweight monitoring design with <1% overhead",
+          "validation": "Performance impact measurement and optimization"
+        }
+      ]
+    }
+  }
+}
