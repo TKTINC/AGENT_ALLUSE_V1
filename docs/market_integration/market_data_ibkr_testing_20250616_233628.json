@@ -1,0 +1,147 @@
+{
+  "testing_duration": 11.45725025300635,
+  "summary": {
+    "total_tests": 8,
+    "passed_tests": 8,
+    "failed_tests": 0,
+    "error_tests": 0,
+    "skipped_tests": 0,
+    "test_success_rate": 100.0,
+    "quality_score": 93.75,
+    "average_execution_time": 1431.8002932486706,
+    "market_data_tests": 3,
+    "ibkr_tests": 5
+  },
+  "test_executions": [
+    {
+      "test_name": "Market Data System Import",
+      "component": "live_market_data_system",
+      "result": "passed",
+      "execution_time": 333.4808749932563,
+      "data_quality": "excellent",
+      "details": {
+        "classes_found": 12,
+        "functions_found": 28,
+        "module_size": 44837,
+        "import_successful": true
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:17.560073"
+    },
+    {
+      "test_name": "Market Data Processing",
+      "component": "live_market_data_system",
+      "result": "passed",
+      "execution_time": 1.770711001881864,
+      "data_quality": "excellent",
+      "details": {
+        "symbols_processed": 5,
+        "total_data_points": 500,
+        "validation_score": 100.0,
+        "missing_data_pct": 0.0,
+        "outliers_detected": 0
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:17.564167"
+    },
+    {
+      "test_name": "Data Feed Reliability",
+      "component": "live_market_data_system",
+      "result": "passed",
+      "execution_time": 10671.56533999514,
+      "data_quality": "good",
+      "details": {
+        "duration": 10.671437978744507,
+        "data_received": 20,
+        "connection_drops": 1,
+        "max_gap_seconds": 1.0805833339691162,
+        "reliability_score": 95.23809523809523,
+        "average_interval": 0.5335718989372253
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:28.235760"
+    },
+    {
+      "test_name": "IBKR Integration Import",
+      "component": "ibkr_integration",
+      "result": "passed",
+      "execution_time": 103.48934200010262,
+      "data_quality": "excellent",
+      "details": {
+        "classes_found": 11,
+        "functions_found": 28,
+        "module_size": 47366,
+        "import_successful": true
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:28.339518"
+    },
+    {
+      "test_name": "IBKR Connection Test",
+      "component": "ibkr_integration",
+      "result": "passed",
+      "execution_time": 343.9914240007056,
+      "data_quality": "excellent",
+      "details": {
+        "connection_successful": true,
+        "api_version": "9.81.1",
+        "connection_time": "2025-06-16T23:36:28.683322"
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:28.683574"
+    },
+    {
+      "test_name": "Account Information Retrieval",
+      "component": "ibkr_integration",
+      "result": "passed",
+      "execution_time": 0.004928995622321963,
+      "data_quality": "excellent",
+      "details": {
+        "account_id": "DU123456",
+        "account_type": "DEMO",
+        "base_currency": "USD",
+        "buying_power": 100000.0
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:28.683589"
+    },
+    {
+      "test_name": "Market Data Retrieval via IBKR",
+      "component": "ibkr_integration",
+      "result": "passed",
+      "execution_time": 0.08912500197766349,
+      "data_quality": "good",
+      "details": {
+        "symbols_retrieved": 3,
+        "data_points": 3,
+        "sample_data": {
+          "symbol": "AAPL",
+          "price": 151.59,
+          "bid": 151.58,
+          "ask": 151.6,
+          "volume": 97649,
+          "timestamp": "2025-06-16T23:36:28.683635"
+        }
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:28.683689"
+    },
+    {
+      "test_name": "Order Placement via IBKR",
+      "component": "ibkr_integration",
+      "result": "passed",
+      "execution_time": 0.010600000678095967,
+      "data_quality": "excellent",
+      "details": {
+        "order_id": 7738,
+        "symbol": "AAPL",
+        "quantity": 100,
+        "order_type": "market",
+        "status": "submitted",
+        "timestamp": "2025-06-16T23:36:28.683696"
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:36:28.683711"
+    }
+  ]
+}

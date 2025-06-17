@@ -1,0 +1,141 @@
+{
+  "testing_duration": 6.324993316004111,
+  "summary": {
+    "total_tests": 9,
+    "passed_tests": 9,
+    "failed_tests": 0,
+    "error_tests": 0,
+    "skipped_tests": 0,
+    "test_success_rate": 100.0,
+    "risk_management_readiness": 100.0,
+    "average_execution_time": 702.69718777854,
+    "risk_management_tests": 4,
+    "trade_monitoring_tests": 5,
+    "critical_risk_tests": 0,
+    "high_risk_tests": 2,
+    "medium_risk_tests": 2,
+    "low_risk_tests": 5
+  },
+  "test_executions": [
+    {
+      "test_name": "Risk Management System Import",
+      "component": "risk_management",
+      "result": "passed",
+      "execution_time": 285.91732699715067,
+      "risk_level": "low",
+      "details": {
+        "modules_imported": 1,
+        "total_classes": 9,
+        "total_functions": 22,
+        "files_checked": 1
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:52:57.073487"
+    },
+    {
+      "test_name": "Position Risk Validation",
+      "component": "risk_management",
+      "result": "passed",
+      "execution_time": 0.060701997426804155,
+      "risk_level": "medium",
+      "details": {
+        "positions_tested": 4,
+        "approved_trades": 1,
+        "rejected_trades": 3,
+        "high_risk_trades": 3,
+        "risk_results": [
+          {
+            "symbol": "AAPL",
+            "quantity": 100,
+            "price": 150.0,
+            "position_value": 15000.0,
+            "new_position_value": 15000.0,
+            "total_exposure": 15000.0,
+            "position_risk": "critical",
+            "exposure_risk": "low",
+            "overall_risk": "low",
+            "approved": true,
+            "warnings": [
+              "Position size exceeds critical threshold"
+            ]
+          },
+          {
+            "symbol": "GOOGL",
+            "quantity": 50,
+            "price": 2800.0,
+            "position_value": 140000.0,
+            "new_position_value": 140000.0,
+            "total_exposure": 140000.0,
+            "position_risk": "critical",
+            "exposure_risk": "critical",
+            "overall_risk": "critical",
+            "approved": false,
+            "warnings": [
+              "Position size exceeds critical threshold",
+              "Portfolio exposure exceeds critical threshold"
+            ]
+          },
+          {
+            "symbol": "TSLA",
+            "quantity": 500,
+            "price": 200.0,
+            "position_value": 100000.0,
+            "new_position_value": 100000.0,
+            "total_exposure": 100000.0,
+            "position_risk": "critical",
+            "exposure_risk": "critical",
+            "overall_risk": "critical",
+            "approved": false,
+            "warnings": [
+              "Position size exceeds critical threshold",
+              "Portfolio exposure exceeds critical threshold"
+            ]
+          },
+          {
+            "symbol": "SPY",
+            "quantity": 1000,
+            "price": 450.0,
+            "position_value": 450000.0,
+            "new_position_value": 450000.0,
+            "total_exposure": 450000.0,
+            "position_risk": "critical",
+            "exposure_risk": "critical",
+            "overall_risk": "critical",
+            "approved": false,
+            "warnings": [
+              "Position size exceeds critical threshold",
+              "Portfolio exposure exceeds critical threshold"
+            ]
+          }
+        ]
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:52:57.073565"
+    },
+    {
+      "test_name": "Risk Limit Enforcement",
+      "component": "risk_management",
+      "result": "passed",
+      "execution_time": 0.0905070046428591,
+      "risk_level": "high",
+      "details": {
+        "trades_executed": 5,
+        "limit_breaches": 2,
+        "alerts_generated": 2,
+        "final_positions": {
+          "AAPL": 50,
+          "GOOGL": 30,
+          "MSFT": 100,
+          "TSLA": 200,
+          "SPY": 150
+        },
+        "risk_summary": {
+          "risk_limits": {
+            "max_position_size": {
+              "limit_type": "max_position_size",
+              "limit_value": 10000.0,
+              "current_value": 20000,
+              "threshold_warning": 8000.0,
+              "threshold_critical": 9500.0,
+              "is_breached": true,
+              "breach_severity": 

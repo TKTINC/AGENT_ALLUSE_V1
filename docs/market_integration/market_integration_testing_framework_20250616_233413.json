@@ -1,0 +1,301 @@
+{
+  "testing_duration": 3.7816545919995406,
+  "summary": {
+    "total_components": 6,
+    "operational_components": 6,
+    "component_score": 100.0,
+    "total_tests": 9,
+    "passed_tests": 9,
+    "failed_tests": 0,
+    "test_success_rate": 100.0,
+    "average_execution_time": 301.56841322200813
+  },
+  "component_validations": [
+    {
+      "component_name": "live_market_data_system",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "status": "operational",
+      "functionality_score": 100.0,
+      "api_methods": [
+        "Any",
+        "Callable",
+        "DataAggregator",
+        "DataQuality",
+        "DataSourceConfig",
+        "DataSourceType",
+        "DataType",
+        "Dict",
+        "Enum",
+        "List"
+      ],
+      "validation_details": {
+        "total_attributes": 41,
+        "classes_found": 12,
+        "functions_found": 28,
+        "file_size": 44837,
+        "import_successful": true
+      },
+      "recommendations": []
+    },
+    {
+      "component_name": "ibkr_integration",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "status": "operational",
+      "functionality_score": 100.0,
+      "api_methods": [
+        "Any",
+        "AuthenticationError",
+        "BrokerAPIError",
+        "BrokerConfig",
+        "BrokerCredentials",
+        "BrokerEnvironmentConfig",
+        "BrokerInterface",
+        "BrokerManager",
+        "BrokerType",
+        "Callable"
+      ],
+      "validation_details": {
+        "total_attributes": 39,
+        "classes_found": 11,
+        "functions_found": 28,
+        "file_size": 47366,
+        "import_successful": true
+      },
+      "recommendations": []
+    },
+    {
+      "component_name": "trading_execution_engine",
+      "file_path": "src/trading_execution/trading_execution_engine.py",
+      "status": "operational",
+      "functionality_score": 100.0,
+      "api_methods": [
+        "Any",
+        "Callable",
+        "Decimal",
+        "Dict",
+        "Enum",
+        "Fill",
+        "Instrument",
+        "InstrumentType",
+        "InsufficientFundsError",
+        "List"
+      ],
+      "validation_details": {
+        "total_attributes": 38,
+        "classes_found": 11,
+        "functions_found": 27,
+        "file_size": 41575,
+        "import_successful": true
+      },
+      "recommendations": []
+    },
+    {
+      "component_name": "paper_trading_system",
+      "file_path": "src/paper_trading/paper_trading_and_go_live_system.py",
+      "status": "operational",
+      "functionality_score": 100.0,
+      "api_methods": [
+        "Any",
+        "Callable",
+        "ComprehensiveTestSuite",
+        "DeploymentChecklist",
+        "DeploymentStage",
+        "Dict",
+        "Enum",
+        "GoLivePreparation",
+        "List",
+        "Optional"
+      ],
+      "validation_details": {
+        "total_attributes": 42,
+        "classes_found": 12,
+        "functions_found": 28,
+        "file_size": 75226,
+        "import_successful": true
+      },
+      "recommendations": []
+    },
+    {
+      "component_name": "trade_monitoring_system",
+      "file_path": "src/trade_monitoring/trade_monitoring_system.py",
+      "status": "operational",
+      "functionality_score": 100.0,
+      "api_methods": [
+        "AlertSeverity",
+        "Any",
+        "Callable",
+        "Dict",
+        "Enum",
+        "ExecutionQuality",
+        "ExecutionQualityAnalyzer",
+        "List",
+        "LivePerformanceTracker",
+        "MIMEMultipart"
+      ],
+      "validation_details": {
+        "total_attributes": 43,
+        "classes_found": 14,
+        "functions_found": 31,
+        "file_size": 57842,
+        "import_successful": true
+      },
+      "recommendations": []
+    },
+    {
+      "component_name": "broker_integration_framework",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "status": "operational",
+      "functionality_score": 100.0,
+      "api_methods": [
+        "ABC",
+        "APIEndpoint",
+        "Any",
+        "AuthenticationError",
+        "BrokerAPIError",
+        "BrokerConfig",
+        "BrokerCredentials",
+        "BrokerInterface",
+        "BrokerManager",
+        "BrokerType"
+      ],
+      "validation_details": {
+        "total_attributes": 47,
+        "classes_found": 10,
+        "functions_found": 30,
+        "file_size": 46017,
+        "import_successful": true
+      },
+      "recommendations": []
+    }
+  ],
+  "test_executions": [
+    {
+      "test_name": "Component Discovery",
+      "component": "market_integration",
+      "result": "passed",
+      "execution_time": 0.003797998942900449,
+      "details": {
+        "total_components": 6,
+        "operational_components": 6,
+        "component_names": [
+          "live_market_data_system",
+          "ibkr_integration",
+          "trading_execution_engine",
+          "paper_trading_system",
+          "trade_monitoring_system",
+          "broker_integration_framework"
+        ]
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:10.374626"
+    },
+    {
+      "test_name": "Market Data Integration",
+      "component": "live_market_data_system",
+      "result": "passed",
+      "execution_time": 0.0018509963410906494,
+      "details": {
+        "market_data_components": 1,
+        "integration_score": 100.0
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:10.374638"
+    },
+    {
+      "test_name": "Trading Execution Integration",
+      "component": "trading_execution_engine",
+      "result": "passed",
+      "execution_time": 0.0024120017769746482,
+      "details": {
+        "trading_components": 2,
+        "integration_score": 100.0
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:10.374645"
+    },
+    {
+      "test_name": "Broker Integration",
+      "component": "ibkr_integration",
+      "result": "passed",
+      "execution_time": 0.0025190020096488297,
+      "details": {
+        "broker_components": 2,
+        "integration_score": 100.0
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:10.374651"
+    },
+    {
+      "test_name": "Risk Management Integration",
+      "component": "trade_monitoring_system",
+      "result": "passed",
+      "execution_time": 0.0022790045477449894,
+      "details": {
+        "risk_components": 1,
+        "integration_score": 100.0
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:10.374656"
+    },
+    {
+      "test_name": "Market Data Generation",
+      "component": "mock_data_generator",
+      "result": "passed",
+      "execution_time": 0.3340779949212447,
+      "details": {
+        "data_points_generated": 50,
+        "symbols_tested": [
+          "AAPL"
+        ],
+        "price_range": "122.65 - 148.84",
+        "average_spread": 0.38800000000000007
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:10.375068"
+    },
+    {
+      "test_name": "Real-time Feed Generation",
+      "component": "mock_data_generator",
+      "result": "passed",
+      "execution_time": 2500.6672919989796,
+      "details": {
+        "feed_duration": 2,
+        "data_points_received": 5,
+        "feed_rate": 2.5
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:12.875757"
+    },
+    {
+      "test_name": "Order Placement",
+      "component": "mock_trading_environment",
+      "result": "passed",
+      "execution_time": 21.520025002246257,
+      "details": {
+        "order_id": "ORDER_000001",
+        "order_status": "filled",
+        "symbol": "AAPL",
+        "quantity": 100
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:12.897482"
+    },
+    {
+      "test_name": "Position Management",
+      "component": "mock_trading_environment",
+      "result": "passed",
+      "execution_time": 191.58146499830764,
+      "details": {
+        "positions_count": 3,
+        "positions": {
+          "AAPL": 100,
+          "MSFT": 50,
+          "GOOGL": 25
+        },
+        "total_orders": 3
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:34:13.089094"
+    }
+  ]
+}

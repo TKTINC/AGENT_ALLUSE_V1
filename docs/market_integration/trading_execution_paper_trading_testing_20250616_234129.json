@@ -1,0 +1,441 @@
+{
+  "testing_duration": 1.938781941003981,
+  "summary": {
+    "total_tests": 10,
+    "passed_tests": 9,
+    "failed_tests": 1,
+    "error_tests": 0,
+    "skipped_tests": 0,
+    "test_success_rate": 90.0,
+    "trading_readiness_score": 90.0,
+    "average_execution_time": 193.82524780012318,
+    "trading_execution_tests": 5,
+    "paper_trading_tests": 5,
+    "paper_mode_tests": 8,
+    "live_mode_tests": 1,
+    "simulation_mode_tests": 1
+  },
+  "test_executions": [
+    {
+      "test_name": "Trading Execution Engine Import",
+      "component": "trading_execution_engine",
+      "result": "passed",
+      "execution_time": 284.5803820018773,
+      "trading_mode": "simulation",
+      "details": {
+        "classes_found": 11,
+        "functions_found": 27,
+        "module_size": 41575,
+        "import_successful": true
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:28.179861"
+    },
+    {
+      "test_name": "Order Placement",
+      "component": "trading_execution_engine",
+      "result": "passed",
+      "execution_time": 0.5198739963816479,
+      "trading_mode": "paper",
+      "details": {
+        "order_id": "be12c15a",
+        "symbol": "AAPL",
+        "quantity": 100,
+        "order_type": "market",
+        "status": "submitted"
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:28.180401"
+    },
+    {
+      "test_name": "Order Execution",
+      "component": "trading_execution_engine",
+      "result": "passed",
+      "execution_time": 200.37290100299288,
+      "trading_mode": "paper",
+      "details": {
+        "order_id": "f65a8095",
+        "final_status": "filled",
+        "filled_quantity": 50,
+        "average_fill_price": 2796.251632293546,
+        "execution_history_count": 2
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:28.380830"
+    },
+    {
+      "test_name": "Position Management",
+      "component": "trading_execution_engine",
+      "result": "passed",
+      "execution_time": 300.75980800029356,
+      "trading_mode": "paper",
+      "details": {
+        "positions_count": 4,
+        "positions": {
+          "AAPL": 100,
+          "GOOGL": 50,
+          "MSFT": 75,
+          "TSLA": 25
+        },
+        "account_balance": -87167.40078368474,
+        "total_orders": 4
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:28.681650"
+    },
+    {
+      "test_name": "Order Cancellation",
+      "component": "trading_execution_engine",
+      "result": "passed",
+      "execution_time": 100.42728100233944,
+      "trading_mode": "paper",
+      "details": {
+        "cancel_success": true,
+        "final_status": "cancelled",
+        "order_id": "5e91722d"
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:28.782112"
+    },
+    {
+      "test_name": "Paper Trading System Import",
+      "component": "paper_trading_system",
+      "result": "passed",
+      "execution_time": 42.39619799773209,
+      "trading_mode": "paper",
+      "details": {
+        "classes_found": 12,
+        "functions_found": 28,
+        "module_size": 75226,
+        "import_successful": true
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:28.824683"
+    },
+    {
+      "test_name": "Paper Account Initialization",
+      "component": "paper_trading_system",
+      "result": "passed",
+      "execution_time": 0.1378290035063401,
+      "trading_mode": "paper",
+      "details": {
+        "account_id": "PAPER_123456",
+        "initial_balance": 50000.0,
+        "current_balance": 100000.0,
+        "total_pnl": 50000.0,
+        "positions": {},
+        "trade_history": [
+          {
+            "trade_id": "9a185cc1",
+            "symbol": "AAPL",
+            "quantity": 71,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:28.825144",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "49fae956",
+            "symbol": "GOOGL",
+            "quantity": 55,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:28.925863",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "a0a7f982",
+            "symbol": "MSFT",
+            "quantity": 67,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.026591",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "72661e3b",
+            "symbol": "TSLA",
+            "quantity": 82,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.127173",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "76e7f2c7",
+            "symbol": "SPY",
+            "quantity": 77,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.227759",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "84509694",
+            "symbol": "AAPL",
+            "quantity": 34,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.328457",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "19e12c87",
+            "symbol": "AAPL",
+            "quantity": 24,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.379257",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "f1bfd915",
+            "symbol": "MSFT",
+            "quantity": 10,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.429841",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "47ebbaf1",
+            "symbol": "GOOGL",
+            "quantity": 38,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.480341",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "63e8ef43",
+            "symbol": "MSFT",
+            "quantity": 16,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.531269",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "3058da61",
+            "symbol": "GOOGL",
+            "quantity": 26,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.581770",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "c5e2b189",
+            "symbol": "GOOGL",
+            "quantity": 34,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.632300",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "580e03e9",
+            "symbol": "GOOGL",
+            "quantity": 15,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.682747",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "d2fd4128",
+            "symbol": "MSFT",
+            "quantity": 23,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.733200",
+            "status": "paper_trade"
+          },
+          {
+            "trade_id": "70de20c3",
+            "symbol": "GOOGL",
+            "quantity": 36,
+            "order_type": "market",
+            "timestamp": "2025-06-16T23:41:29.783803",
+            "status": "paper_trade"
+          }
+        ]
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:28.824831"
+    },
+    {
+      "test_name": "Paper Trade Execution",
+      "component": "paper_trading_system",
+      "result": "passed",
+      "execution_time": 503.1704409993836,
+      "trading_mode": "paper",
+      "details": {
+        "trades_executed": 5,
+        "symbols_traded": [
+          "AAPL",
+          "GOOGL",
+          "MSFT",
+          "TSLA",
+          "SPY"
+        ],
+        "final_account_status": {
+          "account_id": "PAPER_123456",
+          "initial_balance": 50000.0,
+          "current_balance": -142624.60350248072,
+          "total_pnl": -192624.60350248072,
+          "positions": {
+            "AAPL": 71,
+            "GOOGL": 55,
+            "MSFT": 67,
+            "TSLA": 82,
+            "SPY": 77
+          },
+          "trade_history": [
+            {
+              "trade_id": "9a185cc1",
+              "symbol": "AAPL",
+              "quantity": 71,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:28.825144",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "49fae956",
+              "symbol": "GOOGL",
+              "quantity": 55,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:28.925863",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "a0a7f982",
+              "symbol": "MSFT",
+              "quantity": 67,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.026591",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "72661e3b",
+              "symbol": "TSLA",
+              "quantity": 82,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.127173",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "76e7f2c7",
+              "symbol": "SPY",
+              "quantity": 77,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.227759",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "84509694",
+              "symbol": "AAPL",
+              "quantity": 34,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.328457",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "19e12c87",
+              "symbol": "AAPL",
+              "quantity": 24,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.379257",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "f1bfd915",
+              "symbol": "MSFT",
+              "quantity": 10,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.429841",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "47ebbaf1",
+              "symbol": "GOOGL",
+              "quantity": 38,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.480341",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "63e8ef43",
+              "symbol": "MSFT",
+              "quantity": 16,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.531269",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "3058da61",
+              "symbol": "GOOGL",
+              "quantity": 26,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.581770",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "c5e2b189",
+              "symbol": "GOOGL",
+              "quantity": 34,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.632300",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "580e03e9",
+              "symbol": "GOOGL",
+              "quantity": 15,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.682747",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "d2fd4128",
+              "symbol": "MSFT",
+              "quantity": 23,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.733200",
+              "status": "paper_trade"
+            },
+            {
+              "trade_id": "70de20c3",
+              "symbol": "GOOGL",
+              "quantity": 36,
+              "order_type": "market",
+              "timestamp": "2025-06-16T23:41:29.783803",
+              "status": "paper_trade"
+            }
+          ]
+        }
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:29.328060"
+    },
+    {
+      "test_name": "Go-Live Readiness Validation",
+      "component": "paper_trading_system",
+      "result": "passed",
+      "execution_time": 505.88486999913584,
+      "trading_mode": "paper",
+      "details": {
+        "ready_for_live": false,
+        "validation_score": 60.0,
+        "checks_passed": 3,
+        "total_checks": 5,
+        "issues": [
+          "Significant losses in paper trading",
+          "Account balance below PDT minimum ($25,000)"
+        ]
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:29.833970"
+    },
+    {
+      "test_name": "Go-Live Transition Simulation",
+      "component": "paper_trading_system",
+      "result": "failed",
+      "execution_time": 0.0028939975891262293,
+      "trading_mode": "live",
+      "details": {
+        "success": false,
+        "message": "Not ready for live trading",
+        "validation_required": true
+      },
+      "error_message": null,
+      "timestamp": "2025-06-16T23:41:29.833984"
+    }
+  ]
+}

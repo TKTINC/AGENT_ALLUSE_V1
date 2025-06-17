@@ -1,0 +1,163 @@
+{
+  "testing_duration": 203.66035902000294,
+  "summary": {
+    "total_tests": 6,
+    "successful_tests": 3,
+    "avg_throughput": 506.62729407743745,
+    "avg_latency": 13.445271172682693,
+    "avg_error_rate": 2.5685185185185184,
+    "performance_score": 50.0
+  },
+  "test_results": [
+    {
+      "test_name": "Market Data Load Test - Light",
+      "test_type": "light",
+      "duration": 30.009724531002576,
+      "throughput": 9.996759540064245,
+      "average_latency": 1.0,
+      "error_rate": 0.0,
+      "memory_usage_mb": 1354.668359375,
+      "cpu_usage_percent": 0.38333333333333336,
+      "success_count": 300,
+      "error_count": 0,
+      "details": {
+        "data_points_generated": 300,
+        "symbols_processed": 10,
+        "max_memory_mb": 1355.17578125,
+        "max_cpu_percent": 3.0,
+        "avg_thread_count": 8.0
+      },
+      "timestamp": "2025-06-16T23:45:58.698850"
+    },
+    {
+      "test_name": "Market Data Load Test - Medium",
+      "test_type": "medium",
+      "duration": 60.03137252799934,
+      "throughput": 49.97386988946096,
+      "average_latency": 1.0,
+      "error_rate": 0.0,
+      "memory_usage_mb": 1356.4424153645834,
+      "cpu_usage_percent": 0.3733333333333333,
+      "success_count": 3000,
+      "error_count": 0,
+      "details": {
+        "data_points_generated": 3000,
+        "symbols_processed": 10,
+        "max_memory_mb": 1357.2578125,
+        "max_cpu_percent": 3.5,
+        "avg_thread_count": 8.0
+      },
+      "timestamp": "2025-06-16T23:47:00.882497"
+    },
+    {
+      "test_name": "Market Data Load Test - Heavy",
+      "test_type": "heavy",
+      "duration": 90.07578549300524,
+      "throughput": 99.91586474368172,
+      "average_latency": 1.0,
+      "error_rate": 0.0,
+      "memory_usage_mb": 1358.4136501736111,
+      "cpu_usage_percent": 0.44611111111111107,
+      "success_count": 9000,
+      "error_count": 0,
+      "details": {
+        "data_points_generated": 9000,
+        "symbols_processed": 10,
+        "max_memory_mb": 1360.56640625,
+        "max_cpu_percent": 3.9,
+        "avg_thread_count": 8.0
+      },
+      "timestamp": "2025-06-16T23:48:33.153357"
+    },
+    {
+      "test_name": "Trading System Load Test - Light",
+      "test_type": "light",
+      "duration": 1.591966815001797,
+      "throughput": 188.44613918642605,
+      "average_latency": 26.16545460659836,
+      "error_rate": 5.333333333333334,
+      "memory_usage_mb": 1360.564453125,
+      "cpu_usage_percent": 1.725,
+      "success_count": 284,
+      "error_count": 16,
+      "details": {
+        "total_operations": 300,
+        "concurrent_users": 5,
+        "max_memory_mb": 1360.56640625,
+        "max_cpu_percent": 3.6,
+        "avg_thread_count": 13.0,
+        "trading_stats": {
+          "total_orders": 300,
+          "successful_orders": 284,
+          "error_count": 16,
+          "error_rate": 5.333333333333334,
+          "avg_execution_time": 0.02616545460659836,
+          "min_execution_time": 0.001239668003108818,
+          "max_execution_time": 0.06340508799621603,
+          "throughput_ops_per_sec": 38.21833081194858
+        }
+      },
+      "timestamp": "2025-06-16T23:48:37.227028"
+    },
+    {
+      "test_name": "Trading System Load Test - Medium",
+      "test_type": "medium",
+      "duration": 3.89171670700307,
+      "throughput": 770.8680322495102,
+      "average_latency": 25.758768504269636,
+      "error_rate": 5.166666666666667,
+      "memory_usage_mb": 1361.17578125,
+      "cpu_usage_percent": 2.125,
+      "success_count": 2845,
+      "error_count": 155,
+      "details": {
+        "total_operations": 3000,
+        "concurrent_users": 20,
+        "max_memory_mb": 1361.7890625,
+        "max_cpu_percent": 5.4,
+        "avg_thread_count": 27.0,
+        "trading_stats": {
+          "total_orders": 3300,
+          "successful_orders": 3129,
+          "error_count": 171,
+          "error_rate": 5.181818181818182,
+          "avg_execution_time": 0.025795739968117702,
+          "min_execution_time": 0.001068594996468164,
+          "max_execution_time": 0.06340508799621603,
+          "throughput_ops_per_sec": 38.76609088306643
+        }
+      },
+      "timestamp": "2025-06-16T23:48:43.242591"
+    },
+    {
+      "test_name": "Trading System Load Test - Heavy",
+      "test_type": "heavy",
+      "duration": 4.686125650005124,
+      "throughput": 1920.5630988554817,
+      "average_latency": 25.747403925228152,
+      "error_rate": 4.911111111111111,
+      "memory_usage_mb": 1369.5375,
+      "cpu_usage_percent": 3.69,
+      "success_count": 8558,
+      "error_count": 442,
+      "details": {
+        "total_operations": 9000,
+        "concurrent_users": 50,
+        "max_memory_mb": 1370.890625,
+        "max_cpu_percent": 10.1,
+        "avg_thread_count": 54.8,
+        "trading_stats": {
+          "total_orders": 12300,
+          "successful_orders": 11687,
+          "error_count": 613,
+          "error_rate": 4.983739837398374,
+          "avg_execution_time": 0.025760372131857057,
+          "min_execution_time": 0.001068594996468164,
+          "max_execution_time": 0.0950570900022285,
+          "throughput_ops_per_sec": 38.819314988207445
+        }
+      },
+      "timestamp": "2025-06-16T23:48:50.266289"
+    }
+  ]
+}
