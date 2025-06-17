@@ -1,0 +1,4121 @@
+{
+  "overall_certification": "conditional",
+  "overall_score": 44.53431372549019,
+  "category_certifications": {
+    "quality": "conditional",
+    "compliance": "conditional"
+  },
+  "qa_results": [
+    {
+      "check_name": "Code Complexity",
+      "category": "quality",
+      "certification_level": "conditional",
+      "score": 60.0,
+      "issues_found": 99,
+      "issues_resolved": 0,
+      "details": {
+        "total_files": 51,
+        "total_lines": 43500,
+        "large_files": [
+          "src/agent_core/response_generator.py: 643 lines",
+          "src/agent_core/memory.py: 639 lines",
+          "src/agent_core/cognition.py: 728 lines",
+          "src/agent_core/enhanced_cognitive_framework.py: 869 lines",
+          "src/agent_core/enhanced_memory_manager.py: 1061 lines",
+          "src/protocol_engine/week_classification/week_classifier.py: 857 lines",
+          "src/protocol_engine/market_analysis/market_condition_analyzer.py: 645 lines",
+          "src/protocol_engine/decision_system/action_recommendation_system.py: 777 lines",
+          "src/protocol_engine/learning/historical_analysis_engine.py: 797 lines",
+          "src/protocol_engine/rules/trading_protocol_rules.py: 804 lines",
+          "src/protocol_engine/adjustments/atr_adjustment_system.py: 740 lines",
+          "src/protocol_engine/position_management/position_manager.py: 851 lines",
+          "src/protocol_engine/rollover/rollover_protocol.py: 919 lines",
+          "src/protocol_engine/human_oversight/decision_gateway.py: 778 lines",
+          "src/protocol_engine/ml_optimization/ml_optimizer.py: 641 lines",
+          "src/protocol_engine/backtesting/backtesting_engine.py: 1102 lines",
+          "src/protocol_engine/adaptation/adaptation_engine.py: 873 lines",
+          "src/protocol_engine/trust_system/hitl_trust_system.py: 1167 lines",
+          "src/protocol_engine/optimization/performance_analyzer.py: 674 lines",
+          "src/protocol_engine/optimization/memory_manager.py: 627 lines",
+          "src/protocol_engine/optimization/cache_manager.py: 669 lines",
+          "src/protocol_engine/monitoring/performance_monitor.py: 958 lines",
+          "src/protocol_engine/analytics/performance_analytics.py: 709 lines",
+          "src/trading_engine/market_analyzer.py: 679 lines",
+          "src/trading_engine/position_sizer.py: 764 lines",
+          "src/trading_engine/delta_selector.py: 983 lines",
+          "src/risk_management/portfolio_risk_monitor.py: 912 lines",
+          "src/risk_management/drawdown_protection.py: 796 lines",
+          "src/risk_management/advanced/advanced_risk_manager.py: 1507 lines",
+          "src/optimization/portfolio_optimizer.py: 1029 lines",
+          "src/optimization/performance_optimizer.py: 746 lines",
+          "src/analytics/performance_analytics.py: 1073 lines",
+          "src/monitoring/monitoring_system.py: 756 lines",
+          "src/production/production_infrastructure.py: 599 lines",
+          "src/system/system_orchestrator.py: 754 lines",
+          "src/portfolio_optimization/portfolio_optimizer.py: 1563 lines",
+          "src/performance_analytics/advanced_performance_analytics.py: 1250 lines",
+          "src/production_infrastructure/production_infrastructure.py: 1299 lines",
+          "src/trading_execution/trading_execution_engine.py: 1127 lines",
+          "src/broker_integration/broker_integration_framework.py: 1243 lines",
+          "src/broker_integration/ibkr_integration_and_runtime_config.py: 1172 lines",
+          "src/market_data/live_market_data_system.py: 1132 lines",
+          "src/trade_monitoring/trade_monitoring_system.py: 1445 lines",
+          "src/paper_trading/paper_trading_and_go_live_system.py: 1862 lines"
+        ],
+        "complex_functions": [
+          "src/agent_core/perception.py: def __init__(\n        self, \n        event_type: E...",
+          "src/agent_core/memory.py: def __init__(\n        self,\n        speaker: str,\n...",
+          "src/agent_core/memory.py: def __init__(\n        self,\n        account_id: st...",
+          "src/agent_core/memory.py: def __init__(\n        self,\n        user_id: str,\n...",
+          "src/agent_core/memory.py: def __init__(\n        self,\n        user_id: str,\n...",
+          "src/agent_core/memory.py: def __init__(\n        self,\n        conversation_m...",
+          "src/agent_core/cognition.py: def __init__(\n        self,\n        decision_type:...",
+          "src/agent_core/cognition.py: def __init__(\n        self,\n        memory_manager...",
+          "src/protocol_engine/decision_system/action_recommendation_system.py: def add_child(self, condition_value: str, child_no...",
+          "src/protocol_engine/rules/trading_protocol_rules.py: def __init__(self, rule_id: str, rule_type: RuleTy...",
+          "src/protocol_engine/rules/trading_protocol_rules.py: def __init__(self, max_position_percentage: float ...",
+          "src/protocol_engine/rules/trading_protocol_rules.py: def __init__(self, max_portfolio_risk: float = 0.1...",
+          "src/protocol_engine/position_management/position_manager.py: def add_child(self, condition_value: Any, child_no...",
+          "src/protocol_engine/human_oversight/decision_gateway.py: def update_outcome(self, request_id: str, successf...",
+          "src/protocol_engine/human_oversight/decision_gateway.py: def _process_approval_response(self, request: Deci...",
+          "src/protocol_engine/human_oversight/decision_gateway.py: def _update_trust_metrics(self, request: DecisionR...",
+          "src/protocol_engine/ml_optimization/ml_optimizer.py: def _calculate_model_metrics(self, model_type: MLM...",
+          "src/protocol_engine/backtesting/backtesting_engine.py: def _update_positions(self, positions: List[Backte...",
+          "src/protocol_engine/adaptation/adaptation_engine.py: def register_adaptation_callback(self, callback: C...",
+          "src/protocol_engine/adaptation/adaptation_engine.py: def _handle_regime_change(self, old_regime: Market...",
+          "src/protocol_engine/trust_system/hitl_trust_system.py: def register_decision_callback(self, callback: Cal...",
+          "src/protocol_engine/trust_system/hitl_trust_system.py: def register_trust_update_callback(self, callback:...",
+          "src/protocol_engine/trust_system/hitl_trust_system.py: def register_automation_change_callback(self, call...",
+          "src/protocol_engine/trust_system/hitl_trust_system.py: def _update_trust_from_outcome(self, decision_reco...",
+          "src/protocol_engine/optimization/memory_manager.py: def __init__(self, object_type: Type, max_size: in...",
+          "src/protocol_engine/optimization/memory_manager.py: def allocate_resource(self, resource_type: str, re...",
+          "src/protocol_engine/monitoring/performance_monitor.py: def record_counter(self, name: str, value: Union[i...",
+          "src/protocol_engine/monitoring/performance_monitor.py: def record_gauge(self, name: str, value: Union[int...",
+          "src/protocol_engine/monitoring/performance_monitor.py: def record_histogram(self, name: str, value: Union...",
+          "src/protocol_engine/monitoring/performance_monitor.py: def add_alert_rule(self, name: str, metric_name: s...",
+          "src/protocol_engine/monitoring/performance_monitor.py: def register_health_check(self, name: str, check_f...",
+          "src/protocol_engine/analytics/performance_analytics.py: def __init__(self, output_dir: str = \"/home/ubuntu...",
+          "src/protocol_engine/analytics/performance_analytics.py: def _real_time_update_callback(self, timestamp: da...",
+          "src/risk_management/advanced/advanced_risk_manager.py: def _generate_risk_alert(self, risk_type: RiskType...",
+          "src/optimization/performance_optimizer.py: def _update_performance_stats(self, func_name: str...",
+          "src/optimization/performance_optimizer.py: def create_object_pool(self, pool_name: str, facto...",
+          "src/monitoring/monitoring_system.py: def record_metric(self, name: str, value: Union[in...",
+          "src/monitoring/monitoring_system.py: def record_timing(self, name: str, duration_ms: fl...",
+          "src/monitoring/monitoring_system.py: def record_counter(self, name: str, increment: int...",
+          "src/monitoring/monitoring_system.py: def record_gauge(self, name: str, value: Union[int...",
+          "src/monitoring/monitoring_system.py: def register_health_check(self, name: str, check_f...",
+          "src/monitoring/monitoring_system.py: def register_notification_handler(self, name: str,...",
+          "src/monitoring/monitoring_system.py: def add_alert_rule(self, name: str, condition: Cal...",
+          "src/production/production_infrastructure.py: def initialize_production_infrastructure(config_di...",
+          "src/portfolio_optimization/portfolio_optimizer.py: def _update_target_portfolio(self, optimal_weights...",
+          "src/production_infrastructure/production_infrastructure.py: def __init__(self, environment: DeploymentEnvironm...",
+          "src/production_infrastructure/production_infrastructure.py: def _generate_alert(self, severity: AlertSeverity,...",
+          "src/broker_integration/broker_integration_framework.py: def __init__(self, message: str, error_code: str =...",
+          "src/broker_integration/ibkr_integration_and_runtime_config.py: def from_dict(cls, data: Dict[str, Any], credentia...",
+          "src/broker_integration/ibkr_integration_and_runtime_config.py: def __init__(self, credentials: BrokerCredentials,...",
+          "src/market_data/live_market_data_system.py: def __init__(self, db_path: str = \"/home/ubuntu/AG...",
+          "src/trade_monitoring/trade_monitoring_system.py: def update_position(self, symbol: str, quantity: i...",
+          "src/trade_monitoring/trade_monitoring_system.py: def update_portfolio_greeks(self, delta: float = 0...",
+          "src/paper_trading/paper_trading_and_go_live_system.py: def __init__(self, environment: PaperTradingEnviro...",
+          "src/paper_trading/paper_trading_and_go_live_system.py: def update_checklist_item(self, stage: DeploymentS..."
+        ],
+        "documentation_coverage": 1.0,
+        "average_file_size": 852.9411764705883
+      },
+      "recommendations": [
+        "Refactor large files for better maintainability",
+        "Simplify complex function signatures"
+      ],
+      "timestamp": "2025-06-16T22:58:37.564042"
+    },
+    {
+      "check_name": "Test Coverage",
+      "category": "quality",
+      "certification_level": "conditional",
+      "score": 56.470588235294116,
+      "issues_found": 0,
+      "issues_resolved": 3,
+      "details": {
+        "unit_tests": 7,
+        "integration_tests": 5,
+        "performance_tests": 2,
+        "test_files": [
+          "tests/test_agent_core.py",
+          "tests/test_enhanced_agent_core.py",
+          "tests/unit/test_agent_core.py",
+          "tests/unit/test_trading_engine.py",
+          "tests/unit/test_risk_management.py",
+          "tests/unit/test_protocol_engine.py",
+          "tests/unit/test_protocol_engine_basic.py",
+          "tests/unit/test_protocol_engine_comprehensive.py",
+          "tests/unit/test_protocol_engine_working.py",
+          "tests/integration/test_ws1_integration.py",
+          "tests/integration/test_protocol_workflow.py",
+          "tests/integration/final_integration_test_framework.py",
+          "tests/integration/ws2_p3/test_ws2_p3_integration.py",
+          "tests/integration/ws2_p4/test_ws2_p4_integration.py",
+          "tests/performance/test_ws1_performance.py",
+          "tests/performance/test_protocol_performance.py",
+          "tests/utils/test_utilities.py",
+          "tests/edge_cases/test_ws1_error_handling.py",
+          "tests/end_to_end/test_e2e_workflows.py",
+          "tests/security/test_protocol_security.py"
+        ],
+        "source_files": 51,
+        "coverage_estimate": 0.27450980392156865
+      },
+      "recommendations": [
+        "Increase test coverage to at least 70%"
+      ],
+      "timestamp": "2025-06-16T22:58:37.565528"
+    },
+    {
+      "check_name": "Documentation Compliance",
+      "category": "compliance",
+      "certification_level": "certified",
+      "score": 75.0,
+      "issues_found": 0,
+      "issues_resolved": 5,
+      "details": {
+        "required_docs": {
+          "README.md": true,
+          "docs/planning/": true,
+          "docs/testing/": true,
+          "docs/optimization/": true,
+          "docs/security/": true
+        },
+        "api_documentation": [],
+        "user_documentation": [
+          "docs/security/security_guidelines.md"
+        ],
+        "technical_documentation": [
+          "docs/planning/ALL_USE_IMPLEMENTATION_STATUS_AND_HANDOFF.md",
+          "docs/planning/ws1/ws1_phase1_implementation_prompt.md",
+          "docs/planning/ws1/ws1_phase1_summary.md",
+          "docs/planning/ws1/ws1_phase2_implementation_plan.md",
+          "docs/planning/ws1/ws1_phase2_summary.md",
+          "docs/planning/ws1/ws1_phase3_implementation_plan.md",
+          "docs/planning/ws1/ws1_phase4_implementation_plan.md",
+          "docs/planning/ws1/ws1_phase4_summary.md",
+          "docs/planning/ws1/ws1_phase5_implementation_plan.md",
+          "docs/planning/ws1/ws1_phase5_summary.md",
+          "docs/planning/ws1/ws1_phase6_implementation_plan.md",
+          "docs/planning/ws1/ws1_phase6_summary.md",
+          "docs/planning/ws2/ws2_phase1_implementation_plan.md",
+          "docs/planning/ws2/ws2_phase1_summary.md",
+          "docs/planning/ws2/ws2_phase2_implementation_plan.md",
+          "docs/planning/ws2/ws2_phase2_summary.md",
+          "docs/planning/ws2/ws2_phase3_implementation_plan.md",
+          "docs/planning/ws2/ws2_phase3_summary.md",
+          "docs/planning/ws2/ws2_phase4_implementation_plan.md",
+          "docs/planning/ws2/ws2_phase4_summary.md",
+          "docs/planning/ws2/ws2_phase5_implementation_plan.md",
+          "docs/planning/ws2/ws2_phase5_summary.md",
+          "docs/planning/ws2/ws2_phase6_implementation_plan.md",
+          "docs/planning/general/all_use_agent_frd_and_story.md",
+          "docs/planning/general/all_use_core_parameters.md",
+          "docs/planning/general/all_use_implementation_framework.md",
+          "docs/planning/general/all_use_introduction_and_projection_prompt.md",
+          "docs/planning/general/all_use_progress_and_next_steps.md",
+          "docs/planning/general/all_use_protocol_rules_and_decision_trees.md",
+          "docs/planning/general/all_use_refined_implementation_roadmap.md",
+          "docs/planning/general/all_use_success_metrics_and_validation.md",
+          "docs/planning/general/complete_phase_breakdown.md",
+          "docs/planning/general/revised_implementation_strategy.md",
+          "docs/planning/general/implementation_status.md",
+          "docs/planning/general/phase_summary_template.md",
+          "docs/planning/general/implementation_status_and_next_steps.md",
+          "docs/planning/general/project_implementation_plan.md",
+          "docs/planning/general/todo.md",
+          "docs/planning/general/workstreams_and_phases.md",
+          "docs/planning/general/projection_results/projection_summary.md",
+          "docs/planning/general/projection_results_conservative/projection_summary_conservative.md",
+          "docs/planning/general/projection_results_conservative/model_comparison_all.md",
+          "docs/planning/general/projection_results_enhanced/projection_summary_enhanced.md",
+          "docs/planning/general/projection_results_enhanced/model_comparison_enhanced.md",
+          "docs/planning/general/projection_results_revised/projection_summary.md",
+          "docs/planning/general/projection_results_revised/model_comparison.md",
+          "docs/testing/WS2_P4_Protocol_Engine_Testing_Report.md",
+          "docs/testing/WS2_P4_Protocol_Engine_Testing_Report.pdf",
+          "docs/optimization/P5_WS2_Optimization_Validation_Report.md",
+          "docs/optimization/P5_WS2_Optimization_Validation_Report.pdf"
+        ],
+        "compliance_score": 75.0
+      },
+      "recommendations": [
+        "Add API documentation"
+      ],
+      "timestamp": "2025-06-16T22:58:37.566410"
+    },
+    {
+      "check_name": "Operational Compliance",
+      "category": "compliance",
+      "certification_level": "conditional",
+      "score": 66.66666666666666,
+      "issues_found": 2,
+      "issues_resolved": 4,
+      "details": {
+        "monitoring_systems": true,
+        "logging_configuration": true,
+        "error_handling": true,
+        "performance_tracking": true,
+        "backup_procedures": false,
+        "deployment_automation": false
+      },
+      "recommendations": [
+        "Implement backup procedures",
+        "Implement deployment automation"
+      ],
+      "timestamp": "2025-06-16T22:58:37.573358"
+    }
+  ],
+  "security_resolutions": [
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/agent.py",
+      "line_number": 209,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/agent.py",
+      "line_number": 377,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 332,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 337,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 340,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 341,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 343,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 345,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 347,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 352,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 358,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 359,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 360,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 444,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 449,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory_manager.py",
+      "line_number": 452,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/cognitive_framework.py",
+      "line_number": 169,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/cognitive_framework.py",
+      "line_number": 207,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/response_generator.py",
+      "line_number": 183,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/response_generator.py",
+      "line_number": 260,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/response_generator.py",
+      "line_number": 455,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/response_generator.py",
+      "line_number": 551,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 7,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 137,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 138,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 177,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 180,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 181,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 182,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/perception.py",
+      "line_number": 244,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 7,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 189,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 190,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 191,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 287,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 288,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 290,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 292,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 293,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 433,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 434,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 435,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/memory.py",
+      "line_number": 563,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/cognition.py",
+      "line_number": 7,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/cognition.py",
+      "line_number": 182,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_cognitive_framework.py",
+      "line_number": 153,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_cognitive_framework.py",
+      "line_number": 290,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_cognitive_framework.py",
+      "line_number": 674,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_memory_manager.py",
+      "line_number": 306,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_memory_manager.py",
+      "line_number": 307,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_memory_manager.py",
+      "line_number": 317,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_memory_manager.py",
+      "line_number": 318,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_memory_manager.py",
+      "line_number": 319,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/agent_core/enhanced_memory_manager.py",
+      "line_number": 352,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/week_classification/week_classifier.py",
+      "line_number": 483,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/week_classification/week_classifier.py",
+      "line_number": 662,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/week_classification/week_classifier.py",
+      "line_number": 663,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/week_classification/week_classifier.py",
+      "line_number": 664,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/market_analysis/market_condition_analyzer.py",
+      "line_number": 636,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/decision_system/action_recommendation_system.py",
+      "line_number": 107,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/decision_system/action_recommendation_system.py",
+      "line_number": 108,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/decision_system/action_recommendation_system.py",
+      "line_number": 631,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/learning/historical_analysis_engine.py",
+      "line_number": 522,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/learning/historical_analysis_engine.py",
+      "line_number": 523,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 149,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 150,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 170,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 171,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 172,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 173,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 174,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 176,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 177,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 179,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/position_management/position_manager.py",
+      "line_number": 181,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 212,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 279,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 322,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 444,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 510,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 511,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 512,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 513,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 514,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/ml_optimization/ml_optimizer.py",
+      "line_number": 515,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/backtesting/backtesting_engine.py",
+      "line_number": 528,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "low"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/backtesting/backtesting_engine.py",
+      "line_number": 784,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "low"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/backtesting/backtesting_engine.py",
+      "line_number": 960,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "low"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/backtesting/backtesting_engine.py",
+      "line_number": 963,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "low"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/adaptation/adaptation_engine.py",
+      "line_number": 444,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/trust_system/hitl_trust_system.py",
+      "line_number": 981,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/trust_system/hitl_trust_system.py",
+      "line_number": 982,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/performance_analyzer.py",
+      "line_number": 237,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/performance_analyzer.py",
+      "line_number": 663,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/memory_manager.py",
+      "line_number": 242,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/memory_manager.py",
+      "line_number": 322,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 38,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 85,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 88,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 89,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 93,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 101,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 112,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 119,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 126,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 128,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 129,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 132,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 136,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 137,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 142,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 143,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 145,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 146,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 162,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 163,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 165,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 167,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 168,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 170,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 173,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 197,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 198,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 199,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 200,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 206,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 207,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 208,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 213,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 218,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 230,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 259,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 260,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 261,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 273,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 274,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 278,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 279,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 291,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 292,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 317,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 318,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 321,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 323,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 325,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 327,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 328,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 332,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 333,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 345,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 346,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 592,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 596,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/optimization/cache_manager.py",
+      "line_number": 597,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/monitoring/performance_monitor.py",
+      "line_number": 302,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/monitoring/performance_monitor.py",
+      "line_number": 319,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/analytics/performance_analytics.py",
+      "line_number": 525,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/analytics/performance_analytics.py",
+      "line_number": 526,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/analytics/performance_analytics.py",
+      "line_number": 542,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/analytics/performance_analytics.py",
+      "line_number": 572,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/analytics/performance_analytics.py",
+      "line_number": 623,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/protocol_engine/analytics/performance_analytics.py",
+      "line_number": 640,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_engine/market_analyzer.py",
+      "line_number": 103,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_engine/market_analyzer.py",
+      "line_number": 104,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_engine/market_analyzer.py",
+      "line_number": 105,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_engine/market_analyzer.py",
+      "line_number": 150,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_engine/market_analyzer.py",
+      "line_number": 592,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/portfolio_risk_monitor.py",
+      "line_number": 199,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/portfolio_risk_monitor.py",
+      "line_number": 405,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/portfolio_risk_monitor.py",
+      "line_number": 788,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/portfolio_risk_monitor.py",
+      "line_number": 821,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/drawdown_protection.py",
+      "line_number": 213,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/drawdown_protection.py",
+      "line_number": 722,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/advanced/advanced_risk_manager.py",
+      "line_number": 456,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/advanced/advanced_risk_manager.py",
+      "line_number": 869,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/advanced/advanced_risk_manager.py",
+      "line_number": 1005,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/risk_management/advanced/advanced_risk_manager.py",
+      "line_number": 1077,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 70,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 71,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 74,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 94,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 115,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 129,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 175,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 176,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 177,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 178,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 183,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 185,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 190,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 192,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 194,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 196,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 198,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 201,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 203,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 209,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 212,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 222,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 223,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 227,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 228,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 230,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 240,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 246,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 247,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 282,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 515,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 520,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 523,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 528,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 531,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 535,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 538,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 539,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 544,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 546,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 550,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 551,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 553,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 555,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 558,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 559,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 560,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 564,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 565,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 568,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 572,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 574,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 575,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 578,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 580,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 612,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 614,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 618,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 622,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 631,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 636,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 641,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 644,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 657,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 658,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 659,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 662,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 684,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 685,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 688,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/optimization/performance_optimizer.py",
+      "line_number": 694,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/monitoring/monitoring_system.py",
+      "line_number": 179,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/monitoring/monitoring_system.py",
+      "line_number": 371,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/monitoring/monitoring_system.py",
+      "line_number": 599,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 85,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 86,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 87,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 89,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 94,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 95,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 96,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 97,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 99,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 101,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 104,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 105,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 106,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 107,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 120,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 124,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 131,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 132,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 133,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 135,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 137,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 140,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 148,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 150,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 155,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 289,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 290,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production/production_infrastructure.py",
+      "line_number": 295,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/system/system_orchestrator.py",
+      "line_number": 227,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/system/system_orchestrator.py",
+      "line_number": 232,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 282,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 368,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 432,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 548,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 695,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 749,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 756,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 790,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 797,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 803,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 821,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 828,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 852,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 868,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 992,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 1296,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/portfolio_optimization/portfolio_optimizer.py",
+      "line_number": 1470,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/performance_analytics/advanced_performance_analytics.py",
+      "line_number": 1072,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/performance_analytics/advanced_performance_analytics.py",
+      "line_number": 1091,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 136,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 164,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 165,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 165,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 392,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 392,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 400,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 400,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 406,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 406,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 515,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 622,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 637,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 652,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 672,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 673,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 675,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 676,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 676,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 1068,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 1069,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 1070,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 1231,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 1231,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 1236,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/production_infrastructure/production_infrastructure.py",
+      "line_number": 1236,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_execution/trading_execution_engine.py",
+      "line_number": 283,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_execution/trading_execution_engine.py",
+      "line_number": 485,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_execution/trading_execution_engine.py",
+      "line_number": 486,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/trading_execution/trading_execution_engine.py",
+      "line_number": 487,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 8,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 74,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 74,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_secret",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 75,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 76,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 77,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 90,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 90,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 91,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 248,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 255,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 256,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 257,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 258,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 260,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 261,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 262,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 263,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 287,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 288,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 290,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 291,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 292,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 293,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 295,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 296,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 297,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 298,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 311,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 312,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 315,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 316,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 321,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 322,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 327,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 328,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 355,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 356,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 357,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 382,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 383,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 422,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 423,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 424,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 427,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 428,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 433,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 434,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 438,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 473,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 505,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 530,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 546,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 565,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 587,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 639,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 640,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 642,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 643,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 646,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 647,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 650,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 660,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 661,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 662,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_token",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 664,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 1131,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/broker_integration_framework.py",
+      "line_number": 1131,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 644,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 644,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 661,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 661,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 687,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 687,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 704,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 704,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 730,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 730,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 747,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 747,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 1042,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/broker_integration/ibkr_integration_and_runtime_config.py",
+      "line_number": 1042,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 102,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_api_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 102,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "high"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 279,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 381,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 409,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 410,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 415,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 416,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 417,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 453,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 454,
+      "resolution_action": "Analyzed for false positive",
+      "resolved": true,
+      "false_positive": true,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 455,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 787,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    },
+    {
+      "issue_type": "potential_key",
+      "file_path": "src/market_data/live_market_data_system.py",
+      "line_number": 841,
+      "resolution_action": "Requires review",
+      "resolved": false,
+      "false_positive": false,
+      "risk_level": "medium"
+    }
+  ],
+  "production_approval": false,
+  "certification_timestamp": "2025-06-16T22:58:37.573500",
+  "certification_valid_until": "2025-09-14T22:58:37.573501",
+  "deployment_recommendations": [
+    "Simplify complex function signatures",
+    "Refactor large files for better maintainability",
+    "Increase test coverage to at least 70%",
+    "Improve system quality scores before production deployment",
+    "Implement backup procedures",
+    "Implement deployment automation",
+    "Add API documentation",
+    "Address remaining security issues before production deployment"
+  ]
+}
