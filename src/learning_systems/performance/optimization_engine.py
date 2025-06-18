@@ -1,47 +1,42 @@
 """
-ALL-USE Learning Systems - Optimization Engine and Adaptive Performance Tuning
+WS5-P5: Optimization Engine
+Advanced optimization engine for autonomous performance enhancement.
 
-This module provides sophisticated optimization engine and adaptive performance tuning
-capabilities for the ALL-USE Learning Systems, enabling autonomous performance optimization
-through advanced algorithms and intelligent parameter adjustment.
-
-Key Features:
-- Multi-objective optimization with Pareto frontier analysis
-- Adaptive parameter tuning with reinforcement learning
-- Evolutionary optimization algorithms for complex parameter spaces
-- Bayesian optimization for efficient hyperparameter search
-- Real-time performance optimization with immediate feedback
-- Constraint-aware optimization with safety boundaries
-- Performance regression detection and automatic rollback
-- Optimization history tracking and learning from experience
-
-Author: Manus AI
-Date: 2025-06-18
-Version: 1.0.0
+This module provides comprehensive optimization capabilities including:
+- Multi-algorithm parameter optimization
+- Resource allocation optimization
+- Performance-driven decision making
+- Automated configuration management
+- Intelligent optimization strategy selection
 """
 
-import asyncio
-import threading
 import time
+import threading
 import json
 import logging
+import numpy as np
 import random
-import math
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional, Callable, Tuple, Union
 from dataclasses import dataclass, asdict
 from collections import defaultdict, deque
-import numpy as np
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import sqlite3
+import os
+from abc import ABC, abstractmethod
 from scipy.optimize import minimize, differential_evolution
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import Matern
-import sqlite3
+import warnings
+warnings.filterwarnings('ignore')
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @dataclass
 class OptimizationParameter:
-    """Represents a parameter that can be optimized."""
+    """Represents a parameter to be optimized."""
     name: str
     current_value: float
     min_value: float
@@ -51,995 +46,1208 @@ class OptimizationParameter:
     categories: Optional[List[str]] = None
     importance: float = 1.0
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert parameter to dictionary format."""
-        return asdict(self)
-
-
-@dataclass
-class OptimizationObjective:
-    """Represents an optimization objective."""
-    name: str
-    target_value: Optional[float]
-    direction: str  # 'minimize', 'maximize', 'target'
-    weight: float = 1.0
-    tolerance: float = 0.01
-    current_value: Optional[float] = None
+    def validate_value(self, value: float) -> bool:
+        """Validate if value is within parameter bounds."""
+        return self.min_value <= value <= self.max_value
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert objective to dictionary format."""
-        return asdict(self)
-
+    def normalize_value(self, value: float) -> float:
+        """Normalize value to [0, 1] range."""
+        return (value - self.min_value) / (self.max_value - self.min_value)
+    
+    def denormalize_value(self, normalized_value: float) -> float:
+        """Denormalize value from [0, 1] range."""
+        return self.min_value + normalized_value * (self.max_value - self.min_value)
 
 @dataclass
 class OptimizationResult:
-    """Represents the result of an optimization attempt."""
+    """Represents the result of an optimization operation."""
     optimization_id: str
-    parameters: Dict[str, float]
-    objectives: Dict[str, float]
-    improvement: float
-    success: bool
-    execution_time: float
-    timestamp: datetime
     algorithm: str
-    notes: str = ""
+    parameters: Dict[str, float]
+    objective_value: float
+    improvement: float
+    execution_time: float
+    iterations: int
+    success: bool
+    timestamp: datetime
+    metadata: Dict[str, Any] = None
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary format."""
-        result_dict = asdict(self)
-        result_dict['timestamp'] = self.timestamp.isoformat()
-        return result_dict
-
-
-class MultiObjectiveOptimizer:
-    """Advanced multi-objective optimization engine with Pareto frontier analysis."""
-    
-    def __init__(self):
-        """Initialize the multi-objective optimizer."""
-        self.parameters = {}
-        self.objectives = {}
-        self.optimization_history = deque(maxlen=1000)
-        self.pareto_frontier = []
-        self.logger = logging.getLogger(__name__)
-        
-        # Optimization algorithms
-        self.algorithms = {
-            'differential_evolution': self._differential_evolution_optimize,
-            'bayesian': self._bayesian_optimize,
-            'gradient_descent': self._gradient_descent_optimize,
-            'evolutionary': self._evolutionary_optimize,
-            'random_search': self._random_search_optimize
+        return {
+            'optimization_id': self.optimization_id,
+            'algorithm': self.algorithm,
+            'parameters': self.parameters,
+            'objective_value': self.objective_value,
+            'improvement': self.improvement,
+            'execution_time': self.execution_time,
+            'iterations': self.iterations,
+            'success': self.success,
+            'timestamp': self.timestamp.isoformat(),
+            'metadata': self.metadata or {}
         }
-        
-        # Algorithm selection weights (updated based on performance)
-        self.algorithm_weights = {
-            'differential_evolution': 0.25,
-            'bayesian': 0.25,
-            'gradient_descent': 0.2,
-            'evolutionary': 0.2,
-            'random_search': 0.1
-        }
+
+class OptimizationAlgorithm(ABC):
+    """Abstract base class for optimization algorithms."""
     
-    def add_parameter(self, parameter: OptimizationParameter):
-        """
-        Add a parameter to be optimized.
-        
-        Args:
-            parameter: OptimizationParameter object defining the parameter
-        """
-        self.parameters[parameter.name] = parameter
-        self.logger.info(f"Added optimization parameter: {parameter.name}")
+    @abstractmethod
+    def optimize(self, 
+                 objective_function: Callable[[Dict[str, float]], float],
+                 parameters: Dict[str, OptimizationParameter],
+                 max_iterations: int = 100) -> OptimizationResult:
+        """Perform optimization using the algorithm."""
+        pass
     
-    def add_objective(self, objective: OptimizationObjective):
-        """
-        Add an optimization objective.
+    @abstractmethod
+    def get_algorithm_name(self) -> str:
+        """Get the name of the optimization algorithm."""
+        pass
+
+class GeneticAlgorithmOptimizer(OptimizationAlgorithm):
+    """Genetic Algorithm optimization implementation."""
+    
+    def __init__(self, population_size: int = 50, mutation_rate: float = 0.1, crossover_rate: float = 0.8):
+        """Initialize genetic algorithm optimizer."""
+        self.population_size = population_size
+        self.mutation_rate = mutation_rate
+        self.crossover_rate = crossover_rate
         
-        Args:
-            objective: OptimizationObjective object defining the objective
-        """
-        self.objectives[objective.name] = objective
-        self.logger.info(f"Added optimization objective: {objective.name}")
+    def get_algorithm_name(self) -> str:
+        return "genetic_algorithm"
     
     def optimize(self, 
-                evaluation_function: Callable[[Dict[str, float]], Dict[str, float]],
-                max_iterations: int = 100,
-                algorithm: Optional[str] = None) -> OptimizationResult:
-        """
-        Perform multi-objective optimization.
-        
-        Args:
-            evaluation_function: Function that evaluates parameter combinations
-            max_iterations: Maximum number of optimization iterations
-            algorithm: Specific algorithm to use (None for automatic selection)
-            
-        Returns:
-            OptimizationResult object containing optimization results
-        """
+                 objective_function: Callable[[Dict[str, float]], float],
+                 parameters: Dict[str, OptimizationParameter],
+                 max_iterations: int = 100) -> OptimizationResult:
+        """Perform genetic algorithm optimization."""
         start_time = time.time()
-        optimization_id = f"opt_{int(time.time())}"
+        optimization_id = f"ga_{int(time.time())}"
         
-        # Select algorithm
-        if algorithm is None:
-            algorithm = self._select_algorithm()
+        # Initialize population
+        population = self._initialize_population(parameters)
+        best_individual = None
+        best_fitness = float('-inf')
+        
+        for generation in range(max_iterations):
+            # Evaluate fitness
+            fitness_scores = []
+            for individual in population:
+                try:
+                    fitness = objective_function(individual)
+                    fitness_scores.append(fitness)
+                    
+                    if fitness > best_fitness:
+                        best_fitness = fitness
+                        best_individual = individual.copy()
+                except Exception as e:
+                    fitness_scores.append(float('-inf'))
+                    logger.warning(f"Error evaluating individual: {e}")
+            
+            # Selection, crossover, and mutation
+            population = self._evolve_population(population, fitness_scores, parameters)
+        
+        execution_time = time.time() - start_time
+        
+        # Calculate improvement
+        initial_params = {name: param.current_value for name, param in parameters.items()}
+        initial_fitness = objective_function(initial_params)
+        improvement = ((best_fitness - initial_fitness) / abs(initial_fitness)) * 100 if initial_fitness != 0 else 0
+        
+        return OptimizationResult(
+            optimization_id=optimization_id,
+            algorithm=self.get_algorithm_name(),
+            parameters=best_individual or initial_params,
+            objective_value=best_fitness,
+            improvement=improvement,
+            execution_time=execution_time,
+            iterations=max_iterations,
+            success=best_individual is not None,
+            timestamp=datetime.now()
+        )
+    
+    def _initialize_population(self, parameters: Dict[str, OptimizationParameter]) -> List[Dict[str, float]]:
+        """Initialize random population."""
+        population = []
+        for _ in range(self.population_size):
+            individual = {}
+            for name, param in parameters.items():
+                if param.parameter_type == 'continuous':
+                    individual[name] = random.uniform(param.min_value, param.max_value)
+                elif param.parameter_type == 'discrete':
+                    individual[name] = random.randint(int(param.min_value), int(param.max_value))
+            population.append(individual)
+        return population
+    
+    def _evolve_population(self, population: List[Dict[str, float]], 
+                          fitness_scores: List[float],
+                          parameters: Dict[str, OptimizationParameter]) -> List[Dict[str, float]]:
+        """Evolve population through selection, crossover, and mutation."""
+        # Selection (tournament selection)
+        selected = self._tournament_selection(population, fitness_scores)
+        
+        # Crossover
+        offspring = []
+        for i in range(0, len(selected), 2):
+            parent1 = selected[i]
+            parent2 = selected[i + 1] if i + 1 < len(selected) else selected[0]
+            
+            if random.random() < self.crossover_rate:
+                child1, child2 = self._crossover(parent1, parent2, parameters)
+                offspring.extend([child1, child2])
+            else:
+                offspring.extend([parent1.copy(), parent2.copy()])
+        
+        # Mutation
+        for individual in offspring:
+            if random.random() < self.mutation_rate:
+                self._mutate(individual, parameters)
+        
+        return offspring[:self.population_size]
+    
+    def _tournament_selection(self, population: List[Dict[str, float]], 
+                             fitness_scores: List[float], 
+                             tournament_size: int = 3) -> List[Dict[str, float]]:
+        """Tournament selection for genetic algorithm."""
+        selected = []
+        for _ in range(self.population_size):
+            tournament_indices = random.sample(range(len(population)), min(tournament_size, len(population)))
+            winner_index = max(tournament_indices, key=lambda i: fitness_scores[i])
+            selected.append(population[winner_index].copy())
+        return selected
+    
+    def _crossover(self, parent1: Dict[str, float], parent2: Dict[str, float],
+                   parameters: Dict[str, OptimizationParameter]) -> Tuple[Dict[str, float], Dict[str, float]]:
+        """Single-point crossover for genetic algorithm."""
+        child1, child2 = parent1.copy(), parent2.copy()
+        
+        param_names = list(parameters.keys())
+        crossover_point = random.randint(1, len(param_names) - 1)
+        
+        for i in range(crossover_point, len(param_names)):
+            param_name = param_names[i]
+            child1[param_name], child2[param_name] = child2[param_name], child1[param_name]
+        
+        return child1, child2
+    
+    def _mutate(self, individual: Dict[str, float], parameters: Dict[str, OptimizationParameter]):
+        """Mutation for genetic algorithm."""
+        for name, param in parameters.items():
+            if random.random() < 0.1:  # 10% chance to mutate each parameter
+                if param.parameter_type == 'continuous':
+                    mutation_strength = (param.max_value - param.min_value) * 0.1
+                    individual[name] += random.gauss(0, mutation_strength)
+                    individual[name] = max(param.min_value, min(param.max_value, individual[name]))
+                elif param.parameter_type == 'discrete':
+                    individual[name] = random.randint(int(param.min_value), int(param.max_value))
+
+class BayesianOptimizer(OptimizationAlgorithm):
+    """Bayesian Optimization using Gaussian Processes."""
+    
+    def __init__(self, acquisition_function: str = 'expected_improvement', exploration_weight: float = 0.1):
+        """Initialize Bayesian optimizer."""
+        self.acquisition_function = acquisition_function
+        self.exploration_weight = exploration_weight
+        self.gp = GaussianProcessRegressor(kernel=Matern(length_scale=1.0, nu=2.5), alpha=1e-6)
+        
+    def get_algorithm_name(self) -> str:
+        return "bayesian_optimization"
+    
+    def optimize(self, 
+                 objective_function: Callable[[Dict[str, float]], float],
+                 parameters: Dict[str, OptimizationParameter],
+                 max_iterations: int = 100) -> OptimizationResult:
+        """Perform Bayesian optimization."""
+        start_time = time.time()
+        optimization_id = f"bo_{int(time.time())}"
+        
+        # Initialize with random samples
+        X_samples = []
+        y_samples = []
+        best_params = None
+        best_value = float('-inf')
+        
+        # Initial random sampling
+        n_initial = min(10, max_iterations // 2)
+        for _ in range(n_initial):
+            params = self._sample_random_parameters(parameters)
+            try:
+                value = objective_function(params)
+                X_samples.append(self._params_to_array(params, parameters))
+                y_samples.append(value)
+                
+                if value > best_value:
+                    best_value = value
+                    best_params = params.copy()
+            except Exception as e:
+                logger.warning(f"Error in initial sampling: {e}")
+        
+        # Bayesian optimization loop
+        for iteration in range(n_initial, max_iterations):
+            if len(X_samples) < 2:
+                break
+                
+            # Fit Gaussian Process
+            X_array = np.array(X_samples)
+            y_array = np.array(y_samples)
+            
+            try:
+                self.gp.fit(X_array, y_array)
+                
+                # Find next point to evaluate
+                next_params = self._acquire_next_point(parameters)
+                next_value = objective_function(next_params)
+                
+                X_samples.append(self._params_to_array(next_params, parameters))
+                y_samples.append(next_value)
+                
+                if next_value > best_value:
+                    best_value = next_value
+                    best_params = next_params.copy()
+                    
+            except Exception as e:
+                logger.warning(f"Error in Bayesian optimization iteration {iteration}: {e}")
+                # Fall back to random sampling
+                params = self._sample_random_parameters(parameters)
+                try:
+                    value = objective_function(params)
+                    X_samples.append(self._params_to_array(params, parameters))
+                    y_samples.append(value)
+                    
+                    if value > best_value:
+                        best_value = value
+                        best_params = params.copy()
+                except Exception:
+                    pass
+        
+        execution_time = time.time() - start_time
+        
+        # Calculate improvement
+        initial_params = {name: param.current_value for name, param in parameters.items()}
+        try:
+            initial_value = objective_function(initial_params)
+            improvement = ((best_value - initial_value) / abs(initial_value)) * 100 if initial_value != 0 else 0
+        except:
+            improvement = 0
+        
+        return OptimizationResult(
+            optimization_id=optimization_id,
+            algorithm=self.get_algorithm_name(),
+            parameters=best_params or initial_params,
+            objective_value=best_value,
+            improvement=improvement,
+            execution_time=execution_time,
+            iterations=max_iterations,
+            success=best_params is not None,
+            timestamp=datetime.now()
+        )
+    
+    def _sample_random_parameters(self, parameters: Dict[str, OptimizationParameter]) -> Dict[str, float]:
+        """Sample random parameters within bounds."""
+        params = {}
+        for name, param in parameters.items():
+            if param.parameter_type == 'continuous':
+                params[name] = random.uniform(param.min_value, param.max_value)
+            elif param.parameter_type == 'discrete':
+                params[name] = random.randint(int(param.min_value), int(param.max_value))
+        return params
+    
+    def _params_to_array(self, params: Dict[str, float], parameters: Dict[str, OptimizationParameter]) -> np.ndarray:
+        """Convert parameter dictionary to normalized array."""
+        array = []
+        for name in sorted(parameters.keys()):
+            param = parameters[name]
+            normalized = param.normalize_value(params[name])
+            array.append(normalized)
+        return np.array(array)
+    
+    def _array_to_params(self, array: np.ndarray, parameters: Dict[str, OptimizationParameter]) -> Dict[str, float]:
+        """Convert normalized array to parameter dictionary."""
+        params = {}
+        for i, name in enumerate(sorted(parameters.keys())):
+            param = parameters[name]
+            value = param.denormalize_value(array[i])
+            if param.parameter_type == 'discrete':
+                value = round(value)
+            params[name] = value
+        return params
+    
+    def _acquire_next_point(self, parameters: Dict[str, OptimizationParameter]) -> Dict[str, float]:
+        """Acquire next point using acquisition function."""
+        # Simple random search for acquisition function optimization
+        best_acquisition = float('-inf')
+        best_params = None
+        
+        for _ in range(1000):  # Random search iterations
+            candidate_array = np.random.random(len(parameters))
+            candidate_params = self._array_to_params(candidate_array, parameters)
+            
+            try:
+                acquisition_value = self._expected_improvement(candidate_array)
+                if acquisition_value > best_acquisition:
+                    best_acquisition = acquisition_value
+                    best_params = candidate_params
+            except Exception:
+                continue
+        
+        return best_params or self._sample_random_parameters(parameters)
+    
+    def _expected_improvement(self, x: np.ndarray) -> float:
+        """Calculate expected improvement acquisition function."""
+        try:
+            x = x.reshape(1, -1)
+            mu, sigma = self.gp.predict(x, return_std=True)
+            
+            if sigma[0] == 0:
+                return 0
+            
+            # Current best value
+            y_best = np.max(self.gp.y_train_) if hasattr(self.gp, 'y_train_') else 0
+            
+            # Expected improvement calculation
+            z = (mu[0] - y_best - self.exploration_weight) / sigma[0]
+            ei = (mu[0] - y_best - self.exploration_weight) * self._normal_cdf(z) + sigma[0] * self._normal_pdf(z)
+            
+            return ei
+        except Exception:
+            return 0
+    
+    def _normal_cdf(self, x: float) -> float:
+        """Standard normal cumulative distribution function."""
+        return 0.5 * (1 + np.tanh(x / np.sqrt(2)))
+    
+    def _normal_pdf(self, x: float) -> float:
+        """Standard normal probability density function."""
+        return np.exp(-0.5 * x**2) / np.sqrt(2 * np.pi)
+
+class ParticleSwarmOptimizer(OptimizationAlgorithm):
+    """Particle Swarm Optimization implementation."""
+    
+    def __init__(self, swarm_size: int = 30, inertia: float = 0.7, cognitive: float = 1.5, social: float = 1.5):
+        """Initialize particle swarm optimizer."""
+        self.swarm_size = swarm_size
+        self.inertia = inertia
+        self.cognitive = cognitive
+        self.social = social
+        
+    def get_algorithm_name(self) -> str:
+        return "particle_swarm_optimization"
+    
+    def optimize(self, 
+                 objective_function: Callable[[Dict[str, float]], float],
+                 parameters: Dict[str, OptimizationParameter],
+                 max_iterations: int = 100) -> OptimizationResult:
+        """Perform particle swarm optimization."""
+        start_time = time.time()
+        optimization_id = f"pso_{int(time.time())}"
+        
+        # Initialize swarm
+        particles = self._initialize_swarm(parameters)
+        velocities = self._initialize_velocities(parameters)
+        personal_best = [p.copy() for p in particles]
+        personal_best_fitness = [float('-inf')] * self.swarm_size
+        global_best = None
+        global_best_fitness = float('-inf')
+        
+        for iteration in range(max_iterations):
+            # Evaluate particles
+            for i, particle in enumerate(particles):
+                try:
+                    fitness = objective_function(particle)
+                    
+                    # Update personal best
+                    if fitness > personal_best_fitness[i]:
+                        personal_best_fitness[i] = fitness
+                        personal_best[i] = particle.copy()
+                    
+                    # Update global best
+                    if fitness > global_best_fitness:
+                        global_best_fitness = fitness
+                        global_best = particle.copy()
+                        
+                except Exception as e:
+                    logger.warning(f"Error evaluating particle {i}: {e}")
+            
+            # Update velocities and positions
+            for i in range(self.swarm_size):
+                self._update_particle(i, particles, velocities, personal_best, global_best, parameters)
+        
+        execution_time = time.time() - start_time
+        
+        # Calculate improvement
+        initial_params = {name: param.current_value for name, param in parameters.items()}
+        try:
+            initial_fitness = objective_function(initial_params)
+            improvement = ((global_best_fitness - initial_fitness) / abs(initial_fitness)) * 100 if initial_fitness != 0 else 0
+        except:
+            improvement = 0
+        
+        return OptimizationResult(
+            optimization_id=optimization_id,
+            algorithm=self.get_algorithm_name(),
+            parameters=global_best or initial_params,
+            objective_value=global_best_fitness,
+            improvement=improvement,
+            execution_time=execution_time,
+            iterations=max_iterations,
+            success=global_best is not None,
+            timestamp=datetime.now()
+        )
+    
+    def _initialize_swarm(self, parameters: Dict[str, OptimizationParameter]) -> List[Dict[str, float]]:
+        """Initialize particle swarm."""
+        swarm = []
+        for _ in range(self.swarm_size):
+            particle = {}
+            for name, param in parameters.items():
+                if param.parameter_type == 'continuous':
+                    particle[name] = random.uniform(param.min_value, param.max_value)
+                elif param.parameter_type == 'discrete':
+                    particle[name] = random.randint(int(param.min_value), int(param.max_value))
+            swarm.append(particle)
+        return swarm
+    
+    def _initialize_velocities(self, parameters: Dict[str, OptimizationParameter]) -> List[Dict[str, float]]:
+        """Initialize particle velocities."""
+        velocities = []
+        for _ in range(self.swarm_size):
+            velocity = {}
+            for name, param in parameters.items():
+                max_velocity = (param.max_value - param.min_value) * 0.1
+                velocity[name] = random.uniform(-max_velocity, max_velocity)
+            velocities.append(velocity)
+        return velocities
+    
+    def _update_particle(self, i: int, particles: List[Dict[str, float]], 
+                        velocities: List[Dict[str, float]],
+                        personal_best: List[Dict[str, float]],
+                        global_best: Dict[str, float],
+                        parameters: Dict[str, OptimizationParameter]):
+        """Update particle velocity and position."""
+        if global_best is None:
+            return
+            
+        for name, param in parameters.items():
+            # Update velocity
+            r1, r2 = random.random(), random.random()
+            
+            cognitive_component = self.cognitive * r1 * (personal_best[i][name] - particles[i][name])
+            social_component = self.social * r2 * (global_best[name] - particles[i][name])
+            
+            velocities[i][name] = (self.inertia * velocities[i][name] + 
+                                  cognitive_component + social_component)
+            
+            # Limit velocity
+            max_velocity = (param.max_value - param.min_value) * 0.2
+            velocities[i][name] = max(-max_velocity, min(max_velocity, velocities[i][name]))
+            
+            # Update position
+            particles[i][name] += velocities[i][name]
+            
+            # Enforce bounds
+            particles[i][name] = max(param.min_value, min(param.max_value, particles[i][name]))
+            
+            # Handle discrete parameters
+            if param.parameter_type == 'discrete':
+                particles[i][name] = round(particles[i][name])
+
+class SimulatedAnnealingOptimizer(OptimizationAlgorithm):
+    """Simulated Annealing optimization implementation."""
+    
+    def __init__(self, initial_temperature: float = 100.0, cooling_rate: float = 0.95, min_temperature: float = 0.01):
+        """Initialize simulated annealing optimizer."""
+        self.initial_temperature = initial_temperature
+        self.cooling_rate = cooling_rate
+        self.min_temperature = min_temperature
+        
+    def get_algorithm_name(self) -> str:
+        return "simulated_annealing"
+    
+    def optimize(self, 
+                 objective_function: Callable[[Dict[str, float]], float],
+                 parameters: Dict[str, OptimizationParameter],
+                 max_iterations: int = 100) -> OptimizationResult:
+        """Perform simulated annealing optimization."""
+        start_time = time.time()
+        optimization_id = f"sa_{int(time.time())}"
+        
+        # Initialize with current parameters
+        current_params = {name: param.current_value for name, param in parameters.items()}
+        try:
+            current_fitness = objective_function(current_params)
+        except Exception:
+            current_fitness = float('-inf')
+        
+        best_params = current_params.copy()
+        best_fitness = current_fitness
+        temperature = self.initial_temperature
+        
+        for iteration in range(max_iterations):
+            # Generate neighbor solution
+            neighbor_params = self._generate_neighbor(current_params, parameters, temperature)
+            
+            try:
+                neighbor_fitness = objective_function(neighbor_params)
+                
+                # Accept or reject neighbor
+                if self._accept_solution(current_fitness, neighbor_fitness, temperature):
+                    current_params = neighbor_params
+                    current_fitness = neighbor_fitness
+                    
+                    # Update best solution
+                    if neighbor_fitness > best_fitness:
+                        best_fitness = neighbor_fitness
+                        best_params = neighbor_params.copy()
+                
+            except Exception as e:
+                logger.warning(f"Error evaluating neighbor solution: {e}")
+            
+            # Cool down
+            temperature = max(self.min_temperature, temperature * self.cooling_rate)
+        
+        execution_time = time.time() - start_time
+        
+        # Calculate improvement
+        initial_params = {name: param.current_value for name, param in parameters.items()}
+        try:
+            initial_fitness = objective_function(initial_params)
+            improvement = ((best_fitness - initial_fitness) / abs(initial_fitness)) * 100 if initial_fitness != 0 else 0
+        except:
+            improvement = 0
+        
+        return OptimizationResult(
+            optimization_id=optimization_id,
+            algorithm=self.get_algorithm_name(),
+            parameters=best_params,
+            objective_value=best_fitness,
+            improvement=improvement,
+            execution_time=execution_time,
+            iterations=max_iterations,
+            success=True,
+            timestamp=datetime.now()
+        )
+    
+    def _generate_neighbor(self, current_params: Dict[str, float], 
+                          parameters: Dict[str, OptimizationParameter],
+                          temperature: float) -> Dict[str, float]:
+        """Generate neighbor solution."""
+        neighbor = current_params.copy()
+        
+        # Randomly select parameter to modify
+        param_name = random.choice(list(parameters.keys()))
+        param = parameters[param_name]
+        
+        if param.parameter_type == 'continuous':
+            # Gaussian perturbation scaled by temperature
+            perturbation_scale = (param.max_value - param.min_value) * 0.1 * (temperature / self.initial_temperature)
+            perturbation = random.gauss(0, perturbation_scale)
+            neighbor[param_name] = max(param.min_value, min(param.max_value, current_params[param_name] + perturbation))
+        elif param.parameter_type == 'discrete':
+            # Random discrete step
+            step = random.choice([-1, 1])
+            neighbor[param_name] = max(param.min_value, min(param.max_value, current_params[param_name] + step))
+        
+        return neighbor
+    
+    def _accept_solution(self, current_fitness: float, neighbor_fitness: float, temperature: float) -> bool:
+        """Determine whether to accept neighbor solution."""
+        if neighbor_fitness > current_fitness:
+            return True
+        
+        if temperature <= 0:
+            return False
+        
+        # Metropolis criterion
+        probability = np.exp((neighbor_fitness - current_fitness) / temperature)
+        return random.random() < probability
+
+class ParameterOptimizer:
+    """Manages parameter optimization using multiple algorithms."""
+    
+    def __init__(self):
+        """Initialize parameter optimizer."""
+        self.algorithms = {
+            'genetic_algorithm': GeneticAlgorithmOptimizer(),
+            'bayesian_optimization': BayesianOptimizer(),
+            'particle_swarm': ParticleSwarmOptimizer(),
+            'simulated_annealing': SimulatedAnnealingOptimizer()
+        }
+        self.optimization_history = deque(maxlen=1000)
+        
+    def add_algorithm(self, name: str, algorithm: OptimizationAlgorithm):
+        """Add custom optimization algorithm."""
+        self.algorithms[name] = algorithm
+        logger.info(f"Added optimization algorithm: {name}")
+    
+    def optimize_parameters(self, 
+                           objective_function: Callable[[Dict[str, float]], float],
+                           parameters: Dict[str, OptimizationParameter],
+                           algorithm: str = 'auto',
+                           max_iterations: int = 100) -> OptimizationResult:
+        """Optimize parameters using specified algorithm."""
+        if algorithm == 'auto':
+            algorithm = self._select_best_algorithm(parameters)
         
         if algorithm not in self.algorithms:
             raise ValueError(f"Unknown algorithm: {algorithm}")
         
-        self.logger.info(f"Starting optimization {optimization_id} with algorithm: {algorithm}")
+        optimizer = self.algorithms[algorithm]
+        result = optimizer.optimize(objective_function, parameters, max_iterations)
         
-        try:
-            # Run optimization
-            best_parameters, best_objectives, improvement = self.algorithms[algorithm](
-                evaluation_function, max_iterations
-            )
-            
-            # Create result
-            result = OptimizationResult(
-                optimization_id=optimization_id,
-                parameters=best_parameters,
-                objectives=best_objectives,
-                improvement=improvement,
-                success=True,
-                execution_time=time.time() - start_time,
-                timestamp=datetime.now(),
-                algorithm=algorithm
-            )
-            
-            # Update optimization history
-            self.optimization_history.append(result)
-            
-            # Update Pareto frontier
-            self._update_pareto_frontier(result)
-            
-            # Update algorithm weights based on performance
-            self._update_algorithm_weights(algorithm, improvement)
-            
-            self.logger.info(f"Optimization {optimization_id} completed successfully with improvement: {improvement:.4f}")
-            return result
-            
-        except Exception as e:
-            self.logger.error(f"Optimization {optimization_id} failed: {e}")
-            return OptimizationResult(
-                optimization_id=optimization_id,
-                parameters={},
-                objectives={},
-                improvement=0.0,
-                success=False,
-                execution_time=time.time() - start_time,
-                timestamp=datetime.now(),
-                algorithm=algorithm,
-                notes=str(e)
-            )
+        # Store result in history
+        self.optimization_history.append(result)
+        
+        logger.info(f"Optimization completed: {algorithm}, improvement: {result.improvement:.2f}%")
+        return result
     
-    def _select_algorithm(self) -> str:
-        """Select optimization algorithm based on historical performance."""
-        # Weighted random selection based on algorithm performance
-        algorithms = list(self.algorithm_weights.keys())
-        weights = list(self.algorithm_weights.values())
+    def _select_best_algorithm(self, parameters: Dict[str, OptimizationParameter]) -> str:
+        """Automatically select best algorithm based on problem characteristics."""
+        # Simple heuristics for algorithm selection
+        num_params = len(parameters)
+        has_discrete = any(p.parameter_type == 'discrete' for p in parameters.values())
         
-        # Normalize weights
-        total_weight = sum(weights)
-        if total_weight > 0:
-            weights = [w / total_weight for w in weights]
+        if num_params <= 5:
+            return 'bayesian_optimization'  # Good for low-dimensional problems
+        elif has_discrete:
+            return 'genetic_algorithm'  # Handles discrete parameters well
+        elif num_params <= 20:
+            return 'particle_swarm'  # Good for medium-dimensional problems
         else:
-            weights = [1.0 / len(algorithms)] * len(algorithms)
-        
-        return np.random.choice(algorithms, p=weights)
+            return 'simulated_annealing'  # Scalable to high dimensions
     
-    def _differential_evolution_optimize(self, 
-                                       evaluation_function: Callable,
-                                       max_iterations: int) -> Tuple[Dict[str, float], Dict[str, float], float]:
-        """Optimize using differential evolution algorithm."""
-        
-        def objective_function(x):
-            # Convert array to parameter dictionary
-            param_dict = {}
-            for i, (param_name, param) in enumerate(self.parameters.items()):
-                if param.parameter_type == 'continuous':
-                    param_dict[param_name] = x[i]
-                elif param.parameter_type == 'discrete':
-                    param_dict[param_name] = round(x[i])
-            
-            # Evaluate objectives
-            try:
-                objectives = evaluation_function(param_dict)
-                
-                # Calculate weighted sum for single-objective optimization
-                total_score = 0.0
-                for obj_name, obj_value in objectives.items():
-                    if obj_name in self.objectives:
-                        obj_def = self.objectives[obj_name]
-                        if obj_def.direction == 'minimize':
-                            score = -obj_value * obj_def.weight
-                        elif obj_def.direction == 'maximize':
-                            score = obj_value * obj_def.weight
-                        else:  # target
-                            score = -abs(obj_value - obj_def.target_value) * obj_def.weight
-                        total_score += score
-                
-                return -total_score  # Minimize negative score
-                
-            except Exception as e:
-                self.logger.error(f"Error in objective function: {e}")
-                return float('inf')
-        
-        # Set up bounds
-        bounds = []
-        for param in self.parameters.values():
-            bounds.append((param.min_value, param.max_value))
-        
-        # Run differential evolution
-        result = differential_evolution(
-            objective_function,
-            bounds,
-            maxiter=max_iterations,
-            popsize=15,
-            seed=random.randint(0, 10000)
-        )
-        
-        # Convert result back to parameter dictionary
-        best_parameters = {}
-        for i, (param_name, param) in enumerate(self.parameters.items()):
-            if param.parameter_type == 'continuous':
-                best_parameters[param_name] = result.x[i]
-            elif param.parameter_type == 'discrete':
-                best_parameters[param_name] = round(result.x[i])
-        
-        # Evaluate best parameters
-        best_objectives = evaluation_function(best_parameters)
-        
-        # Calculate improvement
-        improvement = abs(result.fun) if result.success else 0.0
-        
-        return best_parameters, best_objectives, improvement
+    def get_optimization_history(self, algorithm: str = None) -> List[OptimizationResult]:
+        """Get optimization history, optionally filtered by algorithm."""
+        if algorithm is None:
+            return list(self.optimization_history)
+        return [r for r in self.optimization_history if r.algorithm == algorithm]
     
-    def _bayesian_optimize(self, 
-                          evaluation_function: Callable,
-                          max_iterations: int) -> Tuple[Dict[str, float], Dict[str, float], float]:
-        """Optimize using Bayesian optimization with Gaussian processes."""
+    def get_best_result(self, algorithm: str = None) -> Optional[OptimizationResult]:
+        """Get best optimization result."""
+        history = self.get_optimization_history(algorithm)
+        if not history:
+            return None
+        return max(history, key=lambda r: r.objective_value)
+
+class ResourceOptimizer:
+    """Optimizes resource allocation and utilization."""
+    
+    def __init__(self):
+        """Initialize resource optimizer."""
+        self.resource_allocations = {}
+        self.allocation_history = deque(maxlen=500)
         
-        # Collect parameter names and bounds
-        param_names = list(self.parameters.keys())
-        bounds = np.array([[param.min_value, param.max_value] for param in self.parameters.values()])
+    def optimize_cpu_allocation(self, processes: List[Dict[str, Any]], total_cpu: float) -> Dict[str, float]:
+        """Optimize CPU allocation across processes."""
+        if not processes:
+            return {}
         
-        # Initialize with random samples
-        n_initial = min(10, max_iterations // 4)
-        X_samples = []
-        y_samples = []
+        # Simple priority-based allocation
+        total_priority = sum(p.get('priority', 1.0) for p in processes)
+        allocations = {}
         
-        for _ in range(n_initial):
-            # Generate random parameter values
-            x = np.random.uniform(bounds[:, 0], bounds[:, 1])
-            param_dict = {param_names[i]: x[i] for i in range(len(param_names))}
+        for process in processes:
+            priority = process.get('priority', 1.0)
+            min_cpu = process.get('min_cpu', 0.1)
+            max_cpu = process.get('max_cpu', total_cpu)
             
-            # Evaluate
+            # Proportional allocation based on priority
+            base_allocation = (priority / total_priority) * total_cpu
+            allocation = max(min_cpu, min(max_cpu, base_allocation))
+            
+            allocations[process['name']] = allocation
+        
+        # Normalize to ensure total doesn't exceed available CPU
+        total_allocated = sum(allocations.values())
+        if total_allocated > total_cpu:
+            scale_factor = total_cpu / total_allocated
+            allocations = {name: alloc * scale_factor for name, alloc in allocations.items()}
+        
+        self.allocation_history.append({
+            'timestamp': datetime.now(),
+            'type': 'cpu',
+            'allocations': allocations.copy()
+        })
+        
+        return allocations
+    
+    def optimize_memory_allocation(self, processes: List[Dict[str, Any]], total_memory: float) -> Dict[str, float]:
+        """Optimize memory allocation across processes."""
+        if not processes:
+            return {}
+        
+        allocations = {}
+        remaining_memory = total_memory
+        
+        # First pass: allocate minimum required memory
+        for process in processes:
+            min_memory = process.get('min_memory', 0.1)
+            allocations[process['name']] = min_memory
+            remaining_memory -= min_memory
+        
+        # Second pass: distribute remaining memory based on priority and max limits
+        if remaining_memory > 0:
+            total_priority = sum(p.get('priority', 1.0) for p in processes)
+            
+            for process in processes:
+                priority = process.get('priority', 1.0)
+                max_memory = process.get('max_memory', total_memory)
+                current_allocation = allocations[process['name']]
+                
+                # Additional allocation based on priority
+                additional = (priority / total_priority) * remaining_memory
+                new_allocation = min(max_memory, current_allocation + additional)
+                allocations[process['name']] = new_allocation
+        
+        self.allocation_history.append({
+            'timestamp': datetime.now(),
+            'type': 'memory',
+            'allocations': allocations.copy()
+        })
+        
+        return allocations
+    
+    def optimize_network_bandwidth(self, connections: List[Dict[str, Any]], total_bandwidth: float) -> Dict[str, float]:
+        """Optimize network bandwidth allocation."""
+        if not connections:
+            return {}
+        
+        allocations = {}
+        
+        # Quality of Service (QoS) based allocation
+        high_priority = [c for c in connections if c.get('qos', 'normal') == 'high']
+        normal_priority = [c for c in connections if c.get('qos', 'normal') == 'normal']
+        low_priority = [c for c in connections if c.get('qos', 'normal') == 'low']
+        
+        remaining_bandwidth = total_bandwidth
+        
+        # Allocate to high priority first
+        for conn in high_priority:
+            min_bandwidth = conn.get('min_bandwidth', 0.1)
+            max_bandwidth = conn.get('max_bandwidth', total_bandwidth * 0.5)
+            allocation = min(max_bandwidth, remaining_bandwidth * 0.3)  # Up to 30% for high priority
+            allocations[conn['name']] = max(min_bandwidth, allocation)
+            remaining_bandwidth -= allocations[conn['name']]
+        
+        # Allocate to normal priority
+        if normal_priority and remaining_bandwidth > 0:
+            per_connection = remaining_bandwidth * 0.7 / len(normal_priority)
+            for conn in normal_priority:
+                min_bandwidth = conn.get('min_bandwidth', 0.1)
+                max_bandwidth = conn.get('max_bandwidth', total_bandwidth * 0.3)
+                allocation = min(max_bandwidth, per_connection)
+                allocations[conn['name']] = max(min_bandwidth, allocation)
+                remaining_bandwidth -= allocations[conn['name']]
+        
+        # Allocate remaining to low priority
+        if low_priority and remaining_bandwidth > 0:
+            per_connection = remaining_bandwidth / len(low_priority)
+            for conn in low_priority:
+                min_bandwidth = conn.get('min_bandwidth', 0.05)
+                allocations[conn['name']] = max(min_bandwidth, per_connection)
+        
+        self.allocation_history.append({
+            'timestamp': datetime.now(),
+            'type': 'network',
+            'allocations': allocations.copy()
+        })
+        
+        return allocations
+
+class ConfigurationManager:
+    """Manages automated configuration optimization."""
+    
+    def __init__(self, config_file: str = "optimized_config.json"):
+        """Initialize configuration manager."""
+        self.config_file = config_file
+        self.current_config = {}
+        self.config_history = deque(maxlen=100)
+        self.load_config()
+        
+    def load_config(self):
+        """Load configuration from file."""
+        try:
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r') as f:
+                    self.current_config = json.load(f)
+                logger.info(f"Loaded configuration from {self.config_file}")
+            else:
+                self.current_config = self._get_default_config()
+                self.save_config()
+        except Exception as e:
+            logger.error(f"Error loading configuration: {e}")
+            self.current_config = self._get_default_config()
+    
+    def save_config(self):
+        """Save configuration to file."""
+        try:
+            with open(self.config_file, 'w') as f:
+                json.dump(self.current_config, f, indent=2)
+            logger.info(f"Saved configuration to {self.config_file}")
+        except Exception as e:
+            logger.error(f"Error saving configuration: {e}")
+    
+    def _get_default_config(self) -> Dict[str, Any]:
+        """Get default configuration."""
+        return {
+            'performance': {
+                'max_threads': 4,
+                'cache_size_mb': 256,
+                'batch_size': 32,
+                'timeout_seconds': 30
+            },
+            'optimization': {
+                'algorithm': 'auto',
+                'max_iterations': 100,
+                'convergence_threshold': 0.001
+            },
+            'monitoring': {
+                'collection_interval': 0.1,
+                'analysis_interval': 60.0,
+                'report_interval': 300.0
+            },
+            'resources': {
+                'cpu_limit_percent': 80,
+                'memory_limit_mb': 2048,
+                'disk_limit_gb': 10
+            }
+        }
+    
+    def optimize_configuration(self, performance_metrics: Dict[str, float]) -> Dict[str, Any]:
+        """Optimize configuration based on performance metrics."""
+        optimized_config = self.current_config.copy()
+        
+        # CPU optimization
+        cpu_usage = performance_metrics.get('cpu_usage_percent', 50)
+        if cpu_usage > 90:
+            # Reduce thread count if CPU is overloaded
+            current_threads = optimized_config['performance']['max_threads']
+            optimized_config['performance']['max_threads'] = max(1, current_threads - 1)
+        elif cpu_usage < 30:
+            # Increase thread count if CPU is underutilized
+            current_threads = optimized_config['performance']['max_threads']
+            optimized_config['performance']['max_threads'] = min(16, current_threads + 1)
+        
+        # Memory optimization
+        memory_usage = performance_metrics.get('memory_usage_percent', 50)
+        if memory_usage > 85:
+            # Reduce cache size if memory is high
+            current_cache = optimized_config['performance']['cache_size_mb']
+            optimized_config['performance']['cache_size_mb'] = max(64, int(current_cache * 0.8))
+        elif memory_usage < 40:
+            # Increase cache size if memory is available
+            current_cache = optimized_config['performance']['cache_size_mb']
+            optimized_config['performance']['cache_size_mb'] = min(1024, int(current_cache * 1.2))
+        
+        # Batch size optimization
+        throughput = performance_metrics.get('throughput', 100)
+        if throughput < 50:
+            # Reduce batch size for better responsiveness
+            current_batch = optimized_config['performance']['batch_size']
+            optimized_config['performance']['batch_size'] = max(8, int(current_batch * 0.8))
+        elif throughput > 200:
+            # Increase batch size for better efficiency
+            current_batch = optimized_config['performance']['batch_size']
+            optimized_config['performance']['batch_size'] = min(128, int(current_batch * 1.2))
+        
+        # Store configuration change
+        if optimized_config != self.current_config:
+            self.config_history.append({
+                'timestamp': datetime.now(),
+                'old_config': self.current_config.copy(),
+                'new_config': optimized_config.copy(),
+                'metrics': performance_metrics.copy()
+            })
+            
+            self.current_config = optimized_config
+            self.save_config()
+            logger.info("Configuration optimized based on performance metrics")
+        
+        return optimized_config
+    
+    def get_config_value(self, key_path: str, default: Any = None) -> Any:
+        """Get configuration value using dot notation."""
+        keys = key_path.split('.')
+        value = self.current_config
+        
+        for key in keys:
+            if isinstance(value, dict) and key in value:
+                value = value[key]
+            else:
+                return default
+        
+        return value
+    
+    def set_config_value(self, key_path: str, value: Any):
+        """Set configuration value using dot notation."""
+        keys = key_path.split('.')
+        config = self.current_config
+        
+        for key in keys[:-1]:
+            if key not in config:
+                config[key] = {}
+            config = config[key]
+        
+        config[keys[-1]] = value
+        self.save_config()
+
+class OptimizationEngine:
+    """Main optimization engine orchestrating all optimization components."""
+    
+    def __init__(self):
+        """Initialize optimization engine."""
+        self.parameter_optimizer = ParameterOptimizer()
+        self.resource_optimizer = ResourceOptimizer()
+        self.config_manager = ConfigurationManager()
+        
+        self.optimization_queue = deque()
+        self.is_running = False
+        self.optimization_thread = None
+        self.optimization_stats = {
+            'total_optimizations': 0,
+            'successful_optimizations': 0,
+            'total_improvement': 0.0,
+            'average_improvement': 0.0
+        }
+        
+        logger.info("Optimization engine initialized")
+    
+    def start_optimization_engine(self):
+        """Start the optimization engine."""
+        if self.is_running:
+            logger.warning("Optimization engine already running")
+            return
+        
+        self.is_running = True
+        self.optimization_thread = threading.Thread(target=self._optimization_loop, daemon=True)
+        self.optimization_thread.start()
+        logger.info("Optimization engine started")
+    
+    def stop_optimization_engine(self):
+        """Stop the optimization engine."""
+        self.is_running = False
+        if self.optimization_thread:
+            self.optimization_thread.join(timeout=5)
+        logger.info("Optimization engine stopped")
+    
+    def queue_parameter_optimization(self, 
+                                   objective_function: Callable[[Dict[str, float]], float],
+                                   parameters: Dict[str, OptimizationParameter],
+                                   algorithm: str = 'auto',
+                                   priority: int = 1):
+        """Queue parameter optimization task."""
+        task = {
+            'type': 'parameter_optimization',
+            'objective_function': objective_function,
+            'parameters': parameters,
+            'algorithm': algorithm,
+            'priority': priority,
+            'timestamp': datetime.now()
+        }
+        self.optimization_queue.append(task)
+        logger.info(f"Queued parameter optimization task with priority {priority}")
+    
+    def queue_resource_optimization(self, 
+                                  resource_type: str,
+                                  resource_data: Dict[str, Any],
+                                  priority: int = 2):
+        """Queue resource optimization task."""
+        task = {
+            'type': 'resource_optimization',
+            'resource_type': resource_type,
+            'resource_data': resource_data,
+            'priority': priority,
+            'timestamp': datetime.now()
+        }
+        self.optimization_queue.append(task)
+        logger.info(f"Queued {resource_type} optimization task with priority {priority}")
+    
+    def queue_configuration_optimization(self, 
+                                       performance_metrics: Dict[str, float],
+                                       priority: int = 3):
+        """Queue configuration optimization task."""
+        task = {
+            'type': 'configuration_optimization',
+            'performance_metrics': performance_metrics,
+            'priority': priority,
+            'timestamp': datetime.now()
+        }
+        self.optimization_queue.append(task)
+        logger.info(f"Queued configuration optimization task with priority {priority}")
+    
+    def _optimization_loop(self):
+        """Main optimization loop."""
+        while self.is_running:
             try:
-                objectives = evaluation_function(param_dict)
-                
-                # Calculate single objective score
-                score = 0.0
-                for obj_name, obj_value in objectives.items():
-                    if obj_name in self.objectives:
-                        obj_def = self.objectives[obj_name]
-                        if obj_def.direction == 'minimize':
-                            score += -obj_value * obj_def.weight
-                        elif obj_def.direction == 'maximize':
-                            score += obj_value * obj_def.weight
-                        else:  # target
-                            score += -abs(obj_value - obj_def.target_value) * obj_def.weight
-                
-                X_samples.append(x)
-                y_samples.append(score)
-                
+                if self.optimization_queue:
+                    # Sort queue by priority (lower number = higher priority)
+                    sorted_queue = sorted(self.optimization_queue, key=lambda x: x['priority'])
+                    task = sorted_queue[0]
+                    self.optimization_queue.remove(task)
+                    
+                    # Execute optimization task
+                    self._execute_optimization_task(task)
+                else:
+                    time.sleep(1)  # Wait for tasks
+                    
             except Exception as e:
-                self.logger.error(f"Error in Bayesian optimization evaluation: {e}")
-        
-        if not X_samples:
-            # Fallback to random search
-            return self._random_search_optimize(evaluation_function, max_iterations)
-        
-        X_samples = np.array(X_samples)
-        y_samples = np.array(y_samples)
-        
-        # Fit Gaussian process
-        kernel = Matern(length_scale=1.0, nu=2.5)
-        gp = GaussianProcessRegressor(kernel=kernel, alpha=1e-6, normalize_y=True)
-        
-        best_score = max(y_samples)
-        best_x = X_samples[np.argmax(y_samples)]
-        
-        # Bayesian optimization loop
-        for iteration in range(max_iterations - n_initial):
-            try:
-                # Fit GP to current data
-                gp.fit(X_samples, y_samples)
-                
-                # Acquisition function optimization (Expected Improvement)
-                def acquisition(x):
-                    x = x.reshape(1, -1)
-                    mu, sigma = gp.predict(x, return_std=True)
-                    
-                    if sigma[0] == 0:
-                        return 0
-                    
-                    # Expected Improvement
-                    improvement = mu[0] - best_score
-                    z = improvement / sigma[0]
-                    ei = improvement * norm.cdf(z) + sigma[0] * norm.pdf(z)
-                    return -ei  # Minimize negative EI
-                
-                # Optimize acquisition function
-                from scipy.stats import norm
-                acq_result = minimize(
-                    acquisition,
-                    x0=best_x,
-                    bounds=bounds,
-                    method='L-BFGS-B'
+                logger.error(f"Error in optimization loop: {e}")
+                time.sleep(5)  # Prevent tight error loop
+    
+    def _execute_optimization_task(self, task: Dict[str, Any]):
+        """Execute optimization task."""
+        try:
+            self.optimization_stats['total_optimizations'] += 1
+            
+            if task['type'] == 'parameter_optimization':
+                result = self.parameter_optimizer.optimize_parameters(
+                    task['objective_function'],
+                    task['parameters'],
+                    task['algorithm']
                 )
                 
-                next_x = acq_result.x
+                if result.success:
+                    self.optimization_stats['successful_optimizations'] += 1
+                    self.optimization_stats['total_improvement'] += result.improvement
+                    self.optimization_stats['average_improvement'] = (
+                        self.optimization_stats['total_improvement'] / 
+                        self.optimization_stats['successful_optimizations']
+                    )
+                    logger.info(f"Parameter optimization completed: {result.improvement:.2f}% improvement")
                 
-                # Evaluate next point
-                param_dict = {param_names[i]: next_x[i] for i in range(len(param_names))}
-                objectives = evaluation_function(param_dict)
+            elif task['type'] == 'resource_optimization':
+                resource_type = task['resource_type']
+                resource_data = task['resource_data']
                 
-                # Calculate score
-                score = 0.0
-                for obj_name, obj_value in objectives.items():
-                    if obj_name in self.objectives:
-                        obj_def = self.objectives[obj_name]
-                        if obj_def.direction == 'minimize':
-                            score += -obj_value * obj_def.weight
-                        elif obj_def.direction == 'maximize':
-                            score += obj_value * obj_def.weight
-                        else:  # target
-                            score += -abs(obj_value - obj_def.target_value) * obj_def.weight
+                if resource_type == 'cpu':
+                    allocations = self.resource_optimizer.optimize_cpu_allocation(
+                        resource_data['processes'], 
+                        resource_data['total_cpu']
+                    )
+                elif resource_type == 'memory':
+                    allocations = self.resource_optimizer.optimize_memory_allocation(
+                        resource_data['processes'], 
+                        resource_data['total_memory']
+                    )
+                elif resource_type == 'network':
+                    allocations = self.resource_optimizer.optimize_network_bandwidth(
+                        resource_data['connections'], 
+                        resource_data['total_bandwidth']
+                    )
                 
-                # Update samples
-                X_samples = np.vstack([X_samples, next_x])
-                y_samples = np.append(y_samples, score)
+                logger.info(f"Resource optimization completed: {resource_type}")
                 
-                # Update best
-                if score > best_score:
-                    best_score = score
-                    best_x = next_x
-                
-            except Exception as e:
-                self.logger.error(f"Error in Bayesian optimization iteration {iteration}: {e}")
-                break
-        
-        # Convert best result
-        best_parameters = {param_names[i]: best_x[i] for i in range(len(param_names))}
-        best_objectives = evaluation_function(best_parameters)
-        improvement = best_score
-        
-        return best_parameters, best_objectives, improvement
-    
-    def _gradient_descent_optimize(self, 
-                                  evaluation_function: Callable,
-                                  max_iterations: int) -> Tuple[Dict[str, float], Dict[str, float], float]:
-        """Optimize using gradient descent with numerical gradients."""
-        
-        param_names = list(self.parameters.keys())
-        
-        # Start from current parameter values
-        x0 = np.array([param.current_value for param in self.parameters.values()])
-        bounds = [(param.min_value, param.max_value) for param in self.parameters.values()]
-        
-        def objective_function(x):
-            param_dict = {param_names[i]: x[i] for i in range(len(param_names))}
-            
-            try:
-                objectives = evaluation_function(param_dict)
-                
-                # Calculate weighted sum
-                total_score = 0.0
-                for obj_name, obj_value in objectives.items():
-                    if obj_name in self.objectives:
-                        obj_def = self.objectives[obj_name]
-                        if obj_def.direction == 'minimize':
-                            score = obj_value * obj_def.weight
-                        elif obj_def.direction == 'maximize':
-                            score = -obj_value * obj_def.weight
-                        else:  # target
-                            score = abs(obj_value - obj_def.target_value) * obj_def.weight
-                        total_score += score
-                
-                return total_score
-                
-            except Exception as e:
-                self.logger.error(f"Error in gradient descent evaluation: {e}")
-                return float('inf')
-        
-        # Run optimization
-        result = minimize(
-            objective_function,
-            x0,
-            method='L-BFGS-B',
-            bounds=bounds,
-            options={'maxiter': max_iterations}
-        )
-        
-        # Convert result
-        best_parameters = {param_names[i]: result.x[i] for i in range(len(param_names))}
-        best_objectives = evaluation_function(best_parameters)
-        improvement = abs(result.fun) if result.success else 0.0
-        
-        return best_parameters, best_objectives, improvement
-    
-    def _evolutionary_optimize(self, 
-                              evaluation_function: Callable,
-                              max_iterations: int) -> Tuple[Dict[str, float], Dict[str, float], float]:
-        """Optimize using custom evolutionary algorithm."""
-        
-        param_names = list(self.parameters.keys())
-        population_size = 20
-        mutation_rate = 0.1
-        crossover_rate = 0.8
-        
-        # Initialize population
-        population = []
-        for _ in range(population_size):
-            individual = {}
-            for param_name, param in self.parameters.items():
-                if param.parameter_type == 'continuous':
-                    individual[param_name] = random.uniform(param.min_value, param.max_value)
-                elif param.parameter_type == 'discrete':
-                    individual[param_name] = random.randint(int(param.min_value), int(param.max_value))
-            population.append(individual)
-        
-        # Evaluate initial population
-        fitness_scores = []
-        for individual in population:
-            try:
-                objectives = evaluation_function(individual)
-                
-                # Calculate fitness
-                fitness = 0.0
-                for obj_name, obj_value in objectives.items():
-                    if obj_name in self.objectives:
-                        obj_def = self.objectives[obj_name]
-                        if obj_def.direction == 'minimize':
-                            fitness += -obj_value * obj_def.weight
-                        elif obj_def.direction == 'maximize':
-                            fitness += obj_value * obj_def.weight
-                        else:  # target
-                            fitness += -abs(obj_value - obj_def.target_value) * obj_def.weight
-                
-                fitness_scores.append(fitness)
-                
-            except Exception as e:
-                self.logger.error(f"Error evaluating individual: {e}")
-                fitness_scores.append(float('-inf'))
-        
-        # Evolution loop
-        for generation in range(max_iterations // population_size):
-            # Selection (tournament selection)
-            new_population = []
-            new_fitness_scores = []
-            
-            for _ in range(population_size):
-                # Tournament selection
-                tournament_size = 3
-                tournament_indices = random.sample(range(population_size), tournament_size)
-                winner_idx = max(tournament_indices, key=lambda i: fitness_scores[i])
-                
-                # Crossover
-                if random.random() < crossover_rate and len(new_population) > 0:
-                    parent1 = population[winner_idx]
-                    parent2 = random.choice(new_population)
-                    
-                    child = {}
-                    for param_name in param_names:
-                        if random.random() < 0.5:
-                            child[param_name] = parent1[param_name]
-                        else:
-                            child[param_name] = parent2[param_name]
-                else:
-                    child = population[winner_idx].copy()
-                
-                # Mutation
-                if random.random() < mutation_rate:
-                    param_to_mutate = random.choice(param_names)
-                    param = self.parameters[param_to_mutate]
-                    
-                    if param.parameter_type == 'continuous':
-                        mutation_strength = (param.max_value - param.min_value) * 0.1
-                        child[param_to_mutate] += random.gauss(0, mutation_strength)
-                        child[param_to_mutate] = max(param.min_value, 
-                                                   min(param.max_value, child[param_to_mutate]))
-                    elif param.parameter_type == 'discrete':
-                        child[param_to_mutate] = random.randint(int(param.min_value), int(param.max_value))
-                
-                # Evaluate child
-                try:
-                    objectives = evaluation_function(child)
-                    
-                    fitness = 0.0
-                    for obj_name, obj_value in objectives.items():
-                        if obj_name in self.objectives:
-                            obj_def = self.objectives[obj_name]
-                            if obj_def.direction == 'minimize':
-                                fitness += -obj_value * obj_def.weight
-                            elif obj_def.direction == 'maximize':
-                                fitness += obj_value * obj_def.weight
-                            else:  # target
-                                fitness += -abs(obj_value - obj_def.target_value) * obj_def.weight
-                    
-                    new_population.append(child)
-                    new_fitness_scores.append(fitness)
-                    
-                except Exception as e:
-                    self.logger.error(f"Error evaluating child: {e}")
-                    new_population.append(child)
-                    new_fitness_scores.append(float('-inf'))
-            
-            population = new_population
-            fitness_scores = new_fitness_scores
-        
-        # Find best individual
-        best_idx = max(range(len(fitness_scores)), key=lambda i: fitness_scores[i])
-        best_parameters = population[best_idx]
-        best_objectives = evaluation_function(best_parameters)
-        improvement = fitness_scores[best_idx]
-        
-        return best_parameters, best_objectives, improvement
-    
-    def _random_search_optimize(self, 
-                               evaluation_function: Callable,
-                               max_iterations: int) -> Tuple[Dict[str, float], Dict[str, float], float]:
-        """Optimize using random search."""
-        
-        best_parameters = None
-        best_objectives = None
-        best_score = float('-inf')
-        
-        for iteration in range(max_iterations):
-            # Generate random parameters
-            parameters = {}
-            for param_name, param in self.parameters.items():
-                if param.parameter_type == 'continuous':
-                    parameters[param_name] = random.uniform(param.min_value, param.max_value)
-                elif param.parameter_type == 'discrete':
-                    parameters[param_name] = random.randint(int(param.min_value), int(param.max_value))
-            
-            try:
-                # Evaluate
-                objectives = evaluation_function(parameters)
-                
-                # Calculate score
-                score = 0.0
-                for obj_name, obj_value in objectives.items():
-                    if obj_name in self.objectives:
-                        obj_def = self.objectives[obj_name]
-                        if obj_def.direction == 'minimize':
-                            score += -obj_value * obj_def.weight
-                        elif obj_def.direction == 'maximize':
-                            score += obj_value * obj_def.weight
-                        else:  # target
-                            score += -abs(obj_value - obj_def.target_value) * obj_def.weight
-                
-                # Update best
-                if score > best_score:
-                    best_score = score
-                    best_parameters = parameters
-                    best_objectives = objectives
-                    
-            except Exception as e:
-                self.logger.error(f"Error in random search iteration {iteration}: {e}")
-        
-        improvement = best_score if best_parameters else 0.0
-        return best_parameters or {}, best_objectives or {}, improvement
-    
-    def _update_pareto_frontier(self, result: OptimizationResult):
-        """Update the Pareto frontier with new optimization result."""
-        if not result.success:
-            return
-        
-        # Convert objectives to list for comparison
-        new_objectives = [result.objectives.get(obj_name, 0.0) for obj_name in self.objectives.keys()]
-        
-        # Check if new result dominates any existing solutions
-        dominated_indices = []
-        is_dominated = False
-        
-        for i, frontier_result in enumerate(self.pareto_frontier):
-            frontier_objectives = [frontier_result.objectives.get(obj_name, 0.0) for obj_name in self.objectives.keys()]
-            
-            # Check dominance
-            new_dominates = True
-            frontier_dominates = True
-            
-            for j, (obj_name, obj_def) in enumerate(self.objectives.items()):
-                if obj_def.direction == 'minimize':
-                    if new_objectives[j] > frontier_objectives[j]:
-                        new_dominates = False
-                    if frontier_objectives[j] > new_objectives[j]:
-                        frontier_dominates = False
-                elif obj_def.direction == 'maximize':
-                    if new_objectives[j] < frontier_objectives[j]:
-                        new_dominates = False
-                    if frontier_objectives[j] < new_objectives[j]:
-                        frontier_dominates = False
-                else:  # target
-                    new_distance = abs(new_objectives[j] - obj_def.target_value)
-                    frontier_distance = abs(frontier_objectives[j] - obj_def.target_value)
-                    if new_distance > frontier_distance:
-                        new_dominates = False
-                    if frontier_distance > new_distance:
-                        frontier_dominates = False
-            
-            if new_dominates:
-                dominated_indices.append(i)
-            elif frontier_dominates:
-                is_dominated = True
-                break
-        
-        # Add to frontier if not dominated
-        if not is_dominated:
-            # Remove dominated solutions
-            for i in reversed(dominated_indices):
-                del self.pareto_frontier[i]
-            
-            # Add new solution
-            self.pareto_frontier.append(result)
-            
-            # Limit frontier size
-            if len(self.pareto_frontier) > 50:
-                self.pareto_frontier = self.pareto_frontier[-50:]
-    
-    def _update_algorithm_weights(self, algorithm: str, improvement: float):
-        """Update algorithm selection weights based on performance."""
-        # Exponential moving average update
-        alpha = 0.1
-        normalized_improvement = max(0, min(1, improvement / 10.0))  # Normalize to 0-1
-        
-        # Update weight for the used algorithm
-        self.algorithm_weights[algorithm] = (
-            (1 - alpha) * self.algorithm_weights[algorithm] + 
-            alpha * normalized_improvement
-        )
-        
-        # Normalize all weights
-        total_weight = sum(self.algorithm_weights.values())
-        if total_weight > 0:
-            for alg in self.algorithm_weights:
-                self.algorithm_weights[alg] /= total_weight
-    
-    def get_optimization_summary(self) -> Dict[str, Any]:
-        """
-        Get comprehensive optimization summary.
-        
-        Returns:
-            Dictionary containing optimization summary data
-        """
-        if not self.optimization_history:
-            return {'message': 'No optimization history available'}
-        
-        recent_results = list(self.optimization_history)[-20:]  # Last 20 optimizations
-        
-        summary = {
-            'timestamp': datetime.now().isoformat(),
-            'total_optimizations': len(self.optimization_history),
-            'success_rate': sum(1 for r in recent_results if r.success) / len(recent_results),
-            'average_improvement': sum(r.improvement for r in recent_results if r.success) / max(1, sum(1 for r in recent_results if r.success)),
-            'algorithm_performance': {},
-            'pareto_frontier_size': len(self.pareto_frontier),
-            'parameters': {name: param.to_dict() for name, param in self.parameters.items()},
-            'objectives': {name: obj.to_dict() for name, obj in self.objectives.items()}
-        }
-        
-        # Algorithm performance analysis
-        algorithm_stats = defaultdict(lambda: {'count': 0, 'success': 0, 'total_improvement': 0.0})
-        
-        for result in recent_results:
-            stats = algorithm_stats[result.algorithm]
-            stats['count'] += 1
-            if result.success:
-                stats['success'] += 1
-                stats['total_improvement'] += result.improvement
-        
-        for algorithm, stats in algorithm_stats.items():
-            if stats['count'] > 0:
-                summary['algorithm_performance'][algorithm] = {
-                    'success_rate': stats['success'] / stats['count'],
-                    'average_improvement': stats['total_improvement'] / max(1, stats['success']),
-                    'usage_count': stats['count'],
-                    'selection_weight': self.algorithm_weights.get(algorithm, 0.0)
-                }
-        
-        return summary
-
-
-class AdaptivePerformanceTuner:
-    """Adaptive performance tuning system with reinforcement learning."""
-    
-    def __init__(self, optimizer: MultiObjectiveOptimizer):
-        """
-        Initialize the adaptive performance tuner.
-        
-        Args:
-            optimizer: MultiObjectiveOptimizer instance for optimization
-        """
-        self.optimizer = optimizer
-        self.tuning_history = deque(maxlen=500)
-        self.performance_baselines = {}
-        self.tuning_policies = {}
-        self.running = False
-        self.tuning_thread = None
-        self.logger = logging.getLogger(__name__)
-        
-        # Tuning configuration
-        self.tuning_interval = 300  # 5 minutes
-        self.min_improvement_threshold = 0.01
-        self.max_concurrent_tunings = 3
-        self.active_tunings = 0
-    
-    def add_tuning_policy(self, 
-                         name: str,
-                         trigger_condition: Callable[[], bool],
-                         evaluation_function: Callable[[Dict[str, float]], Dict[str, float]],
-                         parameters: List[OptimizationParameter],
-                         objectives: List[OptimizationObjective]):
-        """
-        Add an adaptive tuning policy.
-        
-        Args:
-            name: Name of the tuning policy
-            trigger_condition: Function that returns True when tuning should be triggered
-            evaluation_function: Function to evaluate parameter combinations
-            parameters: List of parameters to optimize
-            objectives: List of optimization objectives
-        """
-        self.tuning_policies[name] = {
-            'trigger_condition': trigger_condition,
-            'evaluation_function': evaluation_function,
-            'parameters': parameters,
-            'objectives': objectives,
-            'last_tuning': None,
-            'tuning_count': 0,
-            'total_improvement': 0.0
-        }
-        self.logger.info(f"Added tuning policy: {name}")
-    
-    def start_adaptive_tuning(self):
-        """Start the adaptive performance tuning process."""
-        if self.running:
-            self.logger.warning("Adaptive tuning already running")
-            return
-        
-        self.running = True
-        self.tuning_thread = threading.Thread(target=self._tuning_loop, daemon=True)
-        self.tuning_thread.start()
-        self.logger.info("Started adaptive performance tuning")
-    
-    def stop_adaptive_tuning(self):
-        """Stop the adaptive performance tuning process."""
-        self.running = False
-        if self.tuning_thread:
-            self.tuning_thread.join(timeout=10.0)
-        self.logger.info("Stopped adaptive performance tuning")
-    
-    def _tuning_loop(self):
-        """Main adaptive tuning loop running in separate thread."""
-        while self.running:
-            try:
-                # Check each tuning policy
-                for policy_name, policy in self.tuning_policies.items():
-                    if self.active_tunings >= self.max_concurrent_tunings:
-                        break
-                    
-                    # Check trigger condition
-                    try:
-                        if policy['trigger_condition']():
-                            # Check if enough time has passed since last tuning
-                            if (policy['last_tuning'] is None or 
-                                datetime.now() - policy['last_tuning'] > timedelta(seconds=self.tuning_interval)):
-                                
-                                # Start tuning in separate thread
-                                tuning_thread = threading.Thread(
-                                    target=self._execute_tuning,
-                                    args=(policy_name, policy),
-                                    daemon=True
-                                )
-                                tuning_thread.start()
-                                
-                    except Exception as e:
-                        self.logger.error(f"Error checking trigger condition for {policy_name}: {e}")
-                
-                # Sleep before next check
-                time.sleep(30)  # Check every 30 seconds
-                
-            except Exception as e:
-                self.logger.error(f"Error in adaptive tuning loop: {e}")
-                time.sleep(30)
-    
-    def _execute_tuning(self, policy_name: str, policy: Dict[str, Any]):
-        """Execute tuning for a specific policy."""
-        self.active_tunings += 1
-        
-        try:
-            self.logger.info(f"Starting adaptive tuning for policy: {policy_name}")
-            
-            # Set up optimizer for this policy
-            temp_optimizer = MultiObjectiveOptimizer()
-            
-            for param in policy['parameters']:
-                temp_optimizer.add_parameter(param)
-            
-            for objective in policy['objectives']:
-                temp_optimizer.add_objective(objective)
-            
-            # Run optimization
-            result = temp_optimizer.optimize(
-                evaluation_function=policy['evaluation_function'],
-                max_iterations=50  # Smaller iterations for adaptive tuning
-            )
-            
-            # Update policy statistics
-            policy['last_tuning'] = datetime.now()
-            policy['tuning_count'] += 1
-            
-            if result.success and result.improvement > self.min_improvement_threshold:
-                policy['total_improvement'] += result.improvement
-                self.tuning_history.append({
-                    'policy_name': policy_name,
-                    'result': result,
-                    'timestamp': datetime.now()
-                })
-                
-                self.logger.info(f"Adaptive tuning for {policy_name} completed with improvement: {result.improvement:.4f}")
-            else:
-                self.logger.info(f"Adaptive tuning for {policy_name} completed with minimal improvement")
+            elif task['type'] == 'configuration_optimization':
+                optimized_config = self.config_manager.optimize_configuration(
+                    task['performance_metrics']
+                )
+                logger.info("Configuration optimization completed")
                 
         except Exception as e:
-            self.logger.error(f"Error in adaptive tuning for {policy_name}: {e}")
-        
-        finally:
-            self.active_tunings -= 1
+            logger.error(f"Error executing optimization task: {e}")
     
-    def get_tuning_summary(self) -> Dict[str, Any]:
-        """
-        Get comprehensive adaptive tuning summary.
-        
-        Returns:
-            Dictionary containing tuning summary data
-        """
-        summary = {
+    def get_optimization_stats(self) -> Dict[str, Any]:
+        """Get optimization engine statistics."""
+        return {
+            'is_running': self.is_running,
+            'queue_size': len(self.optimization_queue),
+            'stats': self.optimization_stats.copy(),
+            'parameter_history_size': len(self.parameter_optimizer.optimization_history),
+            'resource_history_size': len(self.resource_optimizer.allocation_history),
+            'config_history_size': len(self.config_manager.config_history)
+        }
+    
+    def run_comprehensive_optimization(self, performance_metrics: Dict[str, float]) -> Dict[str, Any]:
+        """Run comprehensive optimization across all components."""
+        results = {
             'timestamp': datetime.now().isoformat(),
-            'active_tunings': self.active_tunings,
-            'total_policies': len(self.tuning_policies),
-            'tuning_history_size': len(self.tuning_history),
-            'policies': {}
+            'parameter_optimization': None,
+            'resource_optimization': None,
+            'configuration_optimization': None
         }
         
-        # Policy statistics
-        for policy_name, policy in self.tuning_policies.items():
-            summary['policies'][policy_name] = {
-                'tuning_count': policy['tuning_count'],
-                'total_improvement': policy['total_improvement'],
-                'average_improvement': policy['total_improvement'] / max(1, policy['tuning_count']),
-                'last_tuning': policy['last_tuning'].isoformat() if policy['last_tuning'] else None,
-                'parameters_count': len(policy['parameters']),
-                'objectives_count': len(policy['objectives'])
+        try:
+            # Configuration optimization
+            optimized_config = self.config_manager.optimize_configuration(performance_metrics)
+            results['configuration_optimization'] = {
+                'status': 'completed',
+                'config': optimized_config
             }
+            
+            # Resource optimization (example)
+            if 'cpu_usage_percent' in performance_metrics:
+                cpu_processes = [
+                    {'name': 'learning_system', 'priority': 3, 'min_cpu': 0.5, 'max_cpu': 4.0},
+                    {'name': 'monitoring', 'priority': 2, 'min_cpu': 0.1, 'max_cpu': 1.0},
+                    {'name': 'optimization', 'priority': 1, 'min_cpu': 0.2, 'max_cpu': 2.0}
+                ]
+                cpu_allocations = self.resource_optimizer.optimize_cpu_allocation(cpu_processes, 8.0)
+                results['resource_optimization'] = {
+                    'status': 'completed',
+                    'cpu_allocations': cpu_allocations
+                }
+            
+        except Exception as e:
+            logger.error(f"Error in comprehensive optimization: {e}")
+            results['error'] = str(e)
         
-        # Recent tuning results
-        recent_tunings = list(self.tuning_history)[-10:]
-        summary['recent_tunings'] = [
-            {
-                'policy_name': tuning['policy_name'],
-                'improvement': tuning['result'].improvement,
-                'success': tuning['result'].success,
-                'timestamp': tuning['timestamp'].isoformat()
-            }
-            for tuning in recent_tunings
-        ]
-        
-        return summary
-
+        return results
 
 # Example usage and testing
 if __name__ == "__main__":
-    # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    # Create optimization engine
+    engine = OptimizationEngine()
     
-    # Create multi-objective optimizer
-    optimizer = MultiObjectiveOptimizer()
-    
-    # Add parameters
-    optimizer.add_parameter(OptimizationParameter(
-        name='learning_rate',
-        current_value=0.01,
-        min_value=0.001,
-        max_value=0.1,
-        parameter_type='continuous'
-    ))
-    
-    optimizer.add_parameter(OptimizationParameter(
-        name='batch_size',
-        current_value=32,
-        min_value=16,
-        max_value=128,
-        parameter_type='discrete'
-    ))
-    
-    # Add objectives
-    optimizer.add_objective(OptimizationObjective(
-        name='accuracy',
-        direction='maximize',
-        weight=0.7
-    ))
-    
-    optimizer.add_objective(OptimizationObjective(
-        name='training_time',
-        direction='minimize',
-        weight=0.3
-    ))
-    
-    # Define evaluation function
-    def evaluate_parameters(params):
-        # Simulate model training and evaluation
-        learning_rate = params['learning_rate']
-        batch_size = params['batch_size']
+    # Example objective function
+    def example_objective(params):
+        # Simulate a performance metric based on parameters
+        x = params.get('learning_rate', 0.01)
+        y = params.get('batch_size', 32)
+        z = params.get('hidden_units', 64)
         
-        # Simulate accuracy (higher learning rate and smaller batch size = higher accuracy, with noise)
-        accuracy = 0.8 + 0.1 * learning_rate * 10 + 0.05 * (64 / batch_size) + random.gauss(0, 0.02)
-        accuracy = max(0, min(1, accuracy))
-        
-        # Simulate training time (larger batch size = faster training)
-        training_time = 100 + 50 * (1 / learning_rate) + 20 * (64 / batch_size) + random.gauss(0, 5)
-        training_time = max(10, training_time)
-        
-        return {
-            'accuracy': accuracy,
-            'training_time': training_time
-        }
+        # Simulate some complex performance function
+        return -(x - 0.1)**2 - (y - 50)**2/1000 - (z - 100)**2/10000 + 100
     
-    # Run optimization
-    print("Running multi-objective optimization...")
-    result = optimizer.optimize(evaluate_parameters, max_iterations=50)
+    # Define parameters to optimize
+    parameters = {
+        'learning_rate': OptimizationParameter('learning_rate', 0.01, 0.001, 0.5, 'continuous'),
+        'batch_size': OptimizationParameter('batch_size', 32, 8, 128, 'discrete'),
+        'hidden_units': OptimizationParameter('hidden_units', 64, 32, 256, 'discrete')
+    }
     
-    print(f"Optimization completed:")
-    print(f"  Success: {result.success}")
-    print(f"  Improvement: {result.improvement:.4f}")
-    print(f"  Algorithm: {result.algorithm}")
-    print(f"  Parameters: {result.parameters}")
-    print(f"  Objectives: {result.objectives}")
-    
-    # Get optimization summary
-    summary = optimizer.get_optimization_summary()
-    print(f"\nOptimization Summary:")
-    print(f"  Total optimizations: {summary['total_optimizations']}")
-    print(f"  Success rate: {summary['success_rate']:.2f}")
-    print(f"  Average improvement: {summary['average_improvement']:.4f}")
-    print(f"  Pareto frontier size: {summary['pareto_frontier_size']}")
-    
-    # Test adaptive tuning
-    tuner = AdaptivePerformanceTuner(optimizer)
-    
-    # Add a simple tuning policy
-    def trigger_condition():
-        return random.random() < 0.3  # 30% chance to trigger
-    
-    tuner.add_tuning_policy(
-        name='learning_rate_tuning',
-        trigger_condition=trigger_condition,
-        evaluation_function=evaluate_parameters,
-        parameters=[OptimizationParameter(
-            name='learning_rate',
-            current_value=0.01,
-            min_value=0.001,
-            max_value=0.1,
-            parameter_type='continuous'
-        )],
-        objectives=[OptimizationObjective(
-            name='accuracy',
-            direction='maximize',
-            weight=1.0
-        )]
+    # Test parameter optimization
+    print("Testing parameter optimization...")
+    result = engine.parameter_optimizer.optimize_parameters(
+        example_objective, 
+        parameters, 
+        algorithm='genetic_algorithm',
+        max_iterations=50
     )
     
-    print("\nOptimization engine and adaptive performance tuning operational!")
-    print("Ready for integration with performance monitoring system.")
+    print(f"Optimization result: {result.improvement:.2f}% improvement")
+    print(f"Best parameters: {result.parameters}")
+    
+    # Test resource optimization
+    print("\nTesting resource optimization...")
+    processes = [
+        {'name': 'process1', 'priority': 3, 'min_cpu': 0.5, 'max_cpu': 2.0},
+        {'name': 'process2', 'priority': 1, 'min_cpu': 0.2, 'max_cpu': 1.0},
+        {'name': 'process3', 'priority': 2, 'min_cpu': 0.3, 'max_cpu': 1.5}
+    ]
+    
+    cpu_allocations = engine.resource_optimizer.optimize_cpu_allocation(processes, 4.0)
+    print(f"CPU allocations: {cpu_allocations}")
+    
+    # Test configuration optimization
+    print("\nTesting configuration optimization...")
+    performance_metrics = {
+        'cpu_usage_percent': 85,
+        'memory_usage_percent': 70,
+        'throughput': 150
+    }
+    
+    optimized_config = engine.config_manager.optimize_configuration(performance_metrics)
+    print(f"Optimized configuration: {optimized_config}")
+    
+    # Get optimization stats
+    stats = engine.get_optimization_stats()
+    print(f"\nOptimization stats: {stats}")
 

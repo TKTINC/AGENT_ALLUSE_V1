@@ -1,28 +1,17 @@
 """
-ALL-USE Learning Systems - Performance Monitoring and Metrics Framework
+WS5-P5: Performance Monitoring Framework
+Advanced performance monitoring and analytics for autonomous learning systems.
 
-This module provides comprehensive performance monitoring and metrics collection capabilities
-for the ALL-USE Learning Systems, enabling real-time performance tracking, analysis, and
-optimization across all system components.
-
-Key Features:
-- Real-time performance monitoring with sub-second granularity
-- Comprehensive metrics collection across 500+ performance indicators
-- Advanced analytics and trend analysis for performance optimization
-- Predictive performance modeling and forecasting
-- Automated alerting and notification systems
-- Performance baseline establishment and drift detection
-- Multi-dimensional performance analysis and correlation
-- Integration with autonomous optimization systems
-
-Author: Manus AI
-Date: 2025-06-18
-Version: 1.0.0
+This module provides comprehensive performance monitoring capabilities including:
+- Real-time metrics collection and analysis
+- Multi-dimensional performance tracking
+- Anomaly detection and alerting
+- Performance baseline management
+- Historical trend analysis
 """
 
-import asyncio
-import threading
 import time
+import threading
 import json
 import logging
 import statistics
@@ -34,7 +23,11 @@ import psutil
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 import sqlite3
+import os
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @dataclass
 class PerformanceMetric:
@@ -43,9 +36,8 @@ class PerformanceMetric:
     value: float
     timestamp: datetime
     category: str
-    component: str
-    tags: Dict[str, str]
     unit: str
+    metadata: Dict[str, Any] = None
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert metric to dictionary format."""
@@ -54,754 +46,796 @@ class PerformanceMetric:
             'value': self.value,
             'timestamp': self.timestamp.isoformat(),
             'category': self.category,
-            'component': self.component,
-            'tags': self.tags,
-            'unit': self.unit
+            'unit': self.unit,
+            'metadata': self.metadata or {}
         }
 
-
 @dataclass
-class PerformanceAlert:
-    """Represents a performance alert or notification."""
+class PerformanceBaseline:
+    """Represents performance baseline for a metric."""
     metric_name: str
-    alert_type: str
-    severity: str
-    threshold: float
-    current_value: float
-    message: str
-    timestamp: datetime
-    component: str
+    mean: float
+    std_dev: float
+    min_value: float
+    max_value: float
+    percentile_95: float
+    sample_count: int
+    last_updated: datetime
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert alert to dictionary format."""
-        return asdict(self)
-
-
 class MetricsCollector:
-    """Advanced metrics collection system with real-time monitoring capabilities."""
+    """Collects various system and application performance metrics."""
     
-    def __init__(self, collection_interval: float = 1.0):
+    def __init__(self, collection_interval: float = 0.1):
         """
-        Initialize the metrics collector.
+        Initialize metrics collector.
         
         Args:
             collection_interval: Interval between metric collections in seconds
         """
         self.collection_interval = collection_interval
-        self.metrics_buffer = deque(maxlen=10000)
-        self.collectors = {}
-        self.running = False
+        self.is_collecting = False
+        self.metrics_buffer = deque(maxlen=10000)  # Buffer for recent metrics
+        self.custom_collectors = {}
         self.collection_thread = None
-        self.logger = logging.getLogger(__name__)
         
-        # Performance categories
-        self.categories = {
-            'system': ['cpu_usage', 'memory_usage', 'disk_io', 'network_io'],
-            'learning': ['training_speed', 'inference_latency', 'accuracy_metrics'],
-            'optimization': ['optimization_rate', 'improvement_rate', 'convergence_time'],
-            'monitoring': ['collection_latency', 'processing_speed', 'alert_rate'],
-            'integration': ['coordination_latency', 'message_throughput', 'sync_time']
-        }
-        
-        # Initialize built-in collectors
-        self._initialize_system_collectors()
+    def register_custom_collector(self, name: str, collector_func: Callable[[], Dict[str, float]]):
+        """Register a custom metrics collector function."""
+        self.custom_collectors[name] = collector_func
+        logger.info(f"Registered custom collector: {name}")
     
-    def _initialize_system_collectors(self):
-        """Initialize built-in system performance collectors."""
+    def collect_system_metrics(self) -> List[PerformanceMetric]:
+        """Collect system-level performance metrics."""
+        timestamp = datetime.now()
+        metrics = []
         
-        def collect_cpu_metrics():
-            """Collect CPU performance metrics."""
+        try:
+            # CPU metrics
             cpu_percent = psutil.cpu_percent(interval=None)
             cpu_count = psutil.cpu_count()
-            load_avg = psutil.getloadavg() if hasattr(psutil, 'getloadavg') else (0, 0, 0)
+            cpu_freq = psutil.cpu_freq()
             
-            return [
-                PerformanceMetric(
-                    name='cpu_usage_percent',
-                    value=cpu_percent,
-                    timestamp=datetime.now(),
-                    category='system',
-                    component='cpu',
-                    tags={'type': 'utilization'},
-                    unit='percent'
-                ),
-                PerformanceMetric(
-                    name='cpu_count',
-                    value=cpu_count,
-                    timestamp=datetime.now(),
-                    category='system',
-                    component='cpu',
-                    tags={'type': 'capacity'},
-                    unit='cores'
-                ),
-                PerformanceMetric(
-                    name='load_average_1m',
-                    value=load_avg[0],
-                    timestamp=datetime.now(),
-                    category='system',
-                    component='cpu',
-                    tags={'type': 'load', 'period': '1m'},
-                    unit='ratio'
-                )
-            ]
-        
-        def collect_memory_metrics():
-            """Collect memory performance metrics."""
+            metrics.extend([
+                PerformanceMetric("cpu_usage_percent", cpu_percent, timestamp, "system", "percent"),
+                PerformanceMetric("cpu_count", cpu_count, timestamp, "system", "count"),
+                PerformanceMetric("cpu_frequency_mhz", cpu_freq.current if cpu_freq else 0, timestamp, "system", "mhz")
+            ])
+            
+            # Memory metrics
             memory = psutil.virtual_memory()
             swap = psutil.swap_memory()
             
-            return [
-                PerformanceMetric(
-                    name='memory_usage_percent',
-                    value=memory.percent,
-                    timestamp=datetime.now(),
-                    category='system',
-                    component='memory',
-                    tags={'type': 'utilization'},
-                    unit='percent'
-                ),
-                PerformanceMetric(
-                    name='memory_available_gb',
-                    value=memory.available / (1024**3),
-                    timestamp=datetime.now(),
-                    category='system',
-                    component='memory',
-                    tags={'type': 'available'},
-                    unit='gigabytes'
-                ),
-                PerformanceMetric(
-                    name='swap_usage_percent',
-                    value=swap.percent,
-                    timestamp=datetime.now(),
-                    category='system',
-                    component='memory',
-                    tags={'type': 'swap'},
-                    unit='percent'
-                )
-            ]
-        
-        def collect_disk_metrics():
-            """Collect disk I/O performance metrics."""
-            disk_io = psutil.disk_io_counters()
+            metrics.extend([
+                PerformanceMetric("memory_usage_percent", memory.percent, timestamp, "system", "percent"),
+                PerformanceMetric("memory_available_gb", memory.available / (1024**3), timestamp, "system", "gb"),
+                PerformanceMetric("memory_used_gb", memory.used / (1024**3), timestamp, "system", "gb"),
+                PerformanceMetric("swap_usage_percent", swap.percent, timestamp, "system", "percent")
+            ])
+            
+            # Disk metrics
             disk_usage = psutil.disk_usage('/')
+            disk_io = psutil.disk_io_counters()
             
-            metrics = []
-            if disk_io:
-                metrics.extend([
-                    PerformanceMetric(
-                        name='disk_read_bytes_per_sec',
-                        value=disk_io.read_bytes,
-                        timestamp=datetime.now(),
-                        category='system',
-                        component='disk',
-                        tags={'type': 'io', 'operation': 'read'},
-                        unit='bytes_per_second'
-                    ),
-                    PerformanceMetric(
-                        name='disk_write_bytes_per_sec',
-                        value=disk_io.write_bytes,
-                        timestamp=datetime.now(),
-                        category='system',
-                        component='disk',
-                        tags={'type': 'io', 'operation': 'write'},
-                        unit='bytes_per_second'
-                    )
-                ])
+            metrics.extend([
+                PerformanceMetric("disk_usage_percent", (disk_usage.used / disk_usage.total) * 100, timestamp, "system", "percent"),
+                PerformanceMetric("disk_free_gb", disk_usage.free / (1024**3), timestamp, "system", "gb"),
+                PerformanceMetric("disk_read_bytes_per_sec", disk_io.read_bytes if disk_io else 0, timestamp, "system", "bytes/sec"),
+                PerformanceMetric("disk_write_bytes_per_sec", disk_io.write_bytes if disk_io else 0, timestamp, "system", "bytes/sec")
+            ])
             
-            metrics.append(
-                PerformanceMetric(
-                    name='disk_usage_percent',
-                    value=disk_usage.percent,
-                    timestamp=datetime.now(),
-                    category='system',
-                    component='disk',
-                    tags={'type': 'utilization'},
-                    unit='percent'
-                )
-            )
-            
-            return metrics
-        
-        def collect_network_metrics():
-            """Collect network performance metrics."""
+            # Network metrics
             network_io = psutil.net_io_counters()
             
-            if network_io:
-                return [
-                    PerformanceMetric(
-                        name='network_bytes_sent_per_sec',
-                        value=network_io.bytes_sent,
-                        timestamp=datetime.now(),
-                        category='system',
-                        component='network',
-                        tags={'type': 'io', 'direction': 'sent'},
-                        unit='bytes_per_second'
-                    ),
-                    PerformanceMetric(
-                        name='network_bytes_recv_per_sec',
-                        value=network_io.bytes_recv,
-                        timestamp=datetime.now(),
-                        category='system',
-                        component='network',
-                        tags={'type': 'io', 'direction': 'received'},
-                        unit='bytes_per_second'
-                    )
-                ]
-            return []
-        
-        # Register built-in collectors
-        self.register_collector('cpu_metrics', collect_cpu_metrics)
-        self.register_collector('memory_metrics', collect_memory_metrics)
-        self.register_collector('disk_metrics', collect_disk_metrics)
-        self.register_collector('network_metrics', collect_network_metrics)
+            metrics.extend([
+                PerformanceMetric("network_bytes_sent_per_sec", network_io.bytes_sent if network_io else 0, timestamp, "system", "bytes/sec"),
+                PerformanceMetric("network_bytes_recv_per_sec", network_io.bytes_recv if network_io else 0, timestamp, "system", "bytes/sec"),
+                PerformanceMetric("network_packets_sent_per_sec", network_io.packets_sent if network_io else 0, timestamp, "system", "packets/sec"),
+                PerformanceMetric("network_packets_recv_per_sec", network_io.packets_recv if network_io else 0, timestamp, "system", "packets/sec")
+            ])
+            
+        except Exception as e:
+            logger.error(f"Error collecting system metrics: {e}")
+            
+        return metrics
     
-    def register_collector(self, name: str, collector_func: Callable[[], List[PerformanceMetric]]):
-        """
-        Register a custom metrics collector.
+    def collect_application_metrics(self) -> List[PerformanceMetric]:
+        """Collect application-specific performance metrics."""
+        timestamp = datetime.now()
+        metrics = []
         
-        Args:
-            name: Name of the collector
-            collector_func: Function that returns list of PerformanceMetric objects
-        """
-        self.collectors[name] = collector_func
-        self.logger.info(f"Registered metrics collector: {name}")
+        try:
+            # Process-specific metrics
+            process = psutil.Process()
+            
+            metrics.extend([
+                PerformanceMetric("process_cpu_percent", process.cpu_percent(), timestamp, "application", "percent"),
+                PerformanceMetric("process_memory_mb", process.memory_info().rss / (1024**2), timestamp, "application", "mb"),
+                PerformanceMetric("process_threads", process.num_threads(), timestamp, "application", "count"),
+                PerformanceMetric("process_open_files", len(process.open_files()), timestamp, "application", "count")
+            ])
+            
+            # Custom application metrics
+            for collector_name, collector_func in self.custom_collectors.items():
+                try:
+                    custom_metrics = collector_func()
+                    for metric_name, value in custom_metrics.items():
+                        metrics.append(
+                            PerformanceMetric(
+                                f"{collector_name}_{metric_name}", 
+                                value, 
+                                timestamp, 
+                                "application", 
+                                "custom"
+                            )
+                        )
+                except Exception as e:
+                    logger.error(f"Error in custom collector {collector_name}: {e}")
+                    
+        except Exception as e:
+            logger.error(f"Error collecting application metrics: {e}")
+            
+        return metrics
+    
+    def collect_all_metrics(self) -> List[PerformanceMetric]:
+        """Collect all available metrics."""
+        all_metrics = []
+        all_metrics.extend(self.collect_system_metrics())
+        all_metrics.extend(self.collect_application_metrics())
+        return all_metrics
     
     def start_collection(self):
-        """Start the metrics collection process."""
-        if self.running:
-            self.logger.warning("Metrics collection already running")
+        """Start continuous metrics collection."""
+        if self.is_collecting:
+            logger.warning("Metrics collection already running")
             return
-        
-        self.running = True
+            
+        self.is_collecting = True
         self.collection_thread = threading.Thread(target=self._collection_loop, daemon=True)
         self.collection_thread.start()
-        self.logger.info("Started metrics collection")
+        logger.info("Started metrics collection")
     
     def stop_collection(self):
-        """Stop the metrics collection process."""
-        self.running = False
+        """Stop metrics collection."""
+        self.is_collecting = False
         if self.collection_thread:
-            self.collection_thread.join(timeout=5.0)
-        self.logger.info("Stopped metrics collection")
+            self.collection_thread.join(timeout=5)
+        logger.info("Stopped metrics collection")
     
     def _collection_loop(self):
         """Main collection loop running in separate thread."""
-        while self.running:
+        while self.is_collecting:
             try:
-                start_time = time.time()
-                
-                # Collect metrics from all registered collectors
-                for collector_name, collector_func in self.collectors.items():
-                    try:
-                        metrics = collector_func()
-                        for metric in metrics:
-                            self.metrics_buffer.append(metric)
-                    except Exception as e:
-                        self.logger.error(f"Error in collector {collector_name}: {e}")
-                
-                # Calculate collection latency
-                collection_time = time.time() - start_time
-                self.metrics_buffer.append(
-                    PerformanceMetric(
-                        name='collection_latency',
-                        value=collection_time * 1000,  # Convert to milliseconds
-                        timestamp=datetime.now(),
-                        category='monitoring',
-                        component='collector',
-                        tags={'type': 'latency'},
-                        unit='milliseconds'
-                    )
-                )
-                
-                # Sleep for remaining interval time
-                sleep_time = max(0, self.collection_interval - collection_time)
-                time.sleep(sleep_time)
-                
-            except Exception as e:
-                self.logger.error(f"Error in collection loop: {e}")
+                metrics = self.collect_all_metrics()
+                for metric in metrics:
+                    self.metrics_buffer.append(metric)
                 time.sleep(self.collection_interval)
+            except Exception as e:
+                logger.error(f"Error in collection loop: {e}")
+                time.sleep(1)  # Prevent tight error loop
     
     def get_recent_metrics(self, count: int = 100) -> List[PerformanceMetric]:
-        """
-        Get the most recent metrics.
-        
-        Args:
-            count: Number of recent metrics to return
-            
-        Returns:
-            List of recent PerformanceMetric objects
-        """
+        """Get the most recent metrics."""
         return list(self.metrics_buffer)[-count:]
-    
-    def get_metrics_by_category(self, category: str, minutes: int = 5) -> List[PerformanceMetric]:
-        """
-        Get metrics by category within specified time window.
-        
-        Args:
-            category: Metric category to filter by
-            minutes: Time window in minutes
-            
-        Returns:
-            List of filtered PerformanceMetric objects
-        """
-        cutoff_time = datetime.now() - timedelta(minutes=minutes)
-        return [
-            metric for metric in self.metrics_buffer
-            if metric.category == category and metric.timestamp >= cutoff_time
-        ]
-    
-    def get_metric_statistics(self, metric_name: str, minutes: int = 5) -> Dict[str, float]:
-        """
-        Calculate statistics for a specific metric.
-        
-        Args:
-            metric_name: Name of the metric
-            minutes: Time window in minutes
-            
-        Returns:
-            Dictionary containing statistical measures
-        """
-        cutoff_time = datetime.now() - timedelta(minutes=minutes)
-        values = [
-            metric.value for metric in self.metrics_buffer
-            if metric.name == metric_name and metric.timestamp >= cutoff_time
-        ]
-        
-        if not values:
-            return {}
-        
-        return {
-            'count': len(values),
-            'mean': statistics.mean(values),
-            'median': statistics.median(values),
-            'min': min(values),
-            'max': max(values),
-            'std_dev': statistics.stdev(values) if len(values) > 1 else 0.0,
-            'percentile_95': np.percentile(values, 95),
-            'percentile_99': np.percentile(values, 99)
-        }
 
-
-class PerformanceMonitor:
-    """Advanced performance monitoring system with alerting and analysis capabilities."""
+class PerformanceAnalyzer:
+    """Analyzes performance metrics for trends, anomalies, and insights."""
     
-    def __init__(self, metrics_collector: MetricsCollector):
+    def __init__(self, anomaly_threshold: float = 2.0):
         """
-        Initialize the performance monitor.
+        Initialize performance analyzer.
         
         Args:
-            metrics_collector: MetricsCollector instance for data source
+            anomaly_threshold: Standard deviations from mean to consider anomalous
         """
-        self.metrics_collector = metrics_collector
-        self.alert_thresholds = {}
-        self.alert_handlers = []
+        self.anomaly_threshold = anomaly_threshold
         self.baselines = {}
-        self.running = False
-        self.monitor_thread = None
-        self.logger = logging.getLogger(__name__)
+        self.analysis_history = deque(maxlen=1000)
         
-        # Initialize default alert thresholds
-        self._initialize_default_thresholds()
-    
-    def _initialize_default_thresholds(self):
-        """Initialize default alert thresholds for common metrics."""
-        self.alert_thresholds = {
-            'cpu_usage_percent': {'warning': 80.0, 'critical': 95.0},
-            'memory_usage_percent': {'warning': 85.0, 'critical': 95.0},
-            'disk_usage_percent': {'warning': 85.0, 'critical': 95.0},
-            'collection_latency': {'warning': 1000.0, 'critical': 5000.0},  # milliseconds
-            'training_speed': {'warning': 0.5, 'critical': 0.2},  # relative to baseline
-            'inference_latency': {'warning': 100.0, 'critical': 500.0}  # milliseconds
-        }
-    
-    def set_alert_threshold(self, metric_name: str, warning: float, critical: float):
-        """
-        Set alert thresholds for a specific metric.
+    def calculate_baseline(self, metrics: List[PerformanceMetric], metric_name: str) -> Optional[PerformanceBaseline]:
+        """Calculate performance baseline for a specific metric."""
+        metric_values = [m.value for m in metrics if m.name == metric_name]
         
-        Args:
-            metric_name: Name of the metric
-            warning: Warning threshold value
-            critical: Critical threshold value
-        """
-        self.alert_thresholds[metric_name] = {
-            'warning': warning,
-            'critical': critical
-        }
-        self.logger.info(f"Set alert thresholds for {metric_name}: warning={warning}, critical={critical}")
+        if len(metric_values) < 10:  # Need minimum samples for baseline
+            return None
+            
+        try:
+            mean_val = statistics.mean(metric_values)
+            std_dev = statistics.stdev(metric_values) if len(metric_values) > 1 else 0
+            min_val = min(metric_values)
+            max_val = max(metric_values)
+            percentile_95 = np.percentile(metric_values, 95)
+            
+            baseline = PerformanceBaseline(
+                metric_name=metric_name,
+                mean=mean_val,
+                std_dev=std_dev,
+                min_value=min_val,
+                max_value=max_val,
+                percentile_95=percentile_95,
+                sample_count=len(metric_values),
+                last_updated=datetime.now()
+            )
+            
+            self.baselines[metric_name] = baseline
+            return baseline
+            
+        except Exception as e:
+            logger.error(f"Error calculating baseline for {metric_name}: {e}")
+            return None
     
-    def add_alert_handler(self, handler: Callable[[PerformanceAlert], None]):
-        """
-        Add an alert handler function.
+    def detect_anomalies(self, metrics: List[PerformanceMetric]) -> List[Dict[str, Any]]:
+        """Detect anomalous performance metrics."""
+        anomalies = []
         
-        Args:
-            handler: Function to handle performance alerts
-        """
-        self.alert_handlers.append(handler)
-        self.logger.info("Added alert handler")
-    
-    def establish_baseline(self, metric_name: str, duration_minutes: int = 60):
-        """
-        Establish performance baseline for a metric.
-        
-        Args:
-            metric_name: Name of the metric
-            duration_minutes: Duration to collect baseline data
-        """
-        stats = self.metrics_collector.get_metric_statistics(metric_name, duration_minutes)
-        if stats:
-            self.baselines[metric_name] = {
-                'mean': stats['mean'],
-                'std_dev': stats['std_dev'],
-                'established_at': datetime.now(),
-                'sample_count': stats['count']
-            }
-            self.logger.info(f"Established baseline for {metric_name}: mean={stats['mean']:.2f}, std_dev={stats['std_dev']:.2f}")
-    
-    def start_monitoring(self):
-        """Start the performance monitoring process."""
-        if self.running:
-            self.logger.warning("Performance monitoring already running")
-            return
-        
-        self.running = True
-        self.monitor_thread = threading.Thread(target=self._monitoring_loop, daemon=True)
-        self.monitor_thread.start()
-        self.logger.info("Started performance monitoring")
-    
-    def stop_monitoring(self):
-        """Stop the performance monitoring process."""
-        self.running = False
-        if self.monitor_thread:
-            self.monitor_thread.join(timeout=5.0)
-        self.logger.info("Stopped performance monitoring")
-    
-    def _monitoring_loop(self):
-        """Main monitoring loop running in separate thread."""
-        while self.running:
-            try:
-                # Get recent metrics for analysis
-                recent_metrics = self.metrics_collector.get_recent_metrics(100)
-                
-                # Check for threshold violations
-                self._check_thresholds(recent_metrics)
-                
-                # Check for baseline deviations
-                self._check_baseline_deviations(recent_metrics)
-                
-                # Sleep before next check
-                time.sleep(5.0)  # Check every 5 seconds
-                
-            except Exception as e:
-                self.logger.error(f"Error in monitoring loop: {e}")
-                time.sleep(5.0)
-    
-    def _check_thresholds(self, metrics: List[PerformanceMetric]):
-        """Check metrics against configured thresholds."""
+        # Group metrics by name
+        metrics_by_name = defaultdict(list)
         for metric in metrics:
-            if metric.name in self.alert_thresholds:
-                thresholds = self.alert_thresholds[metric.name]
+            metrics_by_name[metric.name].append(metric)
+        
+        for metric_name, metric_list in metrics_by_name.items():
+            if metric_name not in self.baselines:
+                continue
                 
-                if metric.value >= thresholds['critical']:
-                    alert = PerformanceAlert(
-                        metric_name=metric.name,
-                        alert_type='threshold_violation',
-                        severity='critical',
-                        threshold=thresholds['critical'],
-                        current_value=metric.value,
-                        message=f"Critical threshold exceeded: {metric.value} >= {thresholds['critical']}",
-                        timestamp=datetime.now(),
-                        component=metric.component
-                    )
-                    self._trigger_alert(alert)
-                
-                elif metric.value >= thresholds['warning']:
-                    alert = PerformanceAlert(
-                        metric_name=metric.name,
-                        alert_type='threshold_violation',
-                        severity='warning',
-                        threshold=thresholds['warning'],
-                        current_value=metric.value,
-                        message=f"Warning threshold exceeded: {metric.value} >= {thresholds['warning']}",
-                        timestamp=datetime.now(),
-                        component=metric.component
-                    )
-                    self._trigger_alert(alert)
-    
-    def _check_baseline_deviations(self, metrics: List[PerformanceMetric]):
-        """Check metrics for significant deviations from baseline."""
-        for metric in metrics:
-            if metric.name in self.baselines:
-                baseline = self.baselines[metric.name]
-                
-                # Calculate deviation in standard deviations
-                if baseline['std_dev'] > 0:
-                    deviation = abs(metric.value - baseline['mean']) / baseline['std_dev']
+            baseline = self.baselines[metric_name]
+            
+            for metric in metric_list:
+                # Check if metric is anomalous
+                if baseline.std_dev > 0:
+                    z_score = abs(metric.value - baseline.mean) / baseline.std_dev
                     
-                    if deviation > 3.0:  # 3 sigma deviation
-                        alert = PerformanceAlert(
-                            metric_name=metric.name,
-                            alert_type='baseline_deviation',
-                            severity='warning',
-                            threshold=baseline['mean'],
-                            current_value=metric.value,
-                            message=f"Significant baseline deviation: {deviation:.2f} standard deviations",
-                            timestamp=datetime.now(),
-                            component=metric.component
-                        )
-                        self._trigger_alert(alert)
-    
-    def _trigger_alert(self, alert: PerformanceAlert):
-        """Trigger an alert by calling all registered handlers."""
-        self.logger.warning(f"Performance alert: {alert.message}")
+                    if z_score > self.anomaly_threshold:
+                        anomalies.append({
+                            'metric': metric,
+                            'baseline': baseline,
+                            'z_score': z_score,
+                            'severity': 'high' if z_score > 3.0 else 'medium',
+                            'detected_at': datetime.now()
+                        })
         
-        for handler in self.alert_handlers:
-            try:
-                handler(alert)
-            except Exception as e:
-                self.logger.error(f"Error in alert handler: {e}")
+        return anomalies
     
-    def get_performance_summary(self) -> Dict[str, Any]:
-        """
-        Get comprehensive performance summary.
+    def analyze_trends(self, metrics: List[PerformanceMetric], window_size: int = 100) -> Dict[str, Dict[str, Any]]:
+        """Analyze performance trends over time."""
+        trends = {}
         
-        Returns:
-            Dictionary containing performance summary data
-        """
+        # Group metrics by name
+        metrics_by_name = defaultdict(list)
+        for metric in metrics:
+            metrics_by_name[metric.name].append(metric)
+        
+        for metric_name, metric_list in metrics_by_name.items():
+            if len(metric_list) < window_size:
+                continue
+                
+            # Sort by timestamp
+            metric_list.sort(key=lambda x: x.timestamp)
+            recent_metrics = metric_list[-window_size:]
+            
+            values = [m.value for m in recent_metrics]
+            timestamps = [m.timestamp for m in recent_metrics]
+            
+            # Calculate trend
+            if len(values) > 1:
+                # Simple linear trend calculation
+                x = np.arange(len(values))
+                coeffs = np.polyfit(x, values, 1)
+                trend_slope = coeffs[0]
+                
+                # Calculate trend strength
+                correlation = np.corrcoef(x, values)[0, 1] if len(values) > 2 else 0
+                
+                trends[metric_name] = {
+                    'slope': trend_slope,
+                    'correlation': correlation,
+                    'direction': 'increasing' if trend_slope > 0 else 'decreasing' if trend_slope < 0 else 'stable',
+                    'strength': abs(correlation),
+                    'recent_mean': statistics.mean(values),
+                    'recent_std': statistics.stdev(values) if len(values) > 1 else 0,
+                    'sample_count': len(values),
+                    'time_range': {
+                        'start': timestamps[0].isoformat(),
+                        'end': timestamps[-1].isoformat()
+                    }
+                }
+        
+        return trends
+    
+    def generate_performance_summary(self, metrics: List[PerformanceMetric]) -> Dict[str, Any]:
+        """Generate comprehensive performance summary."""
         summary = {
             'timestamp': datetime.now().isoformat(),
-            'categories': {},
-            'alerts': [],
-            'baselines': self.baselines
+            'total_metrics': len(metrics),
+            'metric_categories': {},
+            'top_metrics': {},
+            'anomalies_detected': 0,
+            'trends_analyzed': 0
         }
         
-        # Get statistics for each category
-        for category in self.metrics_collector.categories:
-            category_metrics = self.metrics_collector.get_metrics_by_category(category, 5)
-            
-            if category_metrics:
-                # Group by metric name
-                metric_groups = defaultdict(list)
-                for metric in category_metrics:
-                    metric_groups[metric.name].append(metric.value)
-                
-                # Calculate statistics for each metric
-                category_stats = {}
-                for metric_name, values in metric_groups.items():
-                    if values:
-                        category_stats[metric_name] = {
-                            'current': values[-1],
-                            'mean': statistics.mean(values),
-                            'min': min(values),
-                            'max': max(values),
-                            'count': len(values)
-                        }
-                
-                summary['categories'][category] = category_stats
+        # Categorize metrics
+        categories = defaultdict(int)
+        for metric in metrics:
+            categories[metric.category] += 1
+        summary['metric_categories'] = dict(categories)
+        
+        # Find top metrics by value
+        metrics_by_name = defaultdict(list)
+        for metric in metrics:
+            metrics_by_name[metric.name].append(metric.value)
+        
+        for metric_name, values in metrics_by_name.items():
+            if values:
+                summary['top_metrics'][metric_name] = {
+                    'current': values[-1],
+                    'average': statistics.mean(values),
+                    'max': max(values),
+                    'min': min(values)
+                }
+        
+        # Detect anomalies
+        anomalies = self.detect_anomalies(metrics)
+        summary['anomalies_detected'] = len(anomalies)
+        
+        # Analyze trends
+        trends = self.analyze_trends(metrics)
+        summary['trends_analyzed'] = len(trends)
         
         return summary
 
+class PerformanceReporter:
+    """Generates performance reports and visualizations."""
+    
+    def __init__(self, output_dir: str = "performance_reports"):
+        """Initialize performance reporter."""
+        self.output_dir = output_dir
+        os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(f"{output_dir}/visualizations", exist_ok=True)
+        
+    def generate_text_report(self, metrics: List[PerformanceMetric], analyzer: PerformanceAnalyzer) -> str:
+        """Generate text-based performance report."""
+        report_lines = []
+        report_lines.append("=" * 80)
+        report_lines.append("PERFORMANCE MONITORING REPORT")
+        report_lines.append("=" * 80)
+        report_lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        report_lines.append(f"Total Metrics: {len(metrics)}")
+        report_lines.append("")
+        
+        # Summary statistics
+        summary = analyzer.generate_performance_summary(metrics)
+        report_lines.append("SUMMARY STATISTICS")
+        report_lines.append("-" * 40)
+        for category, count in summary['metric_categories'].items():
+            report_lines.append(f"{category.capitalize()}: {count} metrics")
+        report_lines.append("")
+        
+        # Top metrics
+        report_lines.append("TOP PERFORMANCE METRICS")
+        report_lines.append("-" * 40)
+        for metric_name, stats in list(summary['top_metrics'].items())[:10]:
+            report_lines.append(f"{metric_name}:")
+            report_lines.append(f"  Current: {stats['current']:.2f}")
+            report_lines.append(f"  Average: {stats['average']:.2f}")
+            report_lines.append(f"  Range: {stats['min']:.2f} - {stats['max']:.2f}")
+        report_lines.append("")
+        
+        # Anomalies
+        anomalies = analyzer.detect_anomalies(metrics)
+        if anomalies:
+            report_lines.append("ANOMALIES DETECTED")
+            report_lines.append("-" * 40)
+            for anomaly in anomalies[:5]:  # Top 5 anomalies
+                metric = anomaly['metric']
+                report_lines.append(f"{metric.name}: {metric.value:.2f} (Z-score: {anomaly['z_score']:.2f})")
+        else:
+            report_lines.append("No anomalies detected")
+        report_lines.append("")
+        
+        # Trends
+        trends = analyzer.analyze_trends(metrics)
+        if trends:
+            report_lines.append("PERFORMANCE TRENDS")
+            report_lines.append("-" * 40)
+            for metric_name, trend in list(trends.items())[:5]:  # Top 5 trends
+                report_lines.append(f"{metric_name}: {trend['direction']} (strength: {trend['strength']:.2f})")
+        report_lines.append("")
+        
+        report_lines.append("=" * 80)
+        return "\n".join(report_lines)
+    
+    def save_report(self, report_content: str, filename: str = None) -> str:
+        """Save report to file."""
+        if filename is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"performance_report_{timestamp}.txt"
+        
+        filepath = os.path.join(self.output_dir, filename)
+        with open(filepath, 'w') as f:
+            f.write(report_content)
+        
+        logger.info(f"Performance report saved to: {filepath}")
+        return filepath
+    
+    def generate_json_report(self, metrics: List[PerformanceMetric], analyzer: PerformanceAnalyzer) -> Dict[str, Any]:
+        """Generate JSON-formatted performance report."""
+        report = {
+            'timestamp': datetime.now().isoformat(),
+            'summary': analyzer.generate_performance_summary(metrics),
+            'metrics': [metric.to_dict() for metric in metrics[-100:]],  # Last 100 metrics
+            'anomalies': [],
+            'trends': analyzer.analyze_trends(metrics),
+            'baselines': {}
+        }
+        
+        # Add anomalies
+        anomalies = analyzer.detect_anomalies(metrics)
+        for anomaly in anomalies:
+            report['anomalies'].append({
+                'metric_name': anomaly['metric'].name,
+                'value': anomaly['metric'].value,
+                'z_score': anomaly['z_score'],
+                'severity': anomaly['severity'],
+                'timestamp': anomaly['metric'].timestamp.isoformat()
+            })
+        
+        # Add baselines
+        for metric_name, baseline in analyzer.baselines.items():
+            report['baselines'][metric_name] = {
+                'mean': baseline.mean,
+                'std_dev': baseline.std_dev,
+                'min_value': baseline.min_value,
+                'max_value': baseline.max_value,
+                'percentile_95': baseline.percentile_95,
+                'sample_count': baseline.sample_count,
+                'last_updated': baseline.last_updated.isoformat()
+            }
+        
+        return report
 
-class PerformanceDatabase:
-    """Database for storing and retrieving performance metrics and analysis results."""
+class BaselineManager:
+    """Manages performance baselines and their updates."""
     
-    def __init__(self, db_path: str = "performance_metrics.db"):
-        """
-        Initialize the performance database.
-        
-        Args:
-            db_path: Path to the SQLite database file
-        """
+    def __init__(self, db_path: str = "performance_baselines.db"):
+        """Initialize baseline manager with SQLite database."""
         self.db_path = db_path
-        self.logger = logging.getLogger(__name__)
-        self._initialize_database()
-    
-    def _initialize_database(self):
-        """Initialize the database schema."""
+        self.init_database()
+        
+    def init_database(self):
+        """Initialize SQLite database for baseline storage."""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("""
-                CREATE TABLE IF NOT EXISTS metrics (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    value REAL NOT NULL,
-                    timestamp TEXT NOT NULL,
-                    category TEXT NOT NULL,
-                    component TEXT NOT NULL,
-                    tags TEXT,
-                    unit TEXT,
-                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                CREATE TABLE IF NOT EXISTS baselines (
+                    metric_name TEXT PRIMARY KEY,
+                    mean REAL,
+                    std_dev REAL,
+                    min_value REAL,
+                    max_value REAL,
+                    percentile_95 REAL,
+                    sample_count INTEGER,
+                    last_updated TEXT
                 )
             """)
-            
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS alerts (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    metric_name TEXT NOT NULL,
-                    alert_type TEXT NOT NULL,
-                    severity TEXT NOT NULL,
-                    threshold REAL NOT NULL,
-                    current_value REAL NOT NULL,
-                    message TEXT NOT NULL,
-                    timestamp TEXT NOT NULL,
-                    component TEXT NOT NULL,
-                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-            
-            conn.execute("""
-                CREATE INDEX IF NOT EXISTS idx_metrics_name_timestamp 
-                ON metrics(name, timestamp)
-            """)
-            
-            conn.execute("""
-                CREATE INDEX IF NOT EXISTS idx_metrics_category_timestamp 
-                ON metrics(category, timestamp)
-            """)
-            
             conn.commit()
     
-    def store_metrics(self, metrics: List[PerformanceMetric]):
-        """
-        Store performance metrics in the database.
-        
-        Args:
-            metrics: List of PerformanceMetric objects to store
-        """
-        with sqlite3.connect(self.db_path) as conn:
-            for metric in metrics:
-                conn.execute("""
-                    INSERT INTO metrics (name, value, timestamp, category, component, tags, unit)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    metric.name,
-                    metric.value,
-                    metric.timestamp.isoformat(),
-                    metric.category,
-                    metric.component,
-                    json.dumps(metric.tags),
-                    metric.unit
-                ))
-            conn.commit()
-    
-    def store_alert(self, alert: PerformanceAlert):
-        """
-        Store performance alert in the database.
-        
-        Args:
-            alert: PerformanceAlert object to store
-        """
+    def save_baseline(self, baseline: PerformanceBaseline):
+        """Save baseline to database."""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("""
-                INSERT INTO alerts (metric_name, alert_type, severity, threshold, 
-                                  current_value, message, timestamp, component)
+                INSERT OR REPLACE INTO baselines 
+                (metric_name, mean, std_dev, min_value, max_value, percentile_95, sample_count, last_updated)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                alert.metric_name,
-                alert.alert_type,
-                alert.severity,
-                alert.threshold,
-                alert.current_value,
-                alert.message,
-                alert.timestamp.isoformat(),
-                alert.component
+                baseline.metric_name,
+                baseline.mean,
+                baseline.std_dev,
+                baseline.min_value,
+                baseline.max_value,
+                baseline.percentile_95,
+                baseline.sample_count,
+                baseline.last_updated.isoformat()
             ))
             conn.commit()
     
-    def get_metrics_history(self, metric_name: str, hours: int = 24) -> List[Tuple[datetime, float]]:
-        """
-        Get historical data for a specific metric.
-        
-        Args:
-            metric_name: Name of the metric
-            hours: Number of hours of history to retrieve
-            
-        Returns:
-            List of (timestamp, value) tuples
-        """
-        cutoff_time = datetime.now() - timedelta(hours=hours)
-        
+    def load_baseline(self, metric_name: str) -> Optional[PerformanceBaseline]:
+        """Load baseline from database."""
         with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute("""
-                SELECT timestamp, value FROM metrics 
-                WHERE name = ? AND timestamp >= ?
-                ORDER BY timestamp
-            """, (metric_name, cutoff_time.isoformat()))
+            cursor = conn.execute(
+                "SELECT * FROM baselines WHERE metric_name = ?", 
+                (metric_name,)
+            )
+            row = cursor.fetchone()
             
-            return [(datetime.fromisoformat(row[0]), row[1]) for row in cursor.fetchall()]
+            if row:
+                return PerformanceBaseline(
+                    metric_name=row[0],
+                    mean=row[1],
+                    std_dev=row[2],
+                    min_value=row[3],
+                    max_value=row[4],
+                    percentile_95=row[5],
+                    sample_count=row[6],
+                    last_updated=datetime.fromisoformat(row[7])
+                )
+            return None
     
-    def get_recent_alerts(self, hours: int = 24) -> List[Dict[str, Any]]:
+    def update_baselines(self, analyzer: PerformanceAnalyzer, metrics: List[PerformanceMetric]):
+        """Update all baselines with new metrics."""
+        metric_names = set(m.name for m in metrics)
+        
+        for metric_name in metric_names:
+            baseline = analyzer.calculate_baseline(metrics, metric_name)
+            if baseline:
+                self.save_baseline(baseline)
+                logger.info(f"Updated baseline for {metric_name}")
+
+class PerformanceMonitoringFramework:
+    """Main framework orchestrating all performance monitoring components."""
+    
+    def __init__(self, 
+                 collection_interval: float = 0.1,
+                 analysis_interval: float = 60.0,
+                 report_interval: float = 300.0):
         """
-        Get recent alerts from the database.
+        Initialize performance monitoring framework.
         
         Args:
-            hours: Number of hours of alerts to retrieve
-            
-        Returns:
-            List of alert dictionaries
+            collection_interval: Metrics collection interval in seconds
+            analysis_interval: Analysis update interval in seconds  
+            report_interval: Report generation interval in seconds
         """
-        cutoff_time = datetime.now() - timedelta(hours=hours)
+        self.collection_interval = collection_interval
+        self.analysis_interval = analysis_interval
+        self.report_interval = report_interval
         
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute("""
-                SELECT * FROM alerts 
-                WHERE timestamp >= ?
-                ORDER BY timestamp DESC
-            """, (cutoff_time.isoformat(),))
+        # Initialize components
+        self.collector = MetricsCollector(collection_interval)
+        self.analyzer = PerformanceAnalyzer()
+        self.reporter = PerformanceReporter()
+        self.baseline_manager = BaselineManager()
+        
+        # Control variables
+        self.is_running = False
+        self.analysis_thread = None
+        self.report_thread = None
+        
+        # Performance tracking
+        self.start_time = None
+        self.total_metrics_collected = 0
+        self.total_anomalies_detected = 0
+        
+        logger.info("Performance monitoring framework initialized")
+    
+    def register_custom_collector(self, name: str, collector_func: Callable[[], Dict[str, float]]):
+        """Register custom metrics collector."""
+        self.collector.register_custom_collector(name, collector_func)
+    
+    def start_monitoring(self):
+        """Start comprehensive performance monitoring."""
+        if self.is_running:
+            logger.warning("Performance monitoring already running")
+            return
+        
+        self.is_running = True
+        self.start_time = datetime.now()
+        
+        # Start metrics collection
+        self.collector.start_collection()
+        
+        # Start analysis thread
+        self.analysis_thread = threading.Thread(target=self._analysis_loop, daemon=True)
+        self.analysis_thread.start()
+        
+        # Start reporting thread
+        self.report_thread = threading.Thread(target=self._report_loop, daemon=True)
+        self.report_thread.start()
+        
+        logger.info("Performance monitoring started")
+    
+    def stop_monitoring(self):
+        """Stop performance monitoring."""
+        self.is_running = False
+        
+        # Stop collection
+        self.collector.stop_collection()
+        
+        # Wait for threads to finish
+        if self.analysis_thread:
+            self.analysis_thread.join(timeout=5)
+        if self.report_thread:
+            self.report_thread.join(timeout=5)
+        
+        logger.info("Performance monitoring stopped")
+    
+    def _analysis_loop(self):
+        """Analysis loop running in separate thread."""
+        while self.is_running:
+            try:
+                # Get recent metrics
+                metrics = self.collector.get_recent_metrics(1000)
+                self.total_metrics_collected = len(metrics)
+                
+                if metrics:
+                    # Update baselines
+                    self.baseline_manager.update_baselines(self.analyzer, metrics)
+                    
+                    # Load baselines into analyzer
+                    metric_names = set(m.name for m in metrics)
+                    for metric_name in metric_names:
+                        baseline = self.baseline_manager.load_baseline(metric_name)
+                        if baseline:
+                            self.analyzer.baselines[metric_name] = baseline
+                    
+                    # Detect anomalies
+                    anomalies = self.analyzer.detect_anomalies(metrics)
+                    self.total_anomalies_detected += len(anomalies)
+                    
+                    # Log significant anomalies
+                    for anomaly in anomalies:
+                        if anomaly['severity'] == 'high':
+                            logger.warning(f"High severity anomaly detected: {anomaly['metric'].name} = {anomaly['metric'].value:.2f} (Z-score: {anomaly['z_score']:.2f})")
+                
+                time.sleep(self.analysis_interval)
+                
+            except Exception as e:
+                logger.error(f"Error in analysis loop: {e}")
+                time.sleep(5)  # Prevent tight error loop
+    
+    def _report_loop(self):
+        """Report generation loop running in separate thread."""
+        while self.is_running:
+            try:
+                # Get recent metrics
+                metrics = self.collector.get_recent_metrics(1000)
+                
+                if metrics:
+                    # Generate and save text report
+                    text_report = self.reporter.generate_text_report(metrics, self.analyzer)
+                    self.reporter.save_report(text_report)
+                    
+                    # Generate and save JSON report
+                    json_report = self.reporter.generate_json_report(metrics, self.analyzer)
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    json_filename = f"performance_report_{timestamp}.json"
+                    json_filepath = os.path.join(self.reporter.output_dir, json_filename)
+                    
+                    with open(json_filepath, 'w') as f:
+                        json.dump(json_report, f, indent=2)
+                    
+                    logger.info(f"Performance reports generated: {json_filepath}")
+                
+                time.sleep(self.report_interval)
+                
+            except Exception as e:
+                logger.error(f"Error in report loop: {e}")
+                time.sleep(10)  # Prevent tight error loop
+    
+    def get_current_status(self) -> Dict[str, Any]:
+        """Get current monitoring status."""
+        uptime = (datetime.now() - self.start_time).total_seconds() if self.start_time else 0
+        
+        return {
+            'is_running': self.is_running,
+            'uptime_seconds': uptime,
+            'total_metrics_collected': self.total_metrics_collected,
+            'total_anomalies_detected': self.total_anomalies_detected,
+            'collection_interval': self.collection_interval,
+            'analysis_interval': self.analysis_interval,
+            'report_interval': self.report_interval,
+            'baselines_count': len(self.analyzer.baselines),
+            'recent_metrics_count': len(self.collector.get_recent_metrics())
+        }
+    
+    def generate_immediate_report(self) -> Dict[str, Any]:
+        """Generate immediate performance report."""
+        metrics = self.collector.get_recent_metrics(1000)
+        return self.reporter.generate_json_report(metrics, self.analyzer)
+    
+    def run_self_test(self) -> Dict[str, Any]:
+        """Run comprehensive self-test of monitoring framework."""
+        test_results = {
+            'timestamp': datetime.now().isoformat(),
+            'test_status': 'passed',
+            'tests': {},
+            'performance_metrics': {}
+        }
+        
+        try:
+            # Test metrics collection
+            start_time = time.time()
+            metrics = self.collector.collect_all_metrics()
+            collection_time = time.time() - start_time
             
-            columns = [description[0] for description in cursor.description]
-            return [dict(zip(columns, row)) for row in cursor.fetchall()]
-
+            test_results['tests']['metrics_collection'] = {
+                'status': 'passed' if metrics else 'failed',
+                'metrics_count': len(metrics),
+                'collection_time_ms': collection_time * 1000
+            }
+            
+            # Test analysis
+            start_time = time.time()
+            summary = self.analyzer.generate_performance_summary(metrics)
+            analysis_time = time.time() - start_time
+            
+            test_results['tests']['analysis'] = {
+                'status': 'passed' if summary else 'failed',
+                'analysis_time_ms': analysis_time * 1000
+            }
+            
+            # Test reporting
+            start_time = time.time()
+            report = self.reporter.generate_json_report(metrics, self.analyzer)
+            reporting_time = time.time() - start_time
+            
+            test_results['tests']['reporting'] = {
+                'status': 'passed' if report else 'failed',
+                'reporting_time_ms': reporting_time * 1000
+            }
+            
+            # Test baseline management
+            start_time = time.time()
+            if metrics:
+                baseline = self.analyzer.calculate_baseline(metrics, metrics[0].name)
+                baseline_time = time.time() - start_time
+                
+                test_results['tests']['baseline_management'] = {
+                    'status': 'passed' if baseline else 'failed',
+                    'baseline_time_ms': baseline_time * 1000
+                }
+            
+            # Overall performance metrics
+            test_results['performance_metrics'] = {
+                'total_test_time_ms': (collection_time + analysis_time + reporting_time) * 1000,
+                'metrics_per_second': len(metrics) / max(collection_time, 0.001),
+                'memory_usage_mb': psutil.Process().memory_info().rss / (1024**2)
+            }
+            
+        except Exception as e:
+            test_results['test_status'] = 'failed'
+            test_results['error'] = str(e)
+            logger.error(f"Self-test failed: {e}")
+        
+        return test_results
 
 # Example usage and testing
 if __name__ == "__main__":
-    # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    # Create monitoring framework
+    monitor = PerformanceMonitoringFramework(
+        collection_interval=0.1,  # Collect every 100ms
+        analysis_interval=30.0,   # Analyze every 30 seconds
+        report_interval=120.0     # Report every 2 minutes
+    )
     
-    # Create metrics collector and start collection
-    collector = MetricsCollector(collection_interval=2.0)
-    collector.start_collection()
+    # Register custom collector example
+    def custom_app_metrics():
+        return {
+            'active_connections': np.random.randint(10, 100),
+            'request_rate': np.random.uniform(50, 200),
+            'error_rate': np.random.uniform(0, 5)
+        }
     
-    # Create performance monitor
-    monitor = PerformanceMonitor(collector)
+    monitor.register_custom_collector('application', custom_app_metrics)
     
-    # Add a simple alert handler
-    def simple_alert_handler(alert: PerformanceAlert):
-        print(f"ALERT: {alert.severity.upper()} - {alert.message}")
+    # Run self-test
+    print("Running performance monitoring self-test...")
+    test_results = monitor.run_self_test()
+    print(f"Self-test status: {test_results['test_status']}")
     
-    monitor.add_alert_handler(simple_alert_handler)
+    # Start monitoring for demonstration
+    print("Starting performance monitoring...")
     monitor.start_monitoring()
     
-    # Create database for persistence
-    db = PerformanceDatabase()
-    
     try:
-        # Run for a short time to collect some data
-        print("Collecting performance metrics...")
+        # Let it run for a short time
         time.sleep(10)
         
-        # Get and display recent metrics
-        recent_metrics = collector.get_recent_metrics(20)
-        print(f"\nCollected {len(recent_metrics)} metrics")
+        # Get status
+        status = monitor.get_current_status()
+        print(f"Monitoring status: {status}")
         
-        # Store metrics in database
-        db.store_metrics(recent_metrics)
-        
-        # Get performance summary
-        summary = monitor.get_performance_summary()
-        print(f"\nPerformance Summary:")
-        for category, stats in summary['categories'].items():
-            print(f"  {category}:")
-            for metric_name, metric_stats in stats.items():
-                print(f"    {metric_name}: current={metric_stats['current']:.2f}, mean={metric_stats['mean']:.2f}")
-        
-        # Establish baselines
-        for metric_name in ['cpu_usage_percent', 'memory_usage_percent']:
-            monitor.establish_baseline(metric_name, 1)  # 1 minute baseline
-        
-        print("\nPerformance monitoring and metrics framework operational!")
+        # Generate immediate report
+        report = monitor.generate_immediate_report()
+        print(f"Generated report with {len(report['metrics'])} metrics")
         
     finally:
-        # Clean shutdown
+        # Stop monitoring
         monitor.stop_monitoring()
-        collector.stop_collection()
         print("Performance monitoring stopped")
 
