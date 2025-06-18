@@ -1,0 +1,23 @@
+{
+  "performance": {
+    "max_threads": 4,
+    "cache_size_mb": 256,
+    "batch_size": 32,
+    "timeout_seconds": 30
+  },
+  "optimization": {
+    "algorithm": "auto",
+    "max_iterations": 100,
+    "convergence_threshold": 0.001
+  },
+  "monitoring": {
+    "collection_interval": 0.1,
+    "analysis_interval": 60.0,
+    "report_interval": 300.0
+  },
+  "resources": {
+    "cpu_limit_percent": 80,
+    "memory_limit_mb": 2048,
+    "disk_limit_gb": 10
+  }
+}
