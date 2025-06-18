@@ -1,0 +1,56 @@
+{
+  "timestamp": "20250617_153841",
+  "duration": 0.1040959358215332,
+  "metrics": {
+    "main.<locals>.test_function": {
+      "unit": "ms",
+      "description": "",
+      "statistics": {
+        "count": 10,
+        "min": 10.17618179321289,
+        "max": 10.508060455322266,
+        "mean": 10.345768928527832,
+        "median": 10.344147682189941,
+        "p95": 10.508060455322266,
+        "p99": 10.508060455322266,
+        "std_dev": 0.11408311986030252
+      }
+    }
+  },
+  "operations": {
+    "main.<locals>.test_function": 10
+  },
+  "errors": {},
+  "resource_usage_summary": {
+    "cpu_percent": {
+      "min": 0.0,
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "memory_percent": {
+      "min": 42.0,
+      "max": 42.0,
+      "mean": 42.0,
+      "p95": 42.0
+    },
+    "memory_used": {
+      "min": 1435754496,
+      "max": 1435754496,
+      "mean": 1435754496,
+      "p95": 1435754496
+    },
+    "disk_read_bytes": {
+      "min": 1284328448,
+      "max": 1284328448,
+      "mean": 1284328448,
+      "p95": 1284328448
+    },
+    "disk_write_bytes": {
+      "min": 4125519872,
+      "max": 4125519872,
+      "mean": 4125519872,
+      "p95": 4125519872
+    }
+  }
+}
