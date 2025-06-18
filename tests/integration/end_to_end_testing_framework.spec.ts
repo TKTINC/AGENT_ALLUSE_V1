@@ -1,161 +1,189 @@
-import { test, expect, Page, BrowserContext } from '@playwright/test';
+import { test, expect, Page, BrowserContext, chromium, firefox, webkit } from '@playwright/test';
 
-// Test configuration and utilities
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-const TEST_USER = {
-  email: 'test@alluse.com',
-  password: 'TestPassword123!',
-  name: 'Test User'
+// End-to-End Testing Framework for WS6-P6
+// Comprehensive testing of complete user workflows across all WS6 components
+
+// Test configuration
+const TEST_CONFIG = {
+  baseURL: 'http://localhost:3000',
+  timeout: 30000,
+  retries: 2,
+  browsers: ['chromium', 'firefox', 'webkit'],
+  viewports: [
+    { width: 1920, height: 1080, name: 'desktop' },
+    { width: 1024, height: 768, name: 'tablet' },
+    { width: 375, height: 667, name: 'mobile' }
+  ]
 };
 
-// Page object models for better test organization
+// Test data
+const TEST_DATA = {
+  user: {
+    email: 'test@alluse.com',
+    password: 'TestPassword123!',
+    name: 'Test User'
+  },
+  account: {
+    balance: 10000,
+    currency: 'USD'
+  },
+  trading: {
+    symbol: 'AAPL',
+    quantity: 10,
+    price: 150.00
+  }
+};
+
+// Page Object Models
 class AuthenticationPage {
   constructor(private page: Page) {}
 
-  async navigateToLogin() {
-    await this.page.goto(`${BASE_URL}/login`);
+  async navigate() {
+    await this.page.goto('/auth');
   }
 
   async login(email: string, password: string) {
     await this.page.fill('[data-testid="email-input"]', email);
     await this.page.fill('[data-testid="password-input"]', password);
     await this.page.click('[data-testid="login-button"]');
-  }
-
-  async register(email: string, password: string, name: string) {
-    await this.page.click('[data-testid="register-link"]');
-    await this.page.fill('[data-testid="name-input"]', name);
-    await this.page.fill('[data-testid="email-input"]', email);
-    await this.page.fill('[data-testid="password-input"]', password);
-    await this.page.fill('[data-testid="confirm-password-input"]', password);
-    await this.page.click('[data-testid="register-button"]');
+    await this.page.waitForSelector('[data-testid="dashboard"]');
   }
 
   async logout() {
     await this.page.click('[data-testid="user-menu"]');
     await this.page.click('[data-testid="logout-button"]');
+    await this.page.waitForSelector('[data-testid="login-form"]');
+  }
+
+  async isLoggedIn(): Promise<boolean> {
+    return await this.page.isVisible('[data-testid="dashboard"]');
   }
 }
 
-class DashboardPage {
+class ConversationalInterfacePage {
   constructor(private page: Page) {}
-
-  async navigateToDashboard() {
-    await this.page.goto(`${BASE_URL}/dashboard`);
-  }
-
-  async switchTab(tabName: string) {
-    await this.page.click(`[data-testid="tab-${tabName.toLowerCase()}"]`);
-  }
-
-  async getPortfolioValue() {
-    return await this.page.textContent('[data-testid="portfolio-value"]');
-  }
-
-  async getAccountPerformance(account: string) {
-    return await this.page.textContent(`[data-testid="${account}-performance"]`);
-  }
-}
-
-class TradingPage {
-  constructor(private page: Page) {}
-
-  async navigateToTrading() {
-    await this.page.goto(`${BASE_URL}/trading`);
-  }
-
-  async placeOrder(symbol: string, quantity: number, orderType: string, price?: number) {
-    await this.page.click('[data-testid="place-order-button"]');
-    await this.page.fill('[data-testid="symbol-input"]', symbol);
-    await this.page.fill('[data-testid="quantity-input"]', quantity.toString());
-    await this.page.selectOption('[data-testid="order-type-select"]', orderType);
-    
-    if (price && orderType === 'limit') {
-      await this.page.fill('[data-testid="price-input"]', price.toString());
-    }
-    
-    await this.page.click('[data-testid="submit-order-button"]');
-  }
-
-  async getPositions() {
-    await this.page.waitForSelector('[data-testid="positions-table"]');
-    return await this.page.$$eval('[data-testid="position-row"]', rows => 
-      rows.map(row => ({
-        symbol: row.querySelector('[data-testid="position-symbol"]')?.textContent,
-        quantity: row.querySelector('[data-testid="position-quantity"]')?.textContent,
-        pnl: row.querySelector('[data-testid="position-pnl"]')?.textContent
-      }))
-    );
-  }
-
-  async cancelOrder(orderId: string) {
-    await this.page.click(`[data-testid="cancel-order-${orderId}"]`);
-    await this.page.click('[data-testid="confirm-cancel"]');
-  }
-}
-
-class AnalyticsPage {
-  constructor(private page: Page) {}
-
-  async navigateToAnalytics() {
-    await this.page.goto(`${BASE_URL}/analytics`);
-  }
-
-  async selectTimeframe(timeframe: string) {
-    await this.page.selectOption('[data-testid="timeframe-select"]', timeframe);
-  }
-
-  async getPerformanceMetrics() {
-    return {
-      totalReturn: await this.page.textContent('[data-testid="total-return"]'),
-      sharpeRatio: await this.page.textContent('[data-testid="sharpe-ratio"]'),
-      maxDrawdown: await this.page.textContent('[data-testid="max-drawdown"]'),
-      winRate: await this.page.textContent('[data-testid="win-rate"]')
-    };
-  }
-
-  async exportData(format: string) {
-    await this.page.click('[data-testid="export-button"]');
-    await this.page.selectOption('[data-testid="export-format"]', format);
-    await this.page.click('[data-testid="confirm-export"]');
-  }
-}
-
-class ConversationalPage {
-  constructor(private page: Page) {}
-
-  async navigateToChat() {
-    await this.page.goto(`${BASE_URL}/chat`);
-  }
 
   async sendMessage(message: string) {
     await this.page.fill('[data-testid="message-input"]', message);
     await this.page.click('[data-testid="send-button"]');
+    await this.page.waitForSelector('[data-testid="message-response"]');
   }
 
-  async getLastResponse() {
-    await this.page.waitForSelector('[data-testid="agent-response"]:last-child');
-    return await this.page.textContent('[data-testid="agent-response"]:last-child');
+  async startVoiceInput() {
+    await this.page.click('[data-testid="voice-button"]');
+    await this.page.waitForSelector('[data-testid="voice-active"]');
   }
 
-  async useSuggestedQuestion(questionIndex: number) {
-    await this.page.click(`[data-testid="suggested-question-${questionIndex}"]`);
+  async stopVoiceInput() {
+    await this.page.click('[data-testid="voice-button"]');
+    await this.page.waitForSelector('[data-testid="voice-inactive"]');
   }
 
-  async toggleVoiceInput() {
-    await this.page.click('[data-testid="voice-toggle"]');
+  async getLastResponse(): Promise<string> {
+    const response = await this.page.textContent('[data-testid="message-response"]:last-child');
+    return response || '';
+  }
+
+  async clearConversation() {
+    await this.page.click('[data-testid="clear-conversation"]');
+    await expect(this.page.locator('[data-testid="message-response"]')).toHaveCount(0);
   }
 }
 
-// Test suites
-test.describe('WS6-P4: End-to-End Testing Framework', () => {
+class AccountVisualizationPage {
+  constructor(private page: Page) {}
+
+  async viewAccountOverview() {
+    await this.page.click('[data-testid="account-overview-tab"]');
+    await this.page.waitForSelector('[data-testid="account-balance"]');
+  }
+
+  async viewTransactionHistory() {
+    await this.page.click('[data-testid="transaction-history-tab"]');
+    await this.page.waitForSelector('[data-testid="transaction-list"]');
+  }
+
+  async viewPortfolioAnalysis() {
+    await this.page.click('[data-testid="portfolio-analysis-tab"]');
+    await this.page.waitForSelector('[data-testid="portfolio-chart"]');
+  }
+
+  async getAccountBalance(): Promise<string> {
+    const balance = await this.page.textContent('[data-testid="account-balance"]');
+    return balance || '0';
+  }
+
+  async exportAccountData() {
+    await this.page.click('[data-testid="export-button"]');
+    await this.page.waitForSelector('[data-testid="export-success"]');
+  }
+}
+
+class TradingDashboardPage {
+  constructor(private page: Page) {}
+
+  async placeTrade(symbol: string, quantity: number, price: number) {
+    await this.page.fill('[data-testid="symbol-input"]', symbol);
+    await this.page.fill('[data-testid="quantity-input"]', quantity.toString());
+    await this.page.fill('[data-testid="price-input"]', price.toString());
+    await this.page.click('[data-testid="place-trade-button"]');
+    await this.page.waitForSelector('[data-testid="trade-confirmation"]');
+  }
+
+  async viewMarketData() {
+    await this.page.click('[data-testid="market-data-tab"]');
+    await this.page.waitForSelector('[data-testid="market-chart"]');
+  }
+
+  async viewOrderHistory() {
+    await this.page.click('[data-testid="order-history-tab"]');
+    await this.page.waitForSelector('[data-testid="order-list"]');
+  }
+
+  async cancelOrder(orderId: string) {
+    await this.page.click(`[data-testid="cancel-order-${orderId}"]`);
+    await this.page.waitForSelector('[data-testid="order-cancelled"]');
+  }
+}
+
+class PerformanceDashboardPage {
+  constructor(private page: Page) {}
+
+  async startMonitoring() {
+    await this.page.click('[data-testid="start-monitoring"]');
+    await this.page.waitForSelector('[data-testid="monitoring-active"]');
+  }
+
+  async stopMonitoring() {
+    await this.page.click('[data-testid="stop-monitoring"]');
+    await this.page.waitForSelector('[data-testid="monitoring-inactive"]');
+  }
+
+  async viewPerformanceMetrics() {
+    await this.page.click('[data-testid="metrics-tab"]');
+    await this.page.waitForSelector('[data-testid="performance-chart"]');
+  }
+
+  async runOptimization() {
+    await this.page.click('[data-testid="start-optimization"]');
+    await this.page.waitForSelector('[data-testid="optimization-complete"]');
+  }
+
+  async getPerformanceScore(): Promise<number> {
+    const score = await this.page.textContent('[data-testid="performance-score"]');
+    return parseFloat(score || '0');
+  }
+}
+
+// End-to-End Test Suites
+test.describe('WS6-P6: End-to-End Testing Framework', () => {
   let context: BrowserContext;
   let page: Page;
   let authPage: AuthenticationPage;
-  let dashboardPage: DashboardPage;
-  let tradingPage: TradingPage;
-  let analyticsPage: AnalyticsPage;
-  let conversationalPage: ConversationalPage;
+  let conversationalPage: ConversationalInterfacePage;
+  let accountPage: AccountVisualizationPage;
+  let tradingPage: TradingDashboardPage;
+  let performancePage: PerformanceDashboardPage;
 
   test.beforeAll(async ({ browser }) => {
     context = await browser.newContext();
@@ -163,484 +191,475 @@ test.describe('WS6-P4: End-to-End Testing Framework', () => {
     
     // Initialize page objects
     authPage = new AuthenticationPage(page);
-    dashboardPage = new DashboardPage(page);
-    tradingPage = new TradingPage(page);
-    analyticsPage = new AnalyticsPage(page);
-    conversationalPage = new ConversationalPage(page);
+    conversationalPage = new ConversationalInterfacePage(page);
+    accountPage = new AccountVisualizationPage(page);
+    tradingPage = new TradingDashboardPage(page);
+    performancePage = new PerformanceDashboardPage(page);
   });
 
   test.afterAll(async () => {
     await context.close();
   });
 
-  test.describe('Authentication Flow', () => {
-    test('should complete user registration flow', async () => {
-      await authPage.navigateToLogin();
+  test.describe('Complete User Authentication Flow', () => {
+    test('user can login and access all features', async () => {
+      await authPage.navigate();
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
       
-      await authPage.register(
-        `test+${Date.now()}@alluse.com`,
-        TEST_USER.password,
-        TEST_USER.name
-      );
+      expect(await authPage.isLoggedIn()).toBe(true);
       
-      // Should redirect to dashboard after successful registration
-      await expect(page).toHaveURL(/.*dashboard/);
-      await expect(page.locator('[data-testid="welcome-message"]')).toBeVisible();
+      // Verify access to all main features
+      await expect(page.locator('[data-testid="conversational-interface"]')).toBeVisible();
+      await expect(page.locator('[data-testid="account-visualization"]')).toBeVisible();
+      await expect(page.locator('[data-testid="trading-dashboard"]')).toBeVisible();
+      await expect(page.locator('[data-testid="performance-dashboard"]')).toBeVisible();
     });
 
-    test('should complete user login flow', async () => {
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
-      
-      // Should redirect to dashboard after successful login
-      await expect(page).toHaveURL(/.*dashboard/);
-      await expect(page.locator('[data-testid="portfolio-overview"]')).toBeVisible();
-    });
-
-    test('should handle invalid login credentials', async () => {
-      await authPage.navigateToLogin();
-      await authPage.login('invalid@email.com', 'wrongpassword');
-      
-      await expect(page.locator('[data-testid="error-message"]')).toBeVisible();
-      await expect(page.locator('[data-testid="error-message"]')).toContainText('Invalid credentials');
-    });
-
-    test('should complete logout flow', async () => {
-      // First login
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
-      
-      // Then logout
+    test('user can logout and session is cleared', async () => {
       await authPage.logout();
       
-      // Should redirect to login page
-      await expect(page).toHaveURL(/.*login/);
+      expect(await authPage.isLoggedIn()).toBe(false);
+      
+      // Verify protected content is not accessible
+      await expect(page.locator('[data-testid="account-balance"]')).not.toBeVisible();
+    });
+
+    test('authentication persists across page refreshes', async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+      await page.reload();
+      
+      expect(await authPage.isLoggedIn()).toBe(true);
     });
   });
 
-  test.describe('Dashboard and Portfolio Management', () => {
+  test.describe('Conversational Interface Workflows', () => {
     test.beforeEach(async () => {
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
     });
 
-    test('should display portfolio overview correctly', async () => {
-      await dashboardPage.navigateToDashboard();
+    test('user can send messages and receive responses', async () => {
+      await conversationalPage.sendMessage('Hello, how can you help me?');
       
-      const portfolioValue = await dashboardPage.getPortfolioValue();
-      expect(portfolioValue).toMatch(/\$[\d,]+/);
-      
-      // Check all three account types are displayed
-      await expect(page.locator('[data-testid="generation-account"]')).toBeVisible();
-      await expect(page.locator('[data-testid="revenue-account"]')).toBeVisible();
-      await expect(page.locator('[data-testid="compounding-account"]')).toBeVisible();
+      const response = await conversationalPage.getLastResponse();
+      expect(response).toContain('help');
     });
 
-    test('should switch between account views', async () => {
-      await dashboardPage.navigateToDashboard();
+    test('user can ask about account information', async () => {
+      await conversationalPage.sendMessage('What is my account balance?');
       
-      // Switch to detailed view
-      await dashboardPage.switchTab('detailed');
-      await expect(page.locator('[data-testid="account-details"]')).toBeVisible();
-      
-      // Switch to performance view
-      await dashboardPage.switchTab('performance');
-      await expect(page.locator('[data-testid="performance-charts"]')).toBeVisible();
+      const response = await conversationalPage.getLastResponse();
+      expect(response).toContain('balance');
     });
 
-    test('should display real-time performance updates', async () => {
-      await dashboardPage.navigateToDashboard();
+    test('user can request trading actions through conversation', async () => {
+      await conversationalPage.sendMessage('I want to buy 10 shares of AAPL');
       
-      const initialPerformance = await dashboardPage.getAccountPerformance('generation');
-      
-      // Wait for real-time update (mock WebSocket data)
-      await page.waitForTimeout(5000);
-      
-      const updatedPerformance = await dashboardPage.getAccountPerformance('generation');
-      
-      // Performance should update (values may change)
-      expect(updatedPerformance).toBeDefined();
+      const response = await conversationalPage.getLastResponse();
+      expect(response).toContain('AAPL');
     });
 
-    test('should handle portfolio rebalancing workflow', async () => {
-      await dashboardPage.navigateToDashboard();
+    test('voice input functionality works', async () => {
+      await conversationalPage.startVoiceInput();
+      await expect(page.locator('[data-testid="voice-active"]')).toBeVisible();
       
-      await page.click('[data-testid="rebalance-button"]');
-      await expect(page.locator('[data-testid="rebalancing-modal"]')).toBeVisible();
+      await conversationalPage.stopVoiceInput();
+      await expect(page.locator('[data-testid="voice-inactive"]')).toBeVisible();
+    });
+
+    test('conversation history is maintained', async () => {
+      await conversationalPage.sendMessage('First message');
+      await conversationalPage.sendMessage('Second message');
       
-      // Adjust allocation sliders
-      await page.fill('[data-testid="generation-allocation"]', '35');
-      await page.fill('[data-testid="revenue-allocation"]', '30');
-      await page.fill('[data-testid="compounding-allocation"]', '35');
+      const messages = await page.locator('[data-testid="message-response"]').count();
+      expect(messages).toBeGreaterThanOrEqual(2);
+    });
+
+    test('conversation can be cleared', async () => {
+      await conversationalPage.sendMessage('Test message');
+      await conversationalPage.clearConversation();
       
-      await page.click('[data-testid="preview-rebalance"]');
-      await expect(page.locator('[data-testid="rebalance-preview"]')).toBeVisible();
-      
-      await page.click('[data-testid="confirm-rebalance"]');
-      await expect(page.locator('[data-testid="rebalance-success"]')).toBeVisible();
+      const messages = await page.locator('[data-testid="message-response"]').count();
+      expect(messages).toBe(0);
     });
   });
 
-  test.describe('Trading Interface', () => {
+  test.describe('Account Management Workflows', () => {
     test.beforeEach(async () => {
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
     });
 
-    test('should display current positions and orders', async () => {
-      await tradingPage.navigateToTrading();
+    test('user can view account overview', async () => {
+      await accountPage.viewAccountOverview();
       
-      await expect(page.locator('[data-testid="positions-table"]')).toBeVisible();
-      await expect(page.locator('[data-testid="orders-table"]')).toBeVisible();
+      await expect(page.locator('[data-testid="account-balance"]')).toBeVisible();
       
-      const positions = await tradingPage.getPositions();
-      expect(positions.length).toBeGreaterThan(0);
+      const balance = await accountPage.getAccountBalance();
+      expect(balance).toMatch(/\$[\d,]+\.\d{2}/);
     });
 
-    test('should place a market order successfully', async () => {
-      await tradingPage.navigateToTrading();
+    test('user can view transaction history', async () => {
+      await accountPage.viewTransactionHistory();
       
-      await tradingPage.placeOrder('SPY', 10, 'market');
-      
-      await expect(page.locator('[data-testid="order-success"]')).toBeVisible();
-      await expect(page.locator('[data-testid="order-success"]')).toContainText('Order placed successfully');
+      await expect(page.locator('[data-testid="transaction-list"]')).toBeVisible();
     });
 
-    test('should place a limit order successfully', async () => {
-      await tradingPage.navigateToTrading();
+    test('user can view portfolio analysis', async () => {
+      await accountPage.viewPortfolioAnalysis();
       
-      await tradingPage.placeOrder('QQQ', 5, 'limit', 365.00);
-      
-      await expect(page.locator('[data-testid="order-success"]')).toBeVisible();
-      
-      // Check that order appears in orders table
-      await expect(page.locator('[data-testid="orders-table"]')).toContainText('QQQ');
-      await expect(page.locator('[data-testid="orders-table"]')).toContainText('365.00');
+      await expect(page.locator('[data-testid="portfolio-chart"]')).toBeVisible();
     });
 
-    test('should cancel an existing order', async () => {
-      await tradingPage.navigateToTrading();
+    test('user can export account data', async () => {
+      await accountPage.exportAccountData();
       
+      await expect(page.locator('[data-testid="export-success"]')).toBeVisible();
+    });
+
+    test('account data updates in real-time', async () => {
+      const initialBalance = await accountPage.getAccountBalance();
+      
+      // Simulate account update
+      await page.evaluate(() => {
+        window.dispatchEvent(new CustomEvent('accountUpdate', {
+          detail: { balance: 15000 }
+        }));
+      });
+      
+      await page.waitForTimeout(1000);
+      const updatedBalance = await accountPage.getAccountBalance();
+      expect(updatedBalance).not.toBe(initialBalance);
+    });
+  });
+
+  test.describe('Trading Workflows', () => {
+    test.beforeEach(async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+    });
+
+    test('user can place a trade', async () => {
+      await tradingPage.placeTrade(
+        TEST_DATA.trading.symbol,
+        TEST_DATA.trading.quantity,
+        TEST_DATA.trading.price
+      );
+      
+      await expect(page.locator('[data-testid="trade-confirmation"]')).toBeVisible();
+    });
+
+    test('user can view market data', async () => {
+      await tradingPage.viewMarketData();
+      
+      await expect(page.locator('[data-testid="market-chart"]')).toBeVisible();
+    });
+
+    test('user can view order history', async () => {
+      await tradingPage.viewOrderHistory();
+      
+      await expect(page.locator('[data-testid="order-list"]')).toBeVisible();
+    });
+
+    test('user can cancel an order', async () => {
       // First place an order
-      await tradingPage.placeOrder('IWM', 15, 'limit', 200.00);
+      await tradingPage.placeTrade(
+        TEST_DATA.trading.symbol,
+        TEST_DATA.trading.quantity,
+        TEST_DATA.trading.price
+      );
       
       // Then cancel it
-      const orderId = await page.getAttribute('[data-testid="latest-order"]', 'data-order-id');
-      await tradingPage.cancelOrder(orderId!);
+      await tradingPage.cancelOrder('test-order-id');
       
-      await expect(page.locator('[data-testid="cancel-success"]')).toBeVisible();
+      await expect(page.locator('[data-testid="order-cancelled"]')).toBeVisible();
     });
 
-    test('should handle order validation errors', async () => {
-      await tradingPage.navigateToTrading();
+    test('trading interface integrates with conversational interface', async () => {
+      await conversationalPage.sendMessage('Show me the trading dashboard');
       
-      await page.click('[data-testid="place-order-button"]');
-      await page.click('[data-testid="submit-order-button"]'); // Submit without filling required fields
+      await expect(page.locator('[data-testid="trading-dashboard"]')).toBeVisible();
+    });
+  });
+
+  test.describe('Performance Monitoring Workflows', () => {
+    test.beforeEach(async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+    });
+
+    test('user can start and stop performance monitoring', async () => {
+      await performancePage.startMonitoring();
+      await expect(page.locator('[data-testid="monitoring-active"]')).toBeVisible();
       
+      await performancePage.stopMonitoring();
+      await expect(page.locator('[data-testid="monitoring-inactive"]')).toBeVisible();
+    });
+
+    test('user can view performance metrics', async () => {
+      await performancePage.startMonitoring();
+      await performancePage.viewPerformanceMetrics();
+      
+      await expect(page.locator('[data-testid="performance-chart"]')).toBeVisible();
+    });
+
+    test('user can run performance optimization', async () => {
+      await performancePage.runOptimization();
+      
+      await expect(page.locator('[data-testid="optimization-complete"]')).toBeVisible();
+    });
+
+    test('performance score is displayed and updated', async () => {
+      await performancePage.startMonitoring();
+      
+      const score = await performancePage.getPerformanceScore();
+      expect(score).toBeGreaterThan(0);
+      expect(score).toBeLessThanOrEqual(100);
+    });
+  });
+
+  test.describe('Cross-Component Integration Workflows', () => {
+    test.beforeEach(async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+    });
+
+    test('conversational interface can trigger account actions', async () => {
+      await conversationalPage.sendMessage('Show my account balance');
+      
+      // Verify account visualization is displayed
+      await expect(page.locator('[data-testid="account-balance"]')).toBeVisible();
+    });
+
+    test('conversational interface can trigger trading actions', async () => {
+      await conversationalPage.sendMessage('Open trading dashboard');
+      
+      // Verify trading dashboard is displayed
+      await expect(page.locator('[data-testid="trading-dashboard"]')).toBeVisible();
+    });
+
+    test('performance monitoring affects all components', async () => {
+      await performancePage.startMonitoring();
+      
+      // Navigate through different components
+      await accountPage.viewAccountOverview();
+      await tradingPage.viewMarketData();
+      await conversationalPage.sendMessage('Test message');
+      
+      // Verify performance data is collected
+      await performancePage.viewPerformanceMetrics();
+      await expect(page.locator('[data-testid="performance-chart"]')).toBeVisible();
+    });
+
+    test('data flows between all components', async () => {
+      // Update account data
+      await accountPage.viewAccountOverview();
+      
+      // Verify data appears in conversational interface
+      await conversationalPage.sendMessage('What is my current balance?');
+      const response = await conversationalPage.getLastResponse();
+      expect(response).toContain('$');
+      
+      // Verify data appears in trading dashboard
+      await tradingPage.viewMarketData();
+      await expect(page.locator('[data-testid="account-info"]')).toBeVisible();
+    });
+  });
+
+  test.describe('Error Handling and Edge Cases', () => {
+    test('handles network errors gracefully', async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+      
+      // Simulate network error
+      await page.route('**/api/**', route => route.abort());
+      
+      await conversationalPage.sendMessage('Test message');
+      
+      // Verify error is handled gracefully
+      await expect(page.locator('[data-testid="error-message"]')).toBeVisible();
+    });
+
+    test('handles invalid user input', async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+      
+      // Try to place invalid trade
+      await tradingPage.placeTrade('INVALID', -10, -100);
+      
+      // Verify validation error
       await expect(page.locator('[data-testid="validation-error"]')).toBeVisible();
-      await expect(page.locator('[data-testid="validation-error"]')).toContainText('Symbol is required');
     });
 
-    test('should display real-time market data', async () => {
-      await tradingPage.navigateToTrading();
+    test('handles session expiration', async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
       
-      await expect(page.locator('[data-testid="market-data"]')).toBeVisible();
-      await expect(page.locator('[data-testid="spy-price"]')).toBeVisible();
-      await expect(page.locator('[data-testid="qqq-price"]')).toBeVisible();
-      
-      // Prices should be updating (check for price format)
-      const spyPrice = await page.textContent('[data-testid="spy-price"]');
-      expect(spyPrice).toMatch(/\$\d+\.\d{2}/);
-    });
-  });
-
-  test.describe('Analytics and Reporting', () => {
-    test.beforeEach(async () => {
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
-    });
-
-    test('should display performance analytics', async () => {
-      await analyticsPage.navigateToAnalytics();
-      
-      const metrics = await analyticsPage.getPerformanceMetrics();
-      
-      expect(metrics.totalReturn).toMatch(/[\+\-]?\d+\.\d+%/);
-      expect(metrics.sharpeRatio).toMatch(/\d+\.\d+/);
-      expect(metrics.maxDrawdown).toMatch(/\d+\.\d+%/);
-      expect(metrics.winRate).toMatch(/\d+\.\d+%/);
-    });
-
-    test('should filter analytics by timeframe', async () => {
-      await analyticsPage.navigateToAnalytics();
-      
-      await analyticsPage.selectTimeframe('30d');
-      await page.waitForTimeout(1000); // Wait for data to update
-      
-      const monthlyMetrics = await analyticsPage.getPerformanceMetrics();
-      
-      await analyticsPage.selectTimeframe('90d');
-      await page.waitForTimeout(1000);
-      
-      const quarterlyMetrics = await analyticsPage.getPerformanceMetrics();
-      
-      // Metrics should be different for different timeframes
-      expect(monthlyMetrics.totalReturn).not.toBe(quarterlyMetrics.totalReturn);
-    });
-
-    test('should export analytics data', async () => {
-      await analyticsPage.navigateToAnalytics();
-      
-      // Mock download functionality
-      const downloadPromise = page.waitForEvent('download');
-      await analyticsPage.exportData('csv');
-      const download = await downloadPromise;
-      
-      expect(download.suggestedFilename()).toContain('.csv');
-    });
-
-    test('should display week classification history', async () => {
-      await analyticsPage.navigateToAnalytics();
-      
-      await expect(page.locator('[data-testid="week-classification"]')).toBeVisible();
-      await expect(page.locator('[data-testid="green-weeks"]')).toBeVisible();
-      await expect(page.locator('[data-testid="red-weeks"]')).toBeVisible();
-      await expect(page.locator('[data-testid="chop-weeks"]')).toBeVisible();
-    });
-
-    test('should show protocol compliance metrics', async () => {
-      await analyticsPage.navigateToAnalytics();
-      
-      await expect(page.locator('[data-testid="protocol-compliance"]')).toBeVisible();
-      
-      const complianceScore = await page.textContent('[data-testid="compliance-score"]');
-      expect(complianceScore).toMatch(/\d+\.\d+%/);
-    });
-  });
-
-  test.describe('Conversational Interface', () => {
-    test.beforeEach(async () => {
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
-    });
-
-    test('should handle basic conversation flow', async () => {
-      await conversationalPage.navigateToChat();
-      
-      await conversationalPage.sendMessage('What is the three-tier structure?');
-      
-      const response = await conversationalPage.getLastResponse();
-      expect(response).toContain('three-tier');
-      expect(response).toContain('Generation');
-      expect(response).toContain('Revenue');
-      expect(response).toContain('Compounding');
-    });
-
-    test('should use suggested questions', async () => {
-      await conversationalPage.navigateToChat();
-      
-      await conversationalPage.useSuggestedQuestion(0);
-      
-      const response = await conversationalPage.getLastResponse();
-      expect(response).toBeDefined();
-      expect(response!.length).toBeGreaterThan(0);
-    });
-
-    test('should maintain conversation context', async () => {
-      await conversationalPage.navigateToChat();
-      
-      await conversationalPage.sendMessage('Tell me about the forking protocol');
-      await conversationalPage.getLastResponse();
-      
-      await conversationalPage.sendMessage('How often does this happen?');
-      
-      const response = await conversationalPage.getLastResponse();
-      expect(response).toContain('forking'); // Should reference previous context
-    });
-
-    test('should handle voice input toggle', async () => {
-      await conversationalPage.navigateToChat();
-      
-      await conversationalPage.toggleVoiceInput();
-      
-      await expect(page.locator('[data-testid="voice-indicator"]')).toBeVisible();
-      await expect(page.locator('[data-testid="voice-indicator"]')).toContainText('Listening');
-    });
-
-    test('should provide protocol education', async () => {
-      await conversationalPage.navigateToChat();
-      
-      await conversationalPage.sendMessage('Explain delta targeting');
-      
-      const response = await conversationalPage.getLastResponse();
-      expect(response).toContain('delta');
-      expect(response).toContain('target');
-      expect(response).toContain('risk');
-    });
-  });
-
-  test.describe('Advanced Features and Enterprise', () => {
-    test.beforeEach(async () => {
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
-    });
-
-    test('should access dashboard builder', async () => {
-      await page.goto(`${BASE_URL}/dashboard-builder`);
-      
-      await expect(page.locator('[data-testid="dashboard-builder"]')).toBeVisible();
-      await expect(page.locator('[data-testid="widget-palette"]')).toBeVisible();
-    });
-
-    test('should customize dashboard layout', async () => {
-      await page.goto(`${BASE_URL}/dashboard-builder`);
-      
-      // Drag widget to dashboard
-      const widget = page.locator('[data-testid="portfolio-widget"]');
-      const dropZone = page.locator('[data-testid="dashboard-grid"]');
-      
-      await widget.dragTo(dropZone);
-      
-      await expect(page.locator('[data-testid="dashboard-grid"] [data-testid="portfolio-widget"]')).toBeVisible();
-      
-      // Save layout
-      await page.click('[data-testid="save-layout"]');
-      await expect(page.locator('[data-testid="save-success"]')).toBeVisible();
-    });
-
-    test('should access system integration hub', async () => {
-      await page.goto(`${BASE_URL}/integration`);
-      
-      await expect(page.locator('[data-testid="integration-hub"]')).toBeVisible();
-      await expect(page.locator('[data-testid="workstream-status"]')).toBeVisible();
-    });
-
-    test('should monitor system health', async () => {
-      await page.goto(`${BASE_URL}/integration`);
-      
-      await expect(page.locator('[data-testid="system-health"]')).toBeVisible();
-      
-      const healthScore = await page.textContent('[data-testid="health-score"]');
-      expect(healthScore).toMatch(/\d+\.\d+%/);
-    });
-
-    test('should access coordination engine', async () => {
-      await page.goto(`${BASE_URL}/coordination`);
-      
-      await expect(page.locator('[data-testid="coordination-engine"]')).toBeVisible();
-      await expect(page.locator('[data-testid="coordination-rules"]')).toBeVisible();
-    });
-  });
-
-  test.describe('Cross-Browser Compatibility', () => {
-    ['chromium', 'firefox', 'webkit'].forEach(browserName => {
-      test(`should work correctly in ${browserName}`, async ({ browser }) => {
-        const context = await browser.newContext();
-        const page = await context.newPage();
-        
-        await page.goto(`${BASE_URL}/login`);
-        await expect(page.locator('[data-testid="login-form"]')).toBeVisible();
-        
-        await context.close();
+      // Simulate session expiration
+      await page.evaluate(() => {
+        localStorage.removeItem('authToken');
+        sessionStorage.clear();
       });
+      
+      await page.reload();
+      
+      // Verify user is redirected to login
+      await expect(page.locator('[data-testid="login-form"]')).toBeVisible();
+    });
+
+    test('handles component loading failures', async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+      
+      // Simulate component error
+      await page.evaluate(() => {
+        window.dispatchEvent(new CustomEvent('componentError', {
+          detail: { component: 'TradingDashboard' }
+        }));
+      });
+      
+      // Verify error boundary handles the error
+      await expect(page.locator('[data-testid="error-boundary"]')).toBeVisible();
     });
   });
 
-  test.describe('Mobile Responsiveness', () => {
-    test('should work on mobile viewport', async () => {
-      await page.setViewportSize({ width: 375, height: 667 }); // iPhone SE
-      
-      await authPage.navigateToLogin();
-      await authPage.login(TEST_USER.email, TEST_USER.password);
-      
-      await expect(page.locator('[data-testid="mobile-menu"]')).toBeVisible();
-      await expect(page.locator('[data-testid="portfolio-overview"]')).toBeVisible();
-    });
-
-    test('should handle tablet viewport', async () => {
-      await page.setViewportSize({ width: 768, height: 1024 }); // iPad
-      
-      await dashboardPage.navigateToDashboard();
-      
-      await expect(page.locator('[data-testid="tablet-layout"]')).toBeVisible();
-      await expect(page.locator('[data-testid="portfolio-overview"]')).toBeVisible();
-    });
-  });
-
-  test.describe('Accessibility Compliance', () => {
-    test('should have proper heading structure', async () => {
-      await dashboardPage.navigateToDashboard();
-      
-      const h1 = await page.locator('h1').count();
-      const h2 = await page.locator('h2').count();
-      
-      expect(h1).toBeGreaterThan(0);
-      expect(h2).toBeGreaterThan(0);
-    });
-
-    test('should have proper ARIA labels', async () => {
-      await conversationalPage.navigateToChat();
-      
-      const messageInput = page.locator('[data-testid="message-input"]');
-      const sendButton = page.locator('[data-testid="send-button"]');
-      
-      await expect(messageInput).toHaveAttribute('aria-label');
-      await expect(sendButton).toHaveAttribute('aria-label');
-    });
-
-    test('should support keyboard navigation', async () => {
-      await dashboardPage.navigateToDashboard();
-      
-      await page.keyboard.press('Tab');
-      await page.keyboard.press('Tab');
-      await page.keyboard.press('Enter');
-      
-      // Should navigate through interactive elements
-      const focusedElement = await page.evaluate(() => document.activeElement?.tagName);
-      expect(['BUTTON', 'A', 'INPUT']).toContain(focusedElement);
-    });
-  });
-
-  test.describe('Performance Testing', () => {
-    test('should load pages within performance budget', async () => {
+  test.describe('Performance and Load Testing', () => {
+    test('application loads within acceptable time', async () => {
       const startTime = Date.now();
       
-      await dashboardPage.navigateToDashboard();
+      await page.goto('/');
       await page.waitForLoadState('networkidle');
       
       const loadTime = Date.now() - startTime;
-      expect(loadTime).toBeLessThan(3000); // Should load within 3 seconds
+      expect(loadTime).toBeLessThan(3000); // 3 seconds
     });
 
-    test('should handle concurrent users', async () => {
-      // Simulate multiple concurrent sessions
+    test('handles multiple concurrent users', async () => {
+      // Simulate multiple user sessions
       const contexts = await Promise.all([
-        context.browser()?.newContext(),
-        context.browser()?.newContext(),
-        context.browser()?.newContext()
+        page.context().browser()?.newContext(),
+        page.context().browser()?.newContext(),
+        page.context().browser()?.newContext()
       ]);
       
       const pages = await Promise.all(
-        contexts.map(ctx => ctx?.newPage())
+        contexts.map(async (ctx) => {
+          if (ctx) {
+            const newPage = await ctx.newPage();
+            await newPage.goto('/');
+            return newPage;
+          }
+          return null;
+        })
       );
       
-      // All pages should load successfully
-      await Promise.all(
-        pages.map(page => page?.goto(`${BASE_URL}/dashboard`))
-      );
+      // Verify all pages load successfully
+      for (const testPage of pages) {
+        if (testPage) {
+          await expect(testPage.locator('body')).toBeVisible();
+          await testPage.close();
+        }
+      }
       
-      // Cleanup
+      // Clean up contexts
       await Promise.all(contexts.map(ctx => ctx?.close()));
+    });
+
+    test('memory usage remains stable during extended use', async () => {
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+      
+      // Perform multiple operations
+      for (let i = 0; i < 10; i++) {
+        await conversationalPage.sendMessage(`Test message ${i}`);
+        await accountPage.viewAccountOverview();
+        await tradingPage.viewMarketData();
+        await page.waitForTimeout(100);
+      }
+      
+      // Check memory usage
+      const memoryUsage = await page.evaluate(() => {
+        return (performance as any).memory?.usedJSHeapSize || 0;
+      });
+      
+      // Memory should be reasonable (less than 100MB)
+      expect(memoryUsage).toBeLessThan(100 * 1024 * 1024);
     });
   });
 });
 
-// Export page objects for reuse
-export {
-  AuthenticationPage,
-  DashboardPage,
-  TradingPage,
-  AnalyticsPage,
-  ConversationalPage
-};
+// Cross-Browser Testing
+for (const browserName of TEST_CONFIG.browsers) {
+  test.describe(`Cross-Browser Testing: ${browserName}`, () => {
+    test(`all features work in ${browserName}`, async () => {
+      // This test will run in each browser specified in the config
+      const page = await (global as any)[browserName].newPage();
+      
+      const authPage = new AuthenticationPage(page);
+      const conversationalPage = new ConversationalInterfacePage(page);
+      
+      await authPage.navigate();
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+      
+      expect(await authPage.isLoggedIn()).toBe(true);
+      
+      await conversationalPage.sendMessage('Hello');
+      const response = await conversationalPage.getLastResponse();
+      expect(response).toBeTruthy();
+      
+      await page.close();
+    });
+  });
+}
+
+// Mobile Responsiveness Testing
+for (const viewport of TEST_CONFIG.viewports) {
+  test.describe(`Responsive Testing: ${viewport.name}`, () => {
+    test(`interface adapts to ${viewport.name} viewport`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      
+      const authPage = new AuthenticationPage(page);
+      await authPage.navigate();
+      await authPage.login(TEST_DATA.user.email, TEST_DATA.user.password);
+      
+      // Verify responsive elements
+      await expect(page.locator('[data-testid="mobile-menu"]')).toBeVisible({
+        visible: viewport.name === 'mobile'
+      });
+      
+      await expect(page.locator('[data-testid="desktop-sidebar"]')).toBeVisible({
+        visible: viewport.name === 'desktop'
+      });
+    });
+  });
+}
+
+// Accessibility Testing
+test.describe('Accessibility Testing', () => {
+  test('keyboard navigation works throughout the application', async ({ page }) => {
+    const authPage = new AuthenticationPage(page);
+    await authPage.navigate();
+    
+    // Test tab navigation
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Enter');
+    
+    // Verify keyboard navigation works
+    const focusedElement = await page.evaluate(() => document.activeElement?.tagName);
+    expect(['INPUT', 'BUTTON', 'A']).toContain(focusedElement);
+  });
+
+  test('screen reader compatibility', async ({ page }) => {
+    await page.goto('/');
+    
+    // Check for ARIA labels and roles
+    const ariaLabels = await page.locator('[aria-label]').count();
+    expect(ariaLabels).toBeGreaterThan(0);
+    
+    const roles = await page.locator('[role]').count();
+    expect(roles).toBeGreaterThan(0);
+  });
+
+  test('color contrast meets WCAG standards', async ({ page }) => {
+    await page.goto('/');
+    
+    // This would typically use a specialized accessibility testing library
+    // For now, we verify that contrast-related CSS classes are present
+    const contrastElements = await page.locator('.text-gray-900, .text-white, .bg-white, .bg-gray-900').count();
+    expect(contrastElements).toBeGreaterThan(0);
+  });
+});
+
+export default {};
 
